@@ -9,12 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.dev.weather.ui.current_weather.Box
+import net.dev.weather.ui.hour_forecast.HourForecast
 import net.dev.weather.ui.theme.WeatherTheme
 
 class MainActivity : ComponentActivity() {
@@ -36,7 +36,7 @@ fun MainPage() {
     Column {
         Box()
         Spacer(modifier = Modifier.height(20.dp))
-        Box()
+        HourForecast()
     }
 }
 
