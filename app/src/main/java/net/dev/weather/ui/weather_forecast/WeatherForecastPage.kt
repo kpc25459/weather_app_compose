@@ -5,12 +5,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun WeatherForecast() {
+fun WeatherForecastPage() {
     Text(text = "WeatherForecast")
 }
 
 @Preview(showBackground = true)
 @Composable
-fun WeatherForecastPreview() {
-    WeatherForecast()
+fun WeatherForecastPagePreview() {
+    WeatherForecastPage()
 }

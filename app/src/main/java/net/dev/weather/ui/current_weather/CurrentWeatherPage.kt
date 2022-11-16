@@ -7,7 +7,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun CurrentWeather() {
+fun CurrentWeatherPage() {
     Column {
         Box()
         Spacer(modifier = Modifier.height(20.dp))
@@ -19,6 +19,6 @@ fun CurrentWeather() {
 
 @Preview(showBackground = true)
 @Composable
-fun CurrentWeatherPreview() {
-    CurrentWeather()
+fun CurrentWeatherPagePreview() {
+    CurrentWeatherPage()
 }
