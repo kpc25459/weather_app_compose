@@ -1,8 +1,11 @@
 package net.dev.weather.ui.current_weather
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,8 +26,8 @@ fun Box() {
                 Text(text = "Godz. 21:14")
             }
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                Row {
-                    //Image(imageVector =  , contentDescription = )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(imageVector = Icons.Filled.Place, contentDescription = "Place")
                     Text(text = "Komorniki, PL")
                 }
                 Text(text = "6°")

@@ -1,4 +1,4 @@
-package net.dev.weather.ui.hour_forecast
+package net.dev.weather.ui.current_weather
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
@@ -9,19 +9,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun HourForecast() {
+fun CurrentWeatherDetails() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp),
         elevation = 8.dp,
     ) {
-       Text(text = "Prognoza godzinowa")
+        Column(modifier = Modifier.padding(10.dp)) {
+           Text(text = "Szczegóły")
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun HourForecastPreview() {
-    HourForecast()
+fun CurrentWeatherDetailsPreview() {
+    CurrentWeatherDetails()
 }
