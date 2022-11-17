@@ -34,7 +34,7 @@ fun Box() {
             }
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = "Jakość powietrza")
-                Text(text = "Bardzo zła")
+                Text(text = "Bardzo dobra")
             }
         }
     }
