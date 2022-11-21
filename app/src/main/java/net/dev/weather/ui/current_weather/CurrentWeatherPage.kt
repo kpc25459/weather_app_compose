@@ -18,7 +18,7 @@ fun CurrentWeatherPage() {
 
         Box(viewModel)
         Spacer(modifier = Modifier.height(20.dp))
-        HourForecast()
+        HourForecast(viewModel)
         Spacer(modifier = Modifier.height(20.dp))
         CurrentWeatherDetails()
     }
