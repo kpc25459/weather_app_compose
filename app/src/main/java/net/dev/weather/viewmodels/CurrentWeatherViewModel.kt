@@ -1,9 +1,12 @@
 package net.dev.weather.viewmodels
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+import net.dev.weather.api.LocationServiceApi
 
-class CurrentWeatherViewModel {
-
+class CurrentWeatherViewModel : ViewModel() {
     val date = MutableLiveData<String>()
 
     val time = MutableLiveData<String>()
@@ -13,25 +16,19 @@ class CurrentWeatherViewModel {
 
     val airQuality = MutableLiveData<String>()
 
+    val quotesApi = LocationServiceApi.create()
+
     init {
-        load()
-    }
+        viewModelScope.launch {
+            val result = quotesApi.getReverseLocation("52.335833", "16.807778")
+            val name = result.body()?.first()?.name
 
-    fun load() {
+            location.value = name
 
-        date.value = "2021-05-20"
-        time.value = "12:00"
-        location.value = "Warszawa"
-        temperature.value = "6°"
-        airQuality.value = "Dobra"
-    }
-
-    fun load2() {
-
-        date.value = "2021-05-21"
-        time.value = "13:00"
-        location.value = "Poznań"
-        temperature.value = "7°"
-        airQuality.value = "Bardzo Dobra"
+            date.value = "2021-05-20"
+            time.value = "12:00"
+            temperature.value = "6°"
+            airQuality.value = "Dobra"
+        }
     }
 }
