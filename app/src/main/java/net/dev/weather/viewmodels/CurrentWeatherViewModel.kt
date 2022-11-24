@@ -37,7 +37,8 @@ class CurrentWeatherViewModel : ViewModel() {
 
             timeZone.value = TimeZone.of(response.timezone)
 
-            hourlyForecast.value = response.hourly
+            hourlyForecast.value = response.hourly.take(24)
+
             date.value = "2021-05-20"
             time.value = "12:00"
             temperature.value = "6°"
