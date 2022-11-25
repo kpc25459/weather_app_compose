@@ -13,16 +13,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.datetime.Instant
+import kotlinx.datetime.toLocalDateTime
 import net.dev.weather.viewmodels.CurrentWeatherViewModel
+import kotlin.math.roundToInt
 
 @Composable
-fun Box(currentWeather: CurrentWeatherViewModel) {
+fun Box(viewModel: CurrentWeatherViewModel) {
+    val timeZone by viewModel.timeZone.observeAsState()
+    val location by viewModel.location.observeAsState()
+    val currentWeather by viewModel.currentWeather.observeAsState()
+    val airQuality by viewModel.airQuality.observeAsState()
 
-    val date by currentWeather.date.observeAsState()
-    val time by currentWeather.time.observeAsState()
-    val location by currentWeather.location.observeAsState()
-    val temperature by currentWeather.temperature.observeAsState()
-    val airQuality by currentWeather.airQuality.observeAsState()
+    timeZone ?: return
+    location ?: return
+    currentWeather ?: return
+    airQuality ?: return
+
+    val at = Instant.fromEpochSeconds(currentWeather!!.dt.toLong()).toLocalDateTime(timeZone!!)
 
     Card(
         modifier = Modifier
@@ -32,19 +40,19 @@ fun Box(currentWeather: CurrentWeatherViewModel) {
     ) {
         Column(modifier = Modifier.padding(10.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(text = "Prognoza na: $date")
-                Text(text = "Godz. $time")
+                Text(text = "Prognoza na: ${at.date}")
+                Text(text = "Godz. ${at.time.toString().substringBeforeLast(":")}")
             }
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(imageVector = Icons.Filled.Place, contentDescription = "Place")
                     location?.let { Text(text = it) }
                 }
-                temperature?.let { Text(text = it) }
+                Text(text = "${currentWeather!!.temp.roundToInt()} °C")
             }
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = "Jakość powietrza")
-                airQuality?.let { Text(text = it) }
+                Text(text = airQuality!!)
             }
         }
     }

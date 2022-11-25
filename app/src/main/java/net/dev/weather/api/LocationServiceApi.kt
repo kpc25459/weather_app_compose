@@ -12,16 +12,20 @@ data class CurrentLocation(
     val name: String
 )
 
-data class HourlyForecastResponse(
+data class GetWeatherResponse(
     val lat: Double,
     val lon: Double,
     val timezone: String,
     val timezone_offset: Int,
+
+    val current: WeatherHourly,
     val hourly: List<WeatherHourly>
 )
 
 data class WeatherHourly(
     val dt: Int,
+    val sunrise: Int,
+    val sunset: Int,
     val temp: Double,
     val feels_like: Double,
     val pressure: Int,
@@ -44,6 +48,16 @@ data class Weather(
     val icon: String
 )
 
+
+data class AirPollutionResponse(
+    val list: List<AirPollution>
+)
+
+data class AirPollution(val main: Main, val components: Components, val dt: Int)
+data class Components(val co: Double, val no: Double, val no2: Double, val o3: Double, val so2: Double, val pm2_5: Double, val pm10: Double, val nh3: Double)
+
+data class Main(val aqi: Int)
+
 interface LocationServiceApi {
 
     @GET("/geo/1.0/reverse")
@@ -55,14 +69,21 @@ interface LocationServiceApi {
     ): Response<List<CurrentLocation>>
 
     @GET("/data/2.5/onecall")
-    suspend fun getHourlyForecast(
+    suspend fun getWeather(
         @Query("lat") latitude: String = lat,
         @Query("lon") longitude: String = lon,
-        @Query("exclude") exclude: String = "current,minutely,daily,alerts",
+        @Query("exclude") exclude: String = "minutely,daily,alerts",
         @Query("units") units: String = "metric",
         @Query("lang") lang: String = "pl",
         @Query("appid") appid: String = LocationServiceApi.appid,
-    ): Response<HourlyForecastResponse>
+    ): Response<GetWeatherResponse>
+
+    @GET("/data/2.5/air_pollution")
+    suspend fun getAirPollution(
+        @Query("lat") latitude: String = lat,
+        @Query("lon") longitude: String = lon,
+        @Query("appid") appid: String = LocationServiceApi.appid,
+    ): Response<AirPollutionResponse>
 
     companion object {
         private const val BASE_URL = "http://api.openweathermap.org/"

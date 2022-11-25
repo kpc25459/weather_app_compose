@@ -14,42 +14,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.datetime.Instant
+import kotlinx.datetime.toLocalDateTime
 import net.dev.weather.viewmodels.CurrentWeatherViewModel
 import kotlin.math.roundToInt
 
 @Composable
 fun CurrentWeatherDetails(viewModel: CurrentWeatherViewModel) {
 
+    val timeZone by viewModel.timeZone.observeAsState()
+    val currentWeather by viewModel.currentWeather.observeAsState()
     val hourlyForecast by viewModel.hourlyForecast.observeAsState()
 
 
-    hourlyForecast?.let { forecast ->
-        val currentWeather = forecast[0]
-
-
-        val feelsLike = "${currentWeather.feels_like.roundToInt()}°"
-        val humidity = "${currentWeather.humidity} %"
-        val pressure = "${currentWeather.pressure} hPa"
-        val wind = "${currentWeather.wind_speed * 3.6} km/h ${toHuman(currentWeather.wind_deg)}"
-        val uvi = currentWeather.uvi.roundToInt().toString()
-
+    currentWeather?.let { weather ->
         Row(modifier = Modifier.padding(10.dp)) {
             Row {
                 Column {
+                    val sunrise = timeZone?.let { Instant.fromEpochSeconds(weather.sunrise.toLong()).toLocalDateTime(it) }?.time
                     DetailsItem(
                         image = Icons.Filled.ArrowForward,
                         name = "Wschód słońca",
-                        value = "??",
+                        value = sunrise?.toString()?.substringBeforeLast(":") ?: "N/A"
                     )
                     DetailsItem(
                         image = Icons.Filled.ArrowForward,
                         name = "Ciśnienie",
-                        value = pressure
+                        value = "${weather.pressure} hPa"
                     )
                     DetailsItem(
                         image = Icons.Filled.ArrowForward,
                         name = "Indeks UV",
-                        value = uvi,
+                        value = weather.uvi.roundToInt().toString(),
                     )
                     DetailsItem(
                         image = Icons.Filled.ArrowForward,
@@ -59,36 +55,34 @@ fun CurrentWeatherDetails(viewModel: CurrentWeatherViewModel) {
                 }
 
                 Column {
+                    val sunset = timeZone?.let { Instant.fromEpochSeconds(weather.sunset.toLong()).toLocalDateTime(it) }?.time
+
                     DetailsItem(
                         image = Icons.Filled.ArrowForward,
                         name = "Zachód słońca",
-                        value = "??",
+                        value = sunset?.toString()?.substringBeforeLast(":") ?: "N/A"
                     )
                     DetailsItem(
                         image = Icons.Filled.ArrowForward,
                         name = "Wilgotność",
-                        value = humidity
+                        value = "${weather.humidity} %"
                     )
                     DetailsItem(
                         image = Icons.Filled.ArrowForward,
                         name = "Wiatr",
-                        value = wind,
+                        value = "${((weather.wind_speed * 3.6 * 100) / 100).roundToInt()} km/h ${toHuman(weather.wind_deg)}",
                     )
 
                     hourlyForecast?.let {
                         DetailsItem(
                             image = Icons.Filled.ArrowForward,
                             name = "Odczuwana",
-                            value = feelsLike,
+                            value = "${weather.feels_like.roundToInt()}°",
                         )
                     }
-
                 }
             }
-
         }
-
-
     }
 }
 
