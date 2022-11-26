@@ -50,7 +50,7 @@ fun CurrentWeatherDetails(viewModel: CurrentWeatherViewModel) {
                     DetailsItem(
                         image = Icons.Filled.ArrowForward,
                         name = "Deszcz",
-                        value = "??? mm/24h",
+                        value = if (weather.rain != 0.toDouble()) "${weather.rain.roundToInt()} mm/24h" else "0",
                     )
                 }
 

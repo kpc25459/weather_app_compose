@@ -38,7 +38,8 @@ data class WeatherHourly(
     val wind_deg: Int,
     val wind_gust: Double,
     val weather: List<Weather>,
-    val pop: Double
+    val pop: Double,
+    val rain: Double
 )
 
 data class Weather(
