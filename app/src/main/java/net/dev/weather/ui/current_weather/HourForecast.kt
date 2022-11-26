@@ -21,6 +21,10 @@ import net.dev.weather.viewmodels.CurrentWeatherViewModel
 import java.util.*
 import kotlin.math.roundToInt
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun HourForecast(currentWeather: CurrentWeatherViewModel) {
@@ -44,9 +48,16 @@ fun HourForecastItem(item: WeatherHourly, timeZone: TimeZone) {
 
     val dayOfWeek = "${dateTime.date.dayOfWeek.toString().lowercase(Locale.getDefault()).substring(0, 3).replaceFirstChar { it.uppercase() }}."
 
+    //TODO: to przenieść do vm
     val iconUrl = "https://openweathermap.org/img/wn/${item.weather[0].icon}.png"
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(10.dp)) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .padding(5.dp)
+            .border(1.dp, shape = RoundedCornerShape(8.dp), color = Color(0xFFE0EAFF))
+            .width(70.dp)
+    ) {
         Text(text = dayOfWeek)
         Image(
             painter = rememberImagePainter(iconUrl),
@@ -55,7 +66,7 @@ fun HourForecastItem(item: WeatherHourly, timeZone: TimeZone) {
             modifier = Modifier.size(50.dp)
         )
         Text(text = dateTime.time.toString())
-        Text(text = "${item.temp.roundToInt()}°")
+        Text(text = "${item.temp.roundToInt()}°", modifier = Modifier.padding(bottom = 5.dp))
     }
 
 }
