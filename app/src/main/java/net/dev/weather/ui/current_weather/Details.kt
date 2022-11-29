@@ -28,8 +28,7 @@ fun CurrentWeatherDetails(viewModel: CurrentWeatherViewModel) {
 
     val timeZone by viewModel.timeZone.observeAsState()
     val currentWeather by viewModel.currentWeather.observeAsState()
-    val hourlyForecast by viewModel.hourlyForecast.observeAsState()
-
+    val dailyForecast by viewModel.dailyForecast.observeAsState()
 
     currentWeather?.let { weather ->
         Row(
@@ -54,10 +53,12 @@ fun CurrentWeatherDetails(viewModel: CurrentWeatherViewModel) {
                     name = "Indeks UV",
                     value = weather.uvi.roundToInt().toString(),
                 )
+
+                val rain: Double = dailyForecast?.first()?.rain ?: 0.0
                 DetailsItem(
                     image = Icons.Filled.ArrowForward,
                     name = "Deszcz",
-                    value = if (weather.rain != 0.toDouble()) "${weather.rain.roundToInt()} mm/24h" else "0",
+                    value = "${rain.roundToInt()} mm/24h",
                 )
             }
 
@@ -80,16 +81,13 @@ fun CurrentWeatherDetails(viewModel: CurrentWeatherViewModel) {
                     value = "${((weather.wind_speed * 3.6 * 100) / 100).roundToInt()} km/h ${toHuman(weather.wind_deg)}",
                 )
 
-                hourlyForecast?.let {
-                    DetailsItem(
-                        image = Icons.Filled.ArrowForward,
-                        name = "Odczuwana",
-                        value = "${weather.feels_like.roundToInt()}°",
-                    )
-                }
+                DetailsItem(
+                    image = Icons.Filled.ArrowForward,
+                    name = "Odczuwana",
+                    value = "${weather.feels_like.roundToInt()}°",
+                )
             }
         }
-
     }
 }
 
