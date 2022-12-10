@@ -1,6 +1,7 @@
 package net.dev.weather.ui.current_weather
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -45,26 +46,23 @@ fun Box(viewModel: CurrentWeatherViewModel) {
             colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.5f), blendMode = BlendMode.SrcOver),
             modifier = Modifier
                 .fillMaxWidth()
-            //.size(300.dp)
-
-
         )
 
         Column(modifier = Modifier.padding(10.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(text = "Prognoza na: ${currentWeather!!.dt}")
-                Text(text = "Godz. ${currentWeather!!.dt.time.toString().substringBeforeLast(":")}")
+                Text(text = "Prognoza na: ${currentWeather!!.dt.date}", color = Color.White)
+                Text(text = "Godz. ${currentWeather!!.dt.time.toString().substringBeforeLast(":")}", color = Color.White)
             }
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(imageVector = Icons.Filled.Place, contentDescription = "Place")
-                    location?.let { Text(text = it) }
+                    Image(imageVector = Icons.Filled.Place, contentDescription = "Place", colorFilter = ColorFilter.tint(Color.White))
+                    location?.let { Text(text = it, color = Color.White) }
                 }
-                Text(text = "${currentWeather!!.temp} °C")
+                Text(text = "${currentWeather!!.temp} °C", color = Color.White)
             }
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "Jakość powietrza")
-                Text(text = airQuality!!)
+                Text(text = "Jakość powietrza", color = Color.White)
+                Text(text = airQuality!!, color = Color.White)
             }
         }
     }
