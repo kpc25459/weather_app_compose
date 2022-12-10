@@ -13,10 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlinx.datetime.Instant
-import kotlinx.datetime.toLocalDateTime
 import net.dev.weather.viewmodels.CurrentWeatherViewModel
-import kotlin.math.roundToInt
 
 @Composable
 fun Box(viewModel: CurrentWeatherViewModel) {
@@ -24,6 +21,7 @@ fun Box(viewModel: CurrentWeatherViewModel) {
     val currentWeather by viewModel.currentWeather.observeAsState()
     val airQuality by viewModel.airQuality.observeAsState()
 
+    //TODO: tutaj dodać kręciołki
     location ?: return
     currentWeather ?: return
     airQuality ?: return
@@ -44,7 +42,7 @@ fun Box(viewModel: CurrentWeatherViewModel) {
                     Image(imageVector = Icons.Filled.Place, contentDescription = "Place")
                     location?.let { Text(text = it) }
                 }
-                Text(text = "${currentWeather!!.temp.roundToInt()} °C")
+                Text(text = "${currentWeather!!.temp} °C")
             }
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = "Jakość powietrza")

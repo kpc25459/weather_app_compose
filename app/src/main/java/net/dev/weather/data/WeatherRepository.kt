@@ -9,6 +9,14 @@ import net.dev.weather.api.WeatherServiceApi
 
 class WeatherRepository(private val weatherServiceApi: WeatherServiceApi) {
 
+    //TODO: tutaj pozbyć się wykrzykników
+    suspend fun getLocation(): Flow<String> {
+        val reverseLocationResponse = weatherServiceApi.getReverseLocation()
+        val location = reverseLocationResponse.body()?.first()?.name
+
+        return flowOf(location!!)
+    }
+
     suspend fun getWeather(): Flow<OneCallResponse> {
         val weather = weatherServiceApi.getWeather()
 
@@ -40,5 +48,16 @@ class WeatherRepository(private val weatherServiceApi: WeatherServiceApi) {
         val body = weather.body() ?: throw Exception("No data")
 
         return flowOf(body.hourly.take(24))
+    }
+
+    suspend fun getAirQuality(): Flow<Int> {
+
+        val airQuality = weatherServiceApi.getAirPollution()
+
+        val body = airQuality.body() ?: throw Exception("No data")
+
+        val aqi = body.list.first().main.aqi
+
+        return flowOf(aqi)
     }
 }

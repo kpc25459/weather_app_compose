@@ -22,15 +22,11 @@ class CurrentWeatherViewModel(weatherRepository: WeatherRepository) : ViewModel(
     val hourlyForecast: MutableLiveData<List<WeatherHourly>> = MutableLiveData()
     val dailyForecast: MutableLiveData<List<WeatherDaily>> = MutableLiveData()
 
-
     init {
 
         viewModelScope.launch {
 
-            //val reverseLocationResponse = locationServiceApi.getReverseLocation()
-            //location.value = reverseLocationResponse.body()?.first()?.name
-
-            //val getWeatherResponse = weatherRepository.getCurrentWeather().body() ?: throw Exception("No data")
+            weatherRepository.getLocation().collectLatest { location.value = it }
 
             weatherRepository.getWeather().collectLatest { response ->
 
@@ -83,14 +79,14 @@ class CurrentWeatherViewModel(weatherRepository: WeatherRepository) : ViewModel(
                         it.moonset,
                         it.moon_phase,
                         it.temp.day,
-                        it.feels_like.,
+                        it.feels_like.day,
                         it.pressure,
                         it.humidity,
                         it.dew_point,
                         it.wind_speed,
                         it.wind_deg,
                         it.wind_gust,
-                        it.weather,
+                        //it.weather,
                         it.clouds,
                         it.pop,
                         it.rain,
@@ -98,10 +94,9 @@ class CurrentWeatherViewModel(weatherRepository: WeatherRepository) : ViewModel(
                     )
                 }
             }
-        }
 
-        /* val airPollutionResponse = locationServiceApi.getAirPollution().body() ?: throw Exception("No data")
-         airQuality.value = fromAqiIndex(airPollutionResponse.list.first().main.aqi)*/
+            weatherRepository.getAirQuality().collectLatest { airQuality.value = fromAqiIndex(it) }
+        }
     }
 }
 

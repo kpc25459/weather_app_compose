@@ -13,10 +13,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
-import net.dev.weather.api.WeatherHourlyResponse
 import net.dev.weather.viewmodels.CurrentWeatherViewModel
 import java.util.*
 import kotlin.math.roundToInt
@@ -24,6 +20,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
+import net.dev.weather.data.WeatherHourly
 
 @Composable
 fun HourForecast(currentWeather: CurrentWeatherViewModel) {
@@ -33,7 +30,7 @@ fun HourForecast(currentWeather: CurrentWeatherViewModel) {
     hourlyForecast?.let { forecast ->
         LazyRow(/*modifier = Modifier.horizontalScroll(rememberScrollState())*/) {
             items(forecast) { item ->
-                timeZone?.let { HourForecastItem(item, it) }
+               HourForecastItem(item)
             }
         }
     }
@@ -41,10 +38,8 @@ fun HourForecast(currentWeather: CurrentWeatherViewModel) {
 }
 
 @Composable
-fun HourForecastItem(item: WeatherHourlyResponse, timeZone: TimeZone) {
-    val dateTime = Instant.fromEpochSeconds(item.dt.toLong()).toLocalDateTime(timeZone)
-
-    val dayOfWeek = "${dateTime.date.dayOfWeek.toString().lowercase(Locale.getDefault()).substring(0, 3).replaceFirstChar { it.uppercase() }}."
+fun HourForecastItem(item: WeatherHourly) {
+    val dayOfWeek = "${item.dt.dayOfWeek.toString().lowercase().substring(0, 3).replaceFirstChar { it.uppercase() }}."
 
     //TODO: to przenieść do vm
     val iconUrl = "https://openweathermap.org/img/wn/${item.weather[0].icon}.png"
@@ -63,7 +58,7 @@ fun HourForecastItem(item: WeatherHourlyResponse, timeZone: TimeZone) {
             contentScale = ContentScale.Fit,
             modifier = Modifier.size(50.dp)
         )
-        Text(text = dateTime.time.toString())
+        Text(text = item.dt.time.toString())
         Text(text = "${item.temp.roundToInt()}°", modifier = Modifier.padding(bottom = 5.dp))
     }
 
