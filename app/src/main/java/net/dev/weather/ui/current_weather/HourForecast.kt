@@ -16,21 +16,19 @@ import coil.compose.rememberImagePainter
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import net.dev.weather.api.WeatherHourly
+import net.dev.weather.api.WeatherHourlyResponse
 import net.dev.weather.viewmodels.CurrentWeatherViewModel
 import java.util.*
 import kotlin.math.roundToInt
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 
 @Composable
 fun HourForecast(currentWeather: CurrentWeatherViewModel) {
 
     val hourlyForecast by currentWeather.hourlyForecast.observeAsState()
-    val timeZone by currentWeather.timeZone.observeAsState()
 
     hourlyForecast?.let { forecast ->
         LazyRow(/*modifier = Modifier.horizontalScroll(rememberScrollState())*/) {
@@ -43,7 +41,7 @@ fun HourForecast(currentWeather: CurrentWeatherViewModel) {
 }
 
 @Composable
-fun HourForecastItem(item: WeatherHourly, timeZone: TimeZone) {
+fun HourForecastItem(item: WeatherHourlyResponse, timeZone: TimeZone) {
     val dateTime = Instant.fromEpochSeconds(item.dt.toLong()).toLocalDateTime(timeZone)
 
     val dayOfWeek = "${dateTime.date.dayOfWeek.toString().lowercase(Locale.getDefault()).substring(0, 3).replaceFirstChar { it.uppercase() }}."

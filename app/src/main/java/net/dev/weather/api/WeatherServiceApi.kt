@@ -18,12 +18,12 @@ data class OneCallResponse(
     val timezone: String,
     val timezone_offset: Int,
 
-    val current: WeatherHourly,
-    val hourly: List<WeatherHourly>,
-    val daily: List<WeatherDaily>
+    val current: WeatherHourlyResponse,
+    val hourly: List<WeatherHourlyResponse>,
+    val daily: List<WeatherDailyResponse>
 )
 
-data class WeatherHourly(
+data class WeatherHourlyResponse(
     val dt: Int,
     val sunrise: Int,
     val sunset: Int,
@@ -38,41 +38,41 @@ data class WeatherHourly(
     val wind_speed: Double,
     val wind_deg: Int,
     val wind_gust: Double,
-    val weather: List<Weather>,
+    val weather: List<WeatherResponse>,
     val pop: Double,
     val rain: Double
 )
 
-data class WeatherDaily(
+data class WeatherDailyResponse(
     val dt: Int,
     val sunrise: Int,
     val sunset: Int,
     val moonrise: Int,
     val moonset: Int,
     val moon_phase: Double,
-    val temp: Temp,
-    val feels_like: FeelsLike,
+    val temp: TempResponse,
+    val feels_like: FeelsLikeResponse,
     val pressure: Int,
     val humidity: Int,
     val dew_point: Double,
     val wind_speed: Double,
     val wind_deg: Int,
     val wind_gust: Double,
-    val weather: List<Weather>,
+    val weather: List<WeatherResponse>,
     val clouds: Int,
     val pop: Double,
     val rain: Double,
     val uvi: Double
 )
 
-data class FeelsLike(
+data class FeelsLikeResponse(
     val day: Double,
     val night: Double,
     val eve: Double,
     val morn: Double
 )
 
-data class Temp(
+data class TempResponse(
     val day: Double,
     val min: Double,
     val max: Double,
@@ -81,7 +81,7 @@ data class Temp(
     val morn: Double
 )
 
-data class Weather(
+data class WeatherResponse(
     val id: Int,
     val main: String,
     val description: String,

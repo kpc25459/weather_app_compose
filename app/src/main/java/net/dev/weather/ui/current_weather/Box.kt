@@ -20,17 +20,13 @@ import kotlin.math.roundToInt
 
 @Composable
 fun Box(viewModel: CurrentWeatherViewModel) {
-    val timeZone by viewModel.timeZone.observeAsState()
     val location by viewModel.location.observeAsState()
     val currentWeather by viewModel.currentWeather.observeAsState()
     val airQuality by viewModel.airQuality.observeAsState()
 
-    timeZone ?: return
     location ?: return
     currentWeather ?: return
     airQuality ?: return
-
-    val at = Instant.fromEpochSeconds(currentWeather!!.dt.toLong()).toLocalDateTime(timeZone!!)
 
     Card(
         modifier = Modifier
@@ -40,8 +36,8 @@ fun Box(viewModel: CurrentWeatherViewModel) {
     ) {
         Column(modifier = Modifier.padding(10.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(text = "Prognoza na: ${at.date}")
-                Text(text = "Godz. ${at.time.toString().substringBeforeLast(":")}")
+                Text(text = "Prognoza na: ${currentWeather!!.dt}")
+                Text(text = "Godz. ${currentWeather!!.dt.time.toString().substringBeforeLast(":")}")
             }
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -61,5 +57,5 @@ fun Box(viewModel: CurrentWeatherViewModel) {
 @Preview(showBackground = true)
 @Composable
 fun BoxPreview() {
-    Box(CurrentWeatherViewModel())
+    //Box(CurrentWeatherViewModel())
 }
