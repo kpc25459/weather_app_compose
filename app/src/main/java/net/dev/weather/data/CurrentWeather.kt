@@ -16,8 +16,5 @@ data class CurrentWeather(
     val visibility: Int,
     val wind: String,
     val rain: String,
-
-    //val weather: List<WeatherResponse>,
-    //val pop: Double,
-    //val rain: Double
+    val backgroundImage: Int
 )

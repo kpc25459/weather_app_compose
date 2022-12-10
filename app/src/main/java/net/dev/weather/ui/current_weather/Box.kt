@@ -11,6 +11,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.dev.weather.viewmodels.CurrentWeatherViewModel
@@ -32,6 +38,18 @@ fun Box(viewModel: CurrentWeatherViewModel) {
             .padding(horizontal = 8.dp),
         elevation = 8.dp,
     ) {
+        Image(
+            painterResource(id = currentWeather!!.backgroundImage),
+            contentDescription = "Weather condition",
+            contentScale = ContentScale.Fit,
+            colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.5f), blendMode = BlendMode.SrcOver),
+            modifier = Modifier
+                .fillMaxWidth()
+            //.size(300.dp)
+
+
+        )
+
         Column(modifier = Modifier.padding(10.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(text = "Prognoza na: ${currentWeather!!.dt}")
