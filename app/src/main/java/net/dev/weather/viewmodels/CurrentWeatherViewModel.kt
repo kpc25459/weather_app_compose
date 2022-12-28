@@ -68,7 +68,7 @@ class CurrentWeatherViewModel(weatherRepository: WeatherRepository) : ViewModel(
                         it.wind_gust,
                         it.weather,
                         it.pop,
-                        it.rain
+                        rain = it.rain?.`1h` ?: 0.0
                     )
                 }
 

@@ -17,5 +17,9 @@ data class WeatherHourlyResponse(
     val wind_gust: Double,
     val weather: List<WeatherResponse>,
     val pop: Double,
-    val rain: Double
+    val rain: RainHourly?
+)
+
+data class RainHourly(
+    val `1h`: Double
 )
