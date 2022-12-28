@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterialApi::class)
 
-package net.dev.weather.ui.weather_forecast
+package net.dev.weather.screens
 
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,10 +17,9 @@ import net.dev.weather.data.WeatherRepository
 import net.dev.weather.viewmodels.CurrentWeatherViewModel
 import java.time.format.TextStyle
 import java.util.*
-import kotlin.math.roundToInt
 
 @Composable
-fun WeatherForecastPage() {
+fun WeatherForecastScreen() {
 
     val repository = WeatherRepository(WeatherServiceApi.create())
 

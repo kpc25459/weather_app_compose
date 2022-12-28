@@ -1,4 +1,4 @@
-package net.dev.weather.ui.theme
+package net.dev.weather.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

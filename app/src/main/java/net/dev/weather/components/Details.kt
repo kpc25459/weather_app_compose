@@ -1,4 +1,4 @@
-package net.dev.weather.ui.current_weather
+package net.dev.weather.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

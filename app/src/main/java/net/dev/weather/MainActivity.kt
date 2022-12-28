@@ -3,22 +3,25 @@ package net.dev.weather
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import net.dev.weather.ui.air_quality.AirQualityPage
-import net.dev.weather.ui.current_weather.CurrentWeatherPage
-import net.dev.weather.ui.theme.WeatherTheme
-import net.dev.weather.ui.weather_forecast.WeatherForecastPage
+import net.dev.weather.screens.AirQualityScreen
+import net.dev.weather.screens.CurrentWeatherScreen
+import net.dev.weather.screens.WeatherForecastScreen
+import net.dev.weather.theme.WeatherTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,25 +43,46 @@ fun MainPage() {
     val navController = rememberNavController()
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(text = "Weather") }) },
-        content = { NavigationHost(navController = navController) },
+        topBar = getTopBar(navController),
         bottomBar = { BottomNavigationBar(navController = navController) },
     )
+    { innerPadding ->
+        NavigationHost(navController = navController, innerPadding)
+    }
+}
+
+@Composable
+private fun getTopBar(navController: NavHostController): @Composable () -> Unit {
+
+    println(navController.currentDestination?.route)
+    println(navController.currentBackStackEntry?.destination?.route)
+
+    if (navController.currentDestination?.route != NavRoutes.CurrentWeather.route) {
+        return { TopAppBar(title = { Text(text = "Weather") }) }
+    } else {
+        return {}
+    }
 }
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
     BottomNavigation {
         val backStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = backStackEntry?.destination?.route
+        val currentDestination = backStackEntry?.destination
 
-        NavBarItems.BarItems.forEach { navItem ->
+        val items = listOf(
+            Screen.CurrentWeather,
+            Screen.WeatherForecast,
+            Screen.AirQuality
+        )
+
+        items.forEach { screen ->
             BottomNavigationItem(
-                icon = { Icon(navItem.icon, contentDescription = navItem.title) },
-                label = { Text(navItem.title) },
-                selected = currentRoute == navItem.route,
+                icon = { Icon(screen.icon, contentDescription = screen.title) },
+                label = { Text(screen.title) },
+                selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                 onClick = {
-                    navController.navigate(navItem.route) {
+                    navController.navigate(screen.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }
@@ -73,16 +97,16 @@ fun BottomNavigationBar(navController: NavHostController) {
 
 
 @Composable
-fun NavigationHost(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = NavRoutes.CurrentWeather.route) {
+fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues) {
+    NavHost(navController = navController, startDestination = NavRoutes.CurrentWeather.route, Modifier.padding(innerPadding)) {
         composable(NavRoutes.CurrentWeather.route) {
-            CurrentWeatherPage()
+            CurrentWeatherScreen()
         }
         composable(NavRoutes.WeatherForecast.route) {
-            WeatherForecastPage()
+            WeatherForecastScreen()
         }
         composable(NavRoutes.AirQuality.route) {
-            AirQualityPage()
+            AirQualityScreen()
         }
     }
 }

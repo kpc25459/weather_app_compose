@@ -54,7 +54,7 @@ class WeatherRepository(private val weatherServiceApi: WeatherServiceApi) {
 
         val airQuality = weatherServiceApi.getAirPollution()
 
-        val body = airQuality.body() ?: throw Exception("No data")
+        val body = airQuality.body() ?: return flowOf(-1) //throw Exception("No data")
 
         val aqi = body.list.first().main.aqi
 

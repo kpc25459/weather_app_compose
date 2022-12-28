@@ -1,4 +1,4 @@
-package net.dev.weather.ui.current_weather
+package net.dev.weather.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,10 +12,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.dev.weather.api.WeatherServiceApi
 import net.dev.weather.data.WeatherRepository
+import net.dev.weather.components.Box
+import net.dev.weather.components.CurrentWeatherDetails
+import net.dev.weather.components.HourForecast
 import net.dev.weather.viewmodels.CurrentWeatherViewModel
 
 @Composable
-fun CurrentWeatherPage() {
+fun CurrentWeatherScreen() {
 
     val repository = WeatherRepository(WeatherServiceApi.create())
 
@@ -33,5 +36,5 @@ fun CurrentWeatherPage() {
 @Preview(showBackground = true)
 @Composable
 fun CurrentWeatherPagePreview() {
-    CurrentWeatherPage()
+    CurrentWeatherScreen()
 }
