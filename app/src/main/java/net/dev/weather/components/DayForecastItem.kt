@@ -1,66 +1,81 @@
 package net.dev.weather.components
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDateTime
-import net.dev.weather.data.ExpandableCardModel
 import net.dev.weather.data.WeatherDaily
 import net.dev.weather.localDate
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DayForecastItem(card: ExpandableCardModel, expanded: Boolean) {
+fun DayForecastItem(weatherDaily: WeatherDaily) {
 
-    val item = card.weatherDaily
+    var expanded by rememberSaveable { mutableStateOf(false) }
 
-    //TODO: tutaj przerobić nazwy miesiąca na ładne polskie
+    val onClick = { expanded = !expanded }
+
+    val interactionSource = remember { MutableInteractionSource() }
+
     ListItem(
-        text = { Text(text = localDate(item.dt)) },
+        text = { Text(text = localDate(weatherDaily.dt), Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() }) },
         secondaryText = {
             Column {
-                Text(text = item.description)
+                Text(text = weatherDaily.description, Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() })
 
                 if (expanded) {
                     Spacer(modifier = Modifier.height(5.dp))
-                    ForecastRow(description = "Temperatura", value = "${item.temp}°C")
-                    ForecastRow(description = "Wschód słońca", value = item.sunrise)
-                    ForecastRow(description = "Zachód słońca", value = item.sunset)
-                    ForecastRow(description = "Ciśnienie", value = item.pressure)
-                    ForecastRow(description = "Wilgotność", value = item.humidity)
-                    ForecastRow(description = "Wiatr", value = item.wind)
-                    ForecastRow(description = "Deszcz", value = item.rain)
-                    ForecastRow(description = "Indeks Uv", value = item.uvi)
+
+                    ListItemRow(description = "Temperatura", value = "${weatherDaily.temp}°C")
+                    ListItemRow(description = "Wschód słońca", value = weatherDaily.sunrise)
+                    ListItemRow(description = "Zachód słońca", value = weatherDaily.sunset)
+                    ListItemRow(description = "Ciśnienie", value = weatherDaily.pressure)
+                    ListItemRow(description = "Wilgotność", value = weatherDaily.humidity)
+                    ListItemRow(description = "Wiatr", value = weatherDaily.wind)
+                    ListItemRow(description = "Deszcz", value = weatherDaily.rain)
+                    ListItemRow(description = "Indeks Uv", value = weatherDaily.uvi)
                 }
             }
         },
         icon = {
-            WeatherIcon(item.icon)
+            WeatherIcon(weatherDaily.icon, onClick = onClick)
         },
         trailing = {
-            if (expanded) {
-                Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Arrow up")
-            } else {
-                Icon(Icons.Filled.KeyboardArrowDown, contentDescription = "Arrow down")
-            }
+            ListItemArrow(expanded = expanded, onClick = { onClick() })
         }
     )
 }
 
 @Composable
-fun ForecastRow(description: String, value: String) {
+private fun ListItemArrow(expanded: Boolean, onClick: () -> Unit = {}) {
+    if (expanded) {
+        IconButton(onClick = { onClick() }) {
+            Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Arrow up")
+        }
+    } else {
+        IconButton(onClick = { onClick() }) {
+            Icon(Icons.Filled.KeyboardArrowDown, contentDescription = "Arrow down")
+        }
+    }
+}
+
+@Composable
+fun ListItemRow(description: String, value: String) {
     Row(
-        Modifier
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween
+            .padding(vertical = 4.dp)
     ) {
         Text(text = description)
         Text(text = value, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 10.dp))
@@ -68,31 +83,28 @@ fun ForecastRow(description: String, value: String) {
 }
 
 
-val exampleCard = ExpandableCardModel(
-    id = 1,
-    weatherDaily = WeatherDaily(
-        dt = LocalDateTime(2021, 5, 1, 0, 0),
-        humidity = "84 %",
-        pressure = "1014 hPa",
-        sunrise = "08:02",
-        sunset = "15:48",
-        temp = "14°C / 7°C",
-        uvi = "1",
-        rain = "0 mm",
-        description = "słabe opady deszczu",
-        wind = "32 km/h SW",
-        icon = "10d"
-    )
+val exampleCard = WeatherDaily(
+    dt = LocalDateTime(2021, 5, 1, 0, 0),
+    humidity = "84 %",
+    pressure = "1014 hPa",
+    sunrise = "08:02",
+    sunset = "15:48",
+    temp = "14°C / 7°C",
+    uvi = "1",
+    rain = "0 mm",
+    description = "słabe opady deszczu",
+    wind = "32 km/h SW",
+    icon = "10d"
 )
 
 @Composable
 @Preview()
 fun DayForecastItemPreview() {
-    DayForecastItem(exampleCard, false)
+    DayForecastItem(exampleCard)
 }
 
 @Composable
 @Preview()
 fun DayForecastItemExpandedPreview() {
-    DayForecastItem(exampleCard, true)
+    DayForecastItem(exampleCard)
 }

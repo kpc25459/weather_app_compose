@@ -10,6 +10,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.dev.weather.api.WeatherServiceApi
@@ -28,11 +30,11 @@ fun WeatherForecastScreen() {
     val viewModel = WeatherForecastViewModel(repository)
 
     val cards by viewModel.cards.collectAsStateWithLifecycle()
-    val expandedCardIds by viewModel.expandedCardIdsList.collectAsStateWithLifecycle()
 
     LazyColumn {
-        items(cards, ExpandableCardModel::id) { card ->
-            DayForecastItem(card, expanded = /*expandedCardIds.contains(card.id)*/ true)
+        items(cards) { weatherDaily ->
+            DayForecastItem(weatherDaily)
+            Spacer(modifier = Modifier.height(5.dp))
             Divider()
         }
     }
