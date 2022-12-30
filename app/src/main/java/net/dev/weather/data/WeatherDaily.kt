@@ -12,5 +12,6 @@ data class WeatherDaily(
     val humidity: String,
     val wind: String,
     val rain: String,
-    val uvi: String
+    val uvi: String,
+    val icon: String
 )

@@ -3,7 +3,6 @@ package net.dev.weather.components
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
@@ -41,7 +40,9 @@ fun DayForecastItem(card: ExpandableCardModel, expanded: Boolean) {
                 }
             }
         },
-        icon = { Icon(Icons.Filled.Favorite, contentDescription = null) },
+        icon = {
+            WeatherIcon(item.icon)
+        },
         trailing = {
             if (expanded) {
                 Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Arrow up")
@@ -73,7 +74,8 @@ val exampleCard = ExpandableCardModel(
         uvi = "1",
         rain = "0 mm",
         description = "słabe opady deszczu",
-        wind = "32 km/h SW"
+        wind = "32 km/h SW",
+        icon = "10d"
     )
 )
 

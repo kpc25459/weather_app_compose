@@ -45,6 +45,7 @@ class WeatherForecastViewModel(weatherRepository: WeatherRepository) : ViewModel
                             wind = "${((it.wind_speed * 3.6 * 100) / 100).roundToInt()} km/h ${toHumanFromDegrees(it.wind_deg)}",
                             rain = "${it.rain.roundToInt()} mm/24h",
                             uvi = it.uvi.roundToInt().toString(),
+                            icon = it.weather[0].icon
                         )
                     )
                 }

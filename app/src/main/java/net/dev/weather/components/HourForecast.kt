@@ -40,9 +40,6 @@ fun HourForecast(currentWeather: CurrentWeatherViewModel) {
 fun HourForecastItem(item: WeatherHourly) {
     val dayOfWeek = "${item.dt.dayOfWeek.toString().lowercase().substring(0, 3).replaceFirstChar { it.uppercase() }}."
 
-    //TODO: to przenieść do vm
-    val iconUrl = "https://openweathermap.org/img/wn/${item.weather[0].icon}.png"
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -51,12 +48,7 @@ fun HourForecastItem(item: WeatherHourly) {
             .width(70.dp)
     ) {
         Text(text = dayOfWeek)
-        Image(
-            painter = rememberImagePainter(iconUrl),
-            contentDescription = "weather icon",
-            contentScale = ContentScale.Fit,
-            modifier = Modifier.size(50.dp)
-        )
+        WeatherIcon(item.weather[0].icon)
         Text(text = item.dt.time.toString())
         Text(text = "${item.temp.roundToInt()}°", modifier = Modifier.padding(bottom = 5.dp))
     }
