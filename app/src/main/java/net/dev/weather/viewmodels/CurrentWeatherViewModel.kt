@@ -1,16 +1,16 @@
 package net.dev.weather.viewmodels
 
 import androidx.lifecycle.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import net.dev.weather.R
-import net.dev.weather.data.CurrentWeather
-import net.dev.weather.data.WeatherDaily
-import net.dev.weather.data.WeatherHourly
-import net.dev.weather.data.WeatherRepository
+import net.dev.weather.data.*
 import kotlin.math.roundToInt
 
 class CurrentWeatherViewModel(weatherRepository: WeatherRepository) : ViewModel() {
