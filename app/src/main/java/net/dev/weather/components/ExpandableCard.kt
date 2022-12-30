@@ -95,7 +95,7 @@ fun ExpandableCard(card: ExpandableCardModel, onCardArrowClick: () -> Unit, expa
                     degrees = arrowRotationDegree,
                     onClick = onCardArrowClick
                 )
-                CardTitle(title = localDate(card.weatherHourly.dt))
+                CardTitle(title = localDate(card.weatherDaily.dt))
             }
             ExpandableContent(visible = expanded)
         }

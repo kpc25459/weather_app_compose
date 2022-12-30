@@ -11,6 +11,8 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import net.dev.weather.R
 import net.dev.weather.data.*
+import net.dev.weather.fromAqiIndex
+import net.dev.weather.toHumanFromDegrees
 import kotlin.math.roundToInt
 
 class CurrentWeatherViewModel(weatherRepository: WeatherRepository) : ViewModel() {
@@ -21,7 +23,7 @@ class CurrentWeatherViewModel(weatherRepository: WeatherRepository) : ViewModel(
 
     val currentWeather: MutableLiveData<CurrentWeather> = MutableLiveData()
     val hourlyForecast: MutableLiveData<List<WeatherHourly>> = MutableLiveData()
-    val dailyForecast: MutableLiveData<List<WeatherDaily>> = MutableLiveData()
+    //val dailyForecast: MutableLiveData<List<WeatherDaily>> = MutableLiveData()
 
     init {
 
@@ -34,17 +36,17 @@ class CurrentWeatherViewModel(weatherRepository: WeatherRepository) : ViewModel(
                 val timeZone = TimeZone.of(response.timezone)
 
                 currentWeather.value = CurrentWeather(
-                    Instant.fromEpochSeconds(response.current.dt.toLong()).toLocalDateTime(timeZone),
-                    Instant.fromEpochSeconds(response.current.sunrise.toLong()).toLocalDateTime(timeZone).time.toString().substringBeforeLast(":"),
-                    Instant.fromEpochSeconds(response.current.sunset.toLong()).toLocalDateTime(timeZone).time.toString().substringBeforeLast(":"),
-                    response.current.temp.roundToInt(),
+                    dt = Instant.fromEpochSeconds(response.current.dt.toLong()).toLocalDateTime(timeZone),
+                    sunrise = Instant.fromEpochSeconds(response.current.sunrise.toLong()).toLocalDateTime(timeZone).time.toString().substringBeforeLast(":"),
+                    sunset = Instant.fromEpochSeconds(response.current.sunset.toLong()).toLocalDateTime(timeZone).time.toString().substringBeforeLast(":"),
+                    temp = response.current.temp.roundToInt(),
                     feels_like = "${response.current.feels_like.roundToInt()} °",
                     pressure = "${response.current.pressure} hPa",
                     humidity = "${response.current.humidity} %",
-                    response.current.dew_point,
-                    response.current.uvi.roundToInt().toString(),
-                    response.current.clouds,
-                    response.current.visibility,
+                    dew_point = response.current.dew_point,
+                    uvi = response.current.uvi.roundToInt().toString(),
+                    clouds = response.current.clouds,
+                    visibility = response.current.visibility,
                     wind = "${((response.current.wind_speed * 3.6 * 100) / 100).roundToInt()} km/h ${toHumanFromDegrees(response.current.wind_deg)}",
                     rain = "${response.daily.first().rain.roundToInt()} mm/24h",
                     backgroundImage = backgroundImageFromWeather(response.current.weather.first().main)
@@ -52,49 +54,46 @@ class CurrentWeatherViewModel(weatherRepository: WeatherRepository) : ViewModel(
 
                 hourlyForecast.value = response.hourly.take(24).map {
                     WeatherHourly(
-                        Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(timeZone),
-                        it.sunrise,
-                        it.sunset,
-                        it.temp,
-                        it.feels_like,
-                        it.pressure,
-                        it.humidity,
-                        it.dew_point,
-                        it.uvi,
-                        it.clouds,
-                        it.visibility,
-                        it.wind_speed,
-                        it.wind_deg,
-                        it.wind_gust,
-                        it.weather,
-                        it.pop,
+                        dt = Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(timeZone),
+                        sunrise = it.sunrise,
+                        sunset = it.sunset,
+                        temp = it.temp,
+                        feels_like = it.feels_like,
+                        pressure = it.pressure,
+                        humidity = it.humidity,
+                        dew_point = it.dew_point,
+                        uvi = it.uvi,
+                        clouds = it.clouds,
+                        visibility = it.visibility,
+                        wind_speed = it.wind_speed,
+                        wind_deg = it.wind_deg,
+                        wind_gust = it.wind_gust,
+                        weather = it.weather,
+                        pop = it.pop,
                         rain = it.rain?.`1h` ?: 0.0
                     )
                 }
 
-                dailyForecast.value = response.daily.take(7).map {
+              /*  dailyForecast.value = response.daily.take(7).map {
                     WeatherDaily(
                         Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(timeZone),
-                        it.sunrise,
-                        it.sunset,
-                        it.moonrise,
-                        it.moonset,
-                        it.moon_phase,
-                        it.temp.day,
-                        it.feels_like.day,
-                        it.pressure,
-                        it.humidity,
-                        it.dew_point,
-                        it.wind_speed,
-                        it.wind_deg,
-                        it.wind_gust,
-                        //it.weather,
-                        it.clouds,
-                        it.pop,
-                        it.rain,
-                        it.uvi
+                        *//*sunrise = it.sunrise,
+                        sunset = it.sunset,
+                        moonrise = it.moonrise,
+                        moonset = it.moonset,
+                        moon_phase = it.moon_phase,
+                        temp = it.temp.day,
+                        feels_like = it.feels_like.day,
+                        pressure = it.pressure,
+                        humidity = it.humidity,
+                        dew_point = it.dew_point,
+                        description = it.weather.first().description,
+                        clouds = it.clouds,
+                        pop = it.pop,
+                        rain = it.rain,
+                        uvi = it.uvi*//*
                     )
-                }
+                }*/
             }
 
             weatherRepository.getAirQuality().collectLatest { airQuality.value = fromAqiIndex(it) }
@@ -128,38 +127,5 @@ class CurrentWeatherViewModel(weatherRepository: WeatherRepository) : ViewModel(
 
     enum class WeatherCondition {
         Thunderstorm, Drizzle, Rain, Snow, Fog, Clear, Clouds, Unknown
-    }
-
-    private fun fromAqiIndex(aqi: Int): String {
-        return when (aqi) {
-            1 -> "Bardzo dobra"
-            2 -> "Dobra"
-            3 -> "Dostateczna"
-            4 -> "Zła"
-            5 -> "Bardzo zła"
-            else -> "Nieznana"
-        }
-    }
-
-    private fun toHumanFromDegrees(deg: Int): String {
-        if (deg > 337.5) {
-            return "N";
-        } else if (deg > 292.5) {
-            return "NW";
-        } else if (deg > 247.5) {
-            return "W";
-        } else if (deg > 202.5) {
-            return "SW";
-        } else if (deg > 157.5) {
-            return "S";
-        } else if (deg > 122.5) {
-            return "SE";
-        } else if (deg > 67.5) {
-            return "E";
-        } else if (deg > 22.5) {
-            return "NE";
-        } else {
-            return "";
-        }
     }
 }
