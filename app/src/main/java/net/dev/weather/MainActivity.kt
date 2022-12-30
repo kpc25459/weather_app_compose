@@ -42,9 +42,13 @@ fun MainPage() {
 
     val navController = rememberNavController()
 
+    val currentTabRoute = navController.currentBackStackEntryAsState().value?.destination?.hierarchy?.firstOrNull()?.route
+
     Scaffold(
-        topBar = getTopBar(navController),
-        bottomBar = { BottomNavigationBar(navController = navController) },
+        topBar = getTopBar(currentTabRoute),
+        bottomBar = {
+            BottomNavigationBar(navController = navController)
+        },
     )
     { innerPadding ->
         NavigationHost(navController = navController, innerPadding)
@@ -52,12 +56,8 @@ fun MainPage() {
 }
 
 @Composable
-private fun getTopBar(navController: NavHostController): @Composable () -> Unit {
-
-    println(navController.currentDestination?.route)
-    println(navController.currentBackStackEntry?.destination?.route)
-
-    if (navController.currentDestination?.route != NavRoutes.CurrentWeather.route) {
+private fun getTopBar(currentTab: String?): @Composable () -> Unit {
+    if (currentTab != NavRoutes.CurrentWeather.route) {
         return { TopAppBar(title = { Text(text = "Weather") }) }
     } else {
         return {}
