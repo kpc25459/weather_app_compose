@@ -7,6 +7,8 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDateTime
@@ -55,9 +57,13 @@ fun DayForecastItem(card: ExpandableCardModel, expanded: Boolean) {
 
 @Composable
 fun ForecastRow(description: String, value: String) {
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween
+    ) {
         Text(text = description)
-        Text(text = value)
+        Text(text = value, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 10.dp))
     }
 }
 
