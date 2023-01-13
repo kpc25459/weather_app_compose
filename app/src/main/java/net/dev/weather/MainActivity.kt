@@ -28,7 +28,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             WeatherTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
                     MainPage()
                 }
@@ -45,10 +44,8 @@ fun MainPage() {
     val currentTabRoute = navController.currentBackStackEntryAsState().value?.destination?.hierarchy?.firstOrNull()?.route
 
     Scaffold(
-        topBar = getTopBar(currentTabRoute),
-        bottomBar = {
-            BottomNavigationBar(navController = navController)
-        },
+        topBar = topBar(currentTabRoute),
+        bottomBar = bottomNavigationBar(navController = navController)
     )
     { innerPadding ->
         NavigationHost(navController = navController, innerPadding)
@@ -56,7 +53,7 @@ fun MainPage() {
 }
 
 @Composable
-private fun getTopBar(currentTab: String?): @Composable () -> Unit {
+private fun topBar(currentTab: String?): @Composable () -> Unit {
     if (currentTab != NavRoutes.CurrentWeather.route) {
         return { TopAppBar(title = { Text(text = "Weather") }) }
     } else {
@@ -65,39 +62,41 @@ private fun getTopBar(currentTab: String?): @Composable () -> Unit {
 }
 
 @Composable
-fun BottomNavigationBar(navController: NavHostController) {
-    BottomNavigation {
-        val backStackEntry by navController.currentBackStackEntryAsState()
-        val currentDestination = backStackEntry?.destination
+private fun bottomNavigationBar(navController: NavHostController): @Composable () -> Unit {
+    return {
+        BottomNavigation {
+            val backStackEntry by navController.currentBackStackEntryAsState()
+            val currentDestination = backStackEntry?.destination
 
-        val items = listOf(
-            Screen.CurrentWeather,
-            Screen.WeatherForecast,
-            Screen.AirQuality
-        )
-
-        items.forEach { screen ->
-            BottomNavigationItem(
-                icon = { Icon(screen.icon, contentDescription = screen.title) },
-                label = { Text(screen.title) },
-                selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                onClick = {
-                    navController.navigate(screen.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                }
+            val items = listOf(
+                Screen.CurrentWeather,
+                Screen.WeatherForecast,
+                Screen.AirQuality
             )
+
+            items.forEach { screen ->
+                BottomNavigationItem(
+                    icon = { Icon(screen.icon, contentDescription = screen.title) },
+                    label = { Text(screen.title) },
+                    selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                    onClick = {
+                        navController.navigate(screen.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                )
+            }
         }
     }
 }
 
 
 @Composable
-fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues) {
+private fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues) {
     NavHost(navController = navController, startDestination = NavRoutes.CurrentWeather.route, Modifier.padding(innerPadding)) {
         composable(NavRoutes.CurrentWeather.route) {
             CurrentWeatherScreen()
