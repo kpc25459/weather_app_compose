@@ -18,13 +18,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
 import net.dev.weather.data.WeatherHourly
 
+/*
 @Composable
 fun HourForecast(currentWeather: CurrentWeatherViewModel) {
 
     val hourlyForecast by currentWeather.hourlyForecast.observeAsState()
 
     hourlyForecast?.let { forecast ->
-        LazyRow(/*modifier = Modifier.horizontalScroll(rememberScrollState())*/) {
+        LazyRow(*/
+/*modifier = Modifier.horizontalScroll(rememberScrollState())*//*
+) {
             items(forecast) { item ->
                HourForecastItem(item)
             }
@@ -57,3 +60,4 @@ fun HourForecastItem(item: WeatherHourly) {
 fun HourForecastPreview() {
     //HourForecast()
 }
+*/

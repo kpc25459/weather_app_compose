@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.dev.weather.ui.currentWeather.CurrentWeatherViewModel
 
+/*
 @Composable
 fun CurrentWeatherDetails(viewModel: CurrentWeatherViewModel) {
 
@@ -103,7 +104,10 @@ fun DetailsItemPreview() {
 @Preview(showBackground = true)
 @Composable
 fun CurrentWeatherDetailsPreview() {
-    /*Column {
+    */
+/*Column {
         CurrentWeatherDetails(viewModel)
-    }*/
+    }*//*
+
 }
+*/
