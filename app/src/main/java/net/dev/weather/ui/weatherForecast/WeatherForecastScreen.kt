@@ -1,13 +1,15 @@
 package net.dev.weather.ui.weatherForecast
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
@@ -33,11 +35,19 @@ fun WeatherForecastScreen(modifier: Modifier = Modifier, viewModel: WeatherForec
         }
     }
 
+    if (items is WeatherForecastUiState.Loading) {
+        LoadingScreen()
+    }
+
     if (items is WeatherForecastUiState.Success) {
         WeatherForecastScreen(
             items = (items as WeatherForecastUiState.Success).data,
             modifier = modifier
         )
+    }
+
+    if (items is WeatherForecastUiState.Error) {
+        ErrorScreen()
     }
 }
 
@@ -49,5 +59,19 @@ internal fun WeatherForecastScreen(items: List<WeatherDaily>, modifier: Modifier
             Spacer(modifier = Modifier.height(5.dp))
             Divider()
         }
+    }
+}
+
+@Composable
+internal fun LoadingScreen(modifier: Modifier = Modifier) {
+    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+internal fun ErrorScreen(modifier: Modifier = Modifier) {
+    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(text = "Unknown error")
     }
 }

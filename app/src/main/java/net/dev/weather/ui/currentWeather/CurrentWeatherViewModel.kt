@@ -26,7 +26,7 @@ class CurrentWeatherViewModel(weatherRepository: WeatherRepository) : ViewModel(
 
         viewModelScope.launch {
 
-            weatherRepository.getLocation().collectLatest { location.value = it }
+           /* weatherRepository.getLocation().collectLatest { location.value = it }
 
             weatherRepository.getWeather().collectLatest { response ->
 
@@ -69,7 +69,7 @@ class CurrentWeatherViewModel(weatherRepository: WeatherRepository) : ViewModel(
                         pop = it.pop,
                         rain = it.rain?.`1h` ?: 0.0
                     )
-                }
+                }*/
 
               /*  dailyForecast.value = response.daily.take(7).map {
                     WeatherDaily(
@@ -93,8 +93,8 @@ class CurrentWeatherViewModel(weatherRepository: WeatherRepository) : ViewModel(
                 }*/
             }
 
-            weatherRepository.getAirQuality().collectLatest { airQuality.value = fromAqiIndex(it) }
-        }
+ /*           weatherRepository.getAirQuality().collectLatest { airQuality.value = fromAqiIndex(it) }*/
+/*        }*/
     }
 
 
