@@ -18,7 +18,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import net.dev.weather.viewmodels.CurrentWeatherViewModel
+import net.dev.weather.ui.currentWeather.CurrentWeatherViewModel
 
 @Composable
 fun Box(viewModel: CurrentWeatherViewModel) {

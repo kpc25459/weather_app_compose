@@ -20,7 +20,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import net.dev.weather.screens.AirQualityScreen
 import net.dev.weather.screens.CurrentWeatherScreen
-import net.dev.weather.screens.WeatherForecastScreen
+import net.dev.weather.ui.weatherForecast.WeatherForecastScreen
 import net.dev.weather.theme.WeatherTheme
 
 class MainActivity : ComponentActivity() {

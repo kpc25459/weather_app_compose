@@ -15,7 +15,7 @@ import net.dev.weather.data.WeatherRepository
 import net.dev.weather.components.Box
 import net.dev.weather.components.CurrentWeatherDetails
 import net.dev.weather.components.HourForecast
-import net.dev.weather.viewmodels.CurrentWeatherViewModel
+import net.dev.weather.ui.currentWeather.CurrentWeatherViewModel
 
 @Composable
 fun CurrentWeatherScreen() {

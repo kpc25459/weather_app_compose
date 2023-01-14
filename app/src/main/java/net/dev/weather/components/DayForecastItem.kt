@@ -19,7 +19,7 @@ import net.dev.weather.localDate
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DayForecastItem(weatherDaily: WeatherDaily) {
+fun DayForecastItem(weatherDaily: WeatherDaily, modifier: Modifier = Modifier) {
 
     var expanded by rememberSaveable { mutableStateOf(false) }
 

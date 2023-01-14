@@ -1,9 +1,6 @@
-package net.dev.weather.viewmodels
+package net.dev.weather.ui.currentWeather
 
 import androidx.lifecycle.*
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
