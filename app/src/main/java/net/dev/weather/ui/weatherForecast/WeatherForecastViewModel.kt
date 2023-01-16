@@ -10,7 +10,7 @@ import net.dev.weather.ui.weatherForecast.WeatherForecastUiState.Error
 
 class WeatherForecastViewModel(weatherRepository: WeatherRepository) : ViewModel() {
     val uiState: StateFlow<WeatherForecastUiState> = weatherRepository
-        .dailyWeather
+        .weatherDaily
         .take(7)
         .map(::Success)
         .catch { Error(it) }

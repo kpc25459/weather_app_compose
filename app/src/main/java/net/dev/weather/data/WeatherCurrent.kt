@@ -2,7 +2,7 @@ package net.dev.weather.data
 
 import kotlinx.datetime.LocalDateTime
 
-data class CurrentWeather(
+data class WeatherCurrent(
     val dt: LocalDateTime,
     val sunrise: String,
     val sunset: String,

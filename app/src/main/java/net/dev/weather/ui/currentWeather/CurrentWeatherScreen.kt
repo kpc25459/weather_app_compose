@@ -68,7 +68,6 @@ fun CurrentWeatherScreen(modifier: Modifier = Modifier, viewModel: CurrentWeathe
 
 @Composable
 internal fun CurrentWeatherScreen(data: MainWeather, modifier: Modifier = Modifier) {
-
     Column(modifier = Modifier
         .padding(5.dp)
         .verticalScroll(rememberScrollState())) {
@@ -89,7 +88,7 @@ fun CurrentWeatherPagePreview() {
 
 @Composable
 fun Box(data: MainWeather) {
-    val currentWeather = data.currentWeather
+    val currentWeather = data.current
     val airQuality = data.airQuality
 
     Card(
@@ -160,7 +159,7 @@ fun HourForecastItem(item: WeatherHourly) {
 @Composable
 fun CurrentWeatherDetails(data: MainWeather) {
 
-    val weather = data.currentWeather
+    val weather = data.current
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,

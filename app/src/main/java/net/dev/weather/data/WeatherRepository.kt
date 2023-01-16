@@ -7,38 +7,20 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import net.dev.weather.R
-import net.dev.weather.api.OneCallResponse
-import net.dev.weather.api.WeatherDailyResponse
-import net.dev.weather.api.WeatherHourlyResponse
 import net.dev.weather.api.WeatherServiceApi
 import net.dev.weather.toHumanFromDegrees
-import net.dev.weather.ui.currentWeather.CurrentWeatherViewModel
 import kotlin.math.roundToInt
 
 
 interface WeatherRepository {
-    //val weather: Flow<OneCallResponse>
-
     val location: Flow<String>
-    val currentWeather: Flow<WeatherHourly>
-    val dailyWeather: Flow<List<WeatherDaily>>
-
-    /*  val hourlyWeather: Flow<List<WeatherHourlyResponse>>
-
-      val airPollution: Flow<OneCallResponse>*/
-
-
+    val weatherCurrent: Flow<WeatherCurrent>
+    val weatherDaily: Flow<List<WeatherDaily>>
+    val weatherHourly: Flow<List<WeatherHourly>>
+    val airQuality: Flow<Int>
 }
 
 class NetworkRepository(private val weatherServiceApi: WeatherServiceApi) : WeatherRepository {
-
-    override val weather: Flow<OneCallResponse>
-        get() = flow {
-            val weather = weatherServiceApi.getWeather()
-            if (weather.isSuccessful) {
-                emit(weather.body()!!)
-            }
-        }
 
     override val location: Flow<String>
         get() = flow {
@@ -47,7 +29,7 @@ class NetworkRepository(private val weatherServiceApi: WeatherServiceApi) : Weat
             emit(location)
         }
 
-    override val currentWeather: Flow<WeatherHourly>
+    override val weatherCurrent: Flow<WeatherCurrent>
         get() = flow {
             val weather = weatherServiceApi.getWeather()
             if (weather.isSuccessful) {
@@ -56,7 +38,9 @@ class NetworkRepository(private val weatherServiceApi: WeatherServiceApi) : Weat
 
                 val timeZone = TimeZone.of(body.timezone)
 
-                val currentWeather = CurrentWeather(
+                val dailyFirst = body.daily.first()
+
+                val currentWeather = WeatherCurrent(
                     dt = Instant.fromEpochSeconds(current.dt.toLong()).toLocalDateTime(timeZone),
                     sunrise = Instant.fromEpochSeconds(current.sunrise.toLong()).toLocalDateTime(timeZone).time.toString().substringBeforeLast(":"),
                     sunset = Instant.fromEpochSeconds(current.sunset.toLong()).toLocalDateTime(timeZone).time.toString().substringBeforeLast(":"),
@@ -69,12 +53,10 @@ class NetworkRepository(private val weatherServiceApi: WeatherServiceApi) : Weat
                     clouds = current.clouds,
                     visibility = current.visibility,
                     wind = "${((current.wind_speed * 3.6 * 100) / 100).roundToInt()} km/h ${toHumanFromDegrees(current.wind_deg)}",
-                    //rain = "${current.weather.first().rain.roundToInt()} mm/24h",
+                    rain = "${dailyFirst.rain.roundToInt()} mm/24h",
                     backgroundImage = backgroundImageFromWeather(current.weather.first().main)
                 )
-
                 emit(currentWeather)
-
             }
         }
 
@@ -107,7 +89,7 @@ class NetworkRepository(private val weatherServiceApi: WeatherServiceApi) : Weat
         Thunderstorm, Drizzle, Rain, Snow, Fog, Clear, Clouds, Unknown
     }
 
-    override val dailyWeather: Flow<List<WeatherDaily>>
+    override val weatherDaily: Flow<List<WeatherDaily>>
         get() = flow {
             val weather = weatherServiceApi.getWeather()
             if (weather.isSuccessful) {
@@ -116,7 +98,9 @@ class NetworkRepository(private val weatherServiceApi: WeatherServiceApi) : Weat
 
                 val timeZone = TimeZone.of(body.timezone)
 
-                emit(body.daily.map {
+                val last7days = body.daily.take(7)
+
+                emit(last7days.map {
                     WeatherDaily(
                         Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(timeZone),
                         description = it.weather.first().description,
@@ -134,32 +118,46 @@ class NetworkRepository(private val weatherServiceApi: WeatherServiceApi) : Weat
             }
         }
 
-/*suspend fun getDailyForecastWeather(): Flow<List<WeatherDailyResponse>> {
-    val weather = weatherServiceApi.getWeather()
+    override val weatherHourly: Flow<List<WeatherHourly>>
+        get() = flow {
+            val weather = weatherServiceApi.getWeather()
 
-    val body = weather.body() ?: throw Exception("No data")
+            if (weather.isSuccessful) {
 
-    return flowOf(body.daily.takeLast(7))
-}*/
+                val body = weather.body()!!
+                val timeZone = TimeZone.of(body.timezone)
 
-    suspend fun getHourlyForecastWeather(): Flow<List<WeatherHourlyResponse>> {
-        val weather = weatherServiceApi.getWeather()
+                val last24h = body.hourly.take(24)
+                emit(last24h.map {
+                    WeatherHourly(
+                        dt = Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(timeZone),
+                        sunrise = it.sunrise,
+                        sunset = it.sunset,
+                        temp = it.temp,
+                        feels_like = it.feels_like,
+                        pressure = it.pressure,
+                        humidity = it.humidity,
+                        dew_point = it.dew_point,
+                        uvi = it.uvi,
+                        clouds = it.clouds,
+                        visibility = it.visibility,
+                        wind_speed = it.wind_speed,
+                        wind_deg = it.wind_deg,
+                        wind_gust = it.wind_gust,
+                        weather = it.weather,
+                        pop = it.pop,
+                        rain = it.rain?.`1h` ?: 0.0
+                    )
+                })
+            }
+        }
 
-        val body = weather.body() ?: throw Exception("No data")
-
-        return flowOf(body.hourly.take(24))
-    }
-
-    suspend fun getAirQuality(): Flow<Int> {
-
-        val airQuality = weatherServiceApi.getAirPollution()
-
-        val body = airQuality.body() ?: return flowOf(-1) //throw Exception("No data")
-
-        val aqi = body.list.first().main.aqi
-
-        return flowOf(aqi)
-    }
-
-
+    override val airQuality: Flow<Int>
+        get() = flow {
+            val airQuality = weatherServiceApi.getAirPollution()
+            if (airQuality.isSuccessful) {
+                val body = airQuality.body()!!
+                emit(body.list.first().main.aqi)
+            }
+        }
 }
