@@ -35,6 +35,13 @@ interface WeatherServiceApi {
         @Query("appid") appid: String = WeatherServiceApi.appid,
     ): Response<AirPollutionResponse>
 
+    @GET("/data/2.5/air_pollution/forecast")
+    suspend fun getAirPollutionForecast(
+        @Query("lat") latitude: String = lat,
+        @Query("lon") longitude: String = lon,
+        @Query("appid") appid: String = WeatherServiceApi.appid,
+    ): Response<AirPollutionResponse>
+
     companion object {
         private const val BASE_URL = "http://api.openweathermap.org/"
         private const val appid = "8c27af4c68a4a3cc4c9d8d009ece6201"

@@ -18,10 +18,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import net.dev.weather.screens.AirQualityScreen
 import net.dev.weather.ui.currentWeather.CurrentWeatherScreen
 import net.dev.weather.ui.weatherForecast.WeatherForecastScreen
 import net.dev.weather.theme.WeatherTheme
+import net.dev.weather.ui.airQuality.AirQualityScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

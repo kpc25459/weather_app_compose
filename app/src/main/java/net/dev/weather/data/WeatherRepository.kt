@@ -8,18 +8,23 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import net.dev.weather.R
 import net.dev.weather.api.WeatherServiceApi
+import net.dev.weather.fromAqiIndex
 import net.dev.weather.toHumanFromDegrees
 import kotlin.math.roundToInt
-
 
 interface WeatherRepository {
     val location: Flow<String>
     val weatherCurrent: Flow<WeatherCurrent>
     val weatherDaily: Flow<List<WeatherDaily>>
     val weatherHourly: Flow<List<WeatherHourly>>
+
+    val airPollution: Flow<List<AirPollutionForecast>>
+
     val airQuality: Flow<Int>
 }
 
+//TODO: tutaj tylko zwracać dane z cache lub z api
+//TODO: mapować na warstwie aplikacji
 class NetworkRepository(private val weatherServiceApi: WeatherServiceApi) : WeatherRepository {
 
     override val location: Flow<String>
@@ -60,7 +65,7 @@ class NetworkRepository(private val weatherServiceApi: WeatherServiceApi) : Weat
             }
         }
 
-    //TODO: usunąc stąd te 3 metody poniżej
+    //TODO: usunąc stąd te 3 metody poniżej - na warstwę aplikacji
     private fun backgroundImageFromWeather(input: String): Int {
         return when (weatherCondition(input)) {
             WeatherCondition.Thunderstorm -> R.drawable.new_thunder
@@ -147,6 +152,32 @@ class NetworkRepository(private val weatherServiceApi: WeatherServiceApi) : Weat
                         weather = it.weather,
                         pop = it.pop,
                         rain = it.rain?.`1h` ?: 0.0
+                    )
+                })
+            }
+        }
+
+    override val airPollution: Flow<List<AirPollutionForecast>>
+        get() = flow {
+            val airPollution = weatherServiceApi.getAirPollutionForecast()
+
+            if (airPollution.isSuccessful) {
+                val body = airPollution.body()!!
+                //TODO: zahardkodowana strefa czasowa - do poprawy
+                val timeZone = TimeZone.of("Europe/Warsaw")
+
+                emit(body.list.map {
+                    AirPollutionForecast(
+                        dt = Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(timeZone),
+                        aqi = fromAqiIndex(it.main.aqi),
+                        co = it.components.co,
+                        no = it.components.no,
+                        no2 = it.components.no2,
+                        o3 = it.components.o3,
+                        so2 = it.components.so2,
+                        pm2_5 = it.components.pm2_5,
+                        pm10 = it.components.pm10,
+                        nh3 = it.components.nh3
                     )
                 })
             }
