@@ -2,7 +2,6 @@ package net.dev.weather.data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -169,7 +168,7 @@ class NetworkRepository(private val weatherServiceApi: WeatherServiceApi) : Weat
                 emit(body.list.map {
                     AirPollutionForecast(
                         dt = Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(timeZone),
-                        aqi = fromAqiIndex(it.main.aqi),
+                        airQuality = fromAqiIndex(it.main.aqi),
                         co = it.components.co,
                         no = it.components.no,
                         no2 = it.components.no2,

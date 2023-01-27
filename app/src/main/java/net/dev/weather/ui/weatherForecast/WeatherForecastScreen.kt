@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.repeatOnLifecycle
 import net.dev.weather.api.WeatherServiceApi
-import net.dev.weather.components.DayForecastItem
 import net.dev.weather.components.ErrorScreen
 import net.dev.weather.components.LoadingScreen
 import net.dev.weather.data.NetworkRepository

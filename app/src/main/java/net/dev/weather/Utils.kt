@@ -4,12 +4,14 @@ import kotlinx.datetime.LocalDateTime
 import java.time.format.TextStyle
 import java.util.*
 
+//TODO: zmienić nazwę i dać przykład z użyciem
 fun localDate(dt: LocalDateTime) = "${dt.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())}, ${dt.dayOfMonth} ${
     dt.month.getDisplayName(
         TextStyle.FULL, Locale.getDefault()
     )
 }"
 
+//TODO: resursy
 fun fromAqiIndex(aqi: Int): String {
     return when (aqi) {
         1 -> "Bardzo dobra"

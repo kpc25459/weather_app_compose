@@ -3,15 +3,15 @@ package net.dev.weather.ui.airQuality
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
-import net.dev.weather.data.*
-import net.dev.weather.fromAqiIndex
+import net.dev.weather.data.AirPollutionForecast
+import net.dev.weather.data.WeatherRepository
 
 class AirQualityViewModel(weatherRepository: WeatherRepository) : ViewModel() {
 
     val uiState: StateFlow<AirQualityUiState> = weatherRepository
         .airPollution
         .combine(weatherRepository.location) { airPollution, location ->
-            return@combine airPollution.copy(location = location)
+            return@combine AirPollution(location = location, forecast = airPollution)
         }
         .map(AirQualityUiState::Success)
         .catch { AirQualityUiState.Error(it) }
@@ -23,7 +23,6 @@ sealed interface AirQualityUiState {
     data class Success(val data: AirPollution) : AirQualityUiState
     data class Error(val throwable: Throwable) : AirQualityUiState
 }
-
 
 
 data class AirPollution(

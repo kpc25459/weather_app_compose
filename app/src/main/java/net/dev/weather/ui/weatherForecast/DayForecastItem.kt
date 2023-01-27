@@ -1,4 +1,4 @@
-package net.dev.weather.components
+package net.dev.weather.ui.weatherForecast
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDateTime
+import net.dev.weather.components.WeatherIcon
 import net.dev.weather.data.WeatherDaily
 import net.dev.weather.localDate
 
@@ -103,8 +104,10 @@ fun DayForecastItemPreview() {
     DayForecastItem(exampleCard)
 }
 
+/*
 @Composable
 @Preview()
 fun DayForecastItemExpandedPreview() {
     DayForecastItem(exampleCard)
 }
+*/
