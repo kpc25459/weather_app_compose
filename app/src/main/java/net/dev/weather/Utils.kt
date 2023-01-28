@@ -44,3 +44,13 @@ fun toHumanFromDegrees(deg: Int): String {
         return "";
     }
 }
+
+fun imageFromAqi(aqi: Int): Int = when (aqi) {
+    1 -> R.drawable.good_air
+    2 -> R.drawable.good_air
+    3 -> R.drawable.moderate_air
+    4 -> R.drawable.bad_air
+    5 -> R.drawable.very_bad_air
+    else ->
+        R.drawable.unknown
+}

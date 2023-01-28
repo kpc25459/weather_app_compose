@@ -165,9 +165,10 @@ class NetworkRepository(private val weatherServiceApi: WeatherServiceApi) : Weat
                 //TODO: zahardkodowana strefa czasowa - do poprawy
                 val timeZone = TimeZone.of("Europe/Warsaw")
 
-                emit(body.list.map {
+                emit(body.list.take(4).map {
                     AirPollutionForecast(
                         dt = Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(timeZone),
+                        aqi = it.main.aqi,
                         airQuality = fromAqiIndex(it.main.aqi),
                         co = it.components.co,
                         no = it.components.no,
