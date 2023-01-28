@@ -149,7 +149,7 @@ fun HourForecastItem(item: WeatherHourly) {
             .width(70.dp)
     ) {
         Text(text = dayOfWeek)
-        WeatherIcon(item.weather[0].icon)
+        WeatherIcon(item.weatherIcon)
         Text(text = item.dt.time.toString())
         Text(text = "${item.temp.roundToInt()}°", modifier = Modifier.padding(bottom = 5.dp))
     }

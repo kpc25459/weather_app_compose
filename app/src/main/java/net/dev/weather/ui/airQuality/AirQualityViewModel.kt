@@ -9,9 +9,9 @@ import net.dev.weather.data.WeatherRepository
 class AirQualityViewModel(weatherRepository: WeatherRepository) : ViewModel() {
 
     val uiState: StateFlow<AirQualityUiState> = weatherRepository
-        .airPollution
+        .airPollutionForecast
         .combine(weatherRepository.location) { airPollution, location ->
-            return@combine AirPollution(location = location, forecast = airPollution)
+            return@combine AirPollution(location = location, forecast = airPollution.take(4))
         }
         .map(AirQualityUiState::Success)
         .catch { AirQualityUiState.Error(it) }

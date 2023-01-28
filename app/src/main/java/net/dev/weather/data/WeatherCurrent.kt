@@ -10,10 +10,7 @@ data class WeatherCurrent(
     val feels_like: String,
     val pressure: String,
     val humidity: String,
-    val dew_point: Double,
     val uvi: String,
-    val clouds: Int,
-    val visibility: Int,
     val wind: String,
     val rain: String,
     val backgroundImage: Int

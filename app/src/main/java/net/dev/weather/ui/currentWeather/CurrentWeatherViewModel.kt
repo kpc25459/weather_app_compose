@@ -17,10 +17,10 @@ class CurrentWeatherViewModel(weatherRepository: WeatherRepository) : ViewModel(
         .combine(weatherRepository.weatherDaily) { current, daily ->
             return@combine MainWeather(
                 current = current,
-                daily = daily
+                daily = daily.take(7)
             )
         }.combine(weatherRepository.weatherHourly) { main, hourly ->
-            return@combine main.copy(hourlyForecast = hourly)
+            return@combine main.copy(hourlyForecast = hourly.take(24))
         }
         .combine(weatherRepository.location) { main, location ->
             return@combine main.copy(location = location)

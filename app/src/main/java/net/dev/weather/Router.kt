@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class Screen(
     val route: String,
-    //TOOD: tutaj na resoursy
+    //TODO: tutaj na resoursy
     //@StringRes val resourceId: Int,
     val title: String,
     val icon: ImageVector

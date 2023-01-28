@@ -54,3 +54,32 @@ fun imageFromAqi(aqi: Int): Int = when (aqi) {
     else ->
         R.drawable.unknown
 }
+
+
+fun backgroundImageFromWeather(input: String): Int {
+    return when (weatherCondition(input)) {
+        WeatherCondition.Thunderstorm -> R.drawable.new_thunder
+        WeatherCondition.Drizzle -> R.drawable.new_rain
+        WeatherCondition.Rain -> R.drawable.new_rain
+        WeatherCondition.Snow -> R.drawable.new_snow
+        WeatherCondition.Fog -> R.drawable.new_fog
+        WeatherCondition.Clear -> R.drawable.clear_new
+        WeatherCondition.Clouds -> R.drawable.clouds_new
+        WeatherCondition.Unknown -> R.drawable.unknown
+    }
+}
+
+private fun weatherCondition(input: String) = when (input) {
+    "Thunderstorm" -> WeatherCondition.Thunderstorm
+    "Drizzle" -> WeatherCondition.Drizzle
+    "Rain" -> WeatherCondition.Rain
+    "Snow" -> WeatherCondition.Snow
+    "Mist", "Fog", "Smoke", "Haze", "Dust", "Sand", "Ash", "Squall", "Tornado" -> WeatherCondition.Fog
+    "Clear" -> WeatherCondition.Clear
+    "Clouds" -> WeatherCondition.Clouds
+    else -> WeatherCondition.Unknown
+}
+
+enum class WeatherCondition {
+    Thunderstorm, Drizzle, Rain, Snow, Fog, Clear, Clouds, Unknown
+}
