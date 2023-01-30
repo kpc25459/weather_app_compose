@@ -12,14 +12,16 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDateTime
+import net.dev.weather.R
 import net.dev.weather.data.AirPollutionForecast
+import net.dev.weather.fromAqiIndex
 import kotlin.math.roundToInt
 
 @Composable
@@ -47,21 +49,21 @@ fun HourForecastItem(item: AirPollutionForecast, modifier: Modifier = Modifier) 
         text = { Text(text = item.dt.time.toString(), Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() }) },
         secondaryText = {
             Column {
-                Text(text = "Jakość powietrza: ${item.airQuality}", Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() })
+                Text(text = stringResource(R.string.air_quality_with_value, fromAqiIndex(item.aqi)), Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() })
 
                 if (expanded) {
                     Spacer(modifier = Modifier.height(5.dp))
 
-                    ListItemRow(description = "PM 2.5", value = "${item.pm2_5.roundToInt()} µg/m3")
-                    ListItemRow(description = "PM 10", value = "${item.pm10.roundToInt()} µg/m3")
-                    ListItemRow(description = "NO2", value = item.no2.roundToInt().toString())
-                    ListItemRow(description = "O3", value = item.o3.roundToInt().toString())
+                    ListItemRow(description = stringResource(R.string.pm25), value = "${item.pm2_5.roundToInt()} µg/m3")
+                    ListItemRow(description = stringResource(R.string.pm10), value = "${item.pm10.roundToInt()} µg/m3")
+                    ListItemRow(description = stringResource(R.string.no2), value = item.no2.roundToInt().toString())
+                    ListItemRow(description = stringResource(R.string.o3), value = item.o3.roundToInt().toString())
                 }
             }
         },
         icon = {
             Image(imageVector = Icons.Filled.CheckCircle,
-                contentDescription = "Air quality icon",
+                contentDescription = stringResource(R.string.air_quality_icon),
                 colorFilter = ColorFilter.tint(visualIndex(item.aqi).copy(alpha = 0.5f)),
                 modifier = Modifier
                     .size(30.dp)
@@ -88,11 +90,11 @@ fun visualIndex(aqi: Int): Color {
 private fun ListItemArrow(expanded: Boolean, onClick: () -> Unit = {}) {
     if (expanded) {
         IconButton(onClick = { onClick() }) {
-            Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Arrow up")
+            Icon(Icons.Filled.KeyboardArrowUp, contentDescription = stringResource(R.string.arrow_up))
         }
     } else {
         IconButton(onClick = { onClick() }) {
-            Icon(Icons.Filled.KeyboardArrowDown, contentDescription = "Arrow down")
+            Icon(Icons.Filled.KeyboardArrowDown, contentDescription = stringResource(R.string.arrow_down))
         }
     }
 }
@@ -114,7 +116,6 @@ fun ListItemRow(description: String, value: String) {
 val exampleCards = listOf(
     AirPollutionForecast(
         dt = LocalDateTime(2021, 5, 1, 10, 0),
-        airQuality = "Bardzo dobra",
         co = 607.49,
         no = 14.53,
         no2 = 23.31,
@@ -127,7 +128,6 @@ val exampleCards = listOf(
     ),
     AirPollutionForecast(
         dt = LocalDateTime(2021, 5, 1, 11, 0),
-        airQuality = "Średnia",
         co = 594.14,
         no = 12.41,
         no2 = 23.99,

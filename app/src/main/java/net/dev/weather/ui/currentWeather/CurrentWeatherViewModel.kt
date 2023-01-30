@@ -7,7 +7,6 @@ import net.dev.weather.data.WeatherCurrent
 import net.dev.weather.data.WeatherDaily
 import net.dev.weather.data.WeatherHourly
 import net.dev.weather.data.WeatherRepository
-import net.dev.weather.fromAqiIndex
 
 class CurrentWeatherViewModel(weatherRepository: WeatherRepository) : ViewModel() {
 
@@ -26,7 +25,7 @@ class CurrentWeatherViewModel(weatherRepository: WeatherRepository) : ViewModel(
             return@combine main.copy(location = location)
         }
         .combine(weatherRepository.airQuality) { main, airQuality ->
-            return@combine main.copy(airQuality = fromAqiIndex(airQuality))
+            return@combine main.copy(airQuality = airQuality)
         }
         .map(CurrentWeatherUiState::Success)
         .catch { CurrentWeatherUiState.Error(it) }
@@ -44,5 +43,5 @@ data class MainWeather(
     val current: WeatherCurrent,
     val daily: List<WeatherDaily>,
     val hourlyForecast: List<WeatherHourly> = emptyList(),
-    val airQuality: String = ""
+    val airQuality: Int = 0
 )

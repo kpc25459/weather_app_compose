@@ -5,7 +5,7 @@ import kotlinx.datetime.LocalDateTime
 data class AirPollutionForecast(
     val dt: LocalDateTime,
     val aqi: Int,
-    val airQuality: String,
+    //val airQuality: String,
     val co: Double,
     val no: Double,
     val no2: Double,

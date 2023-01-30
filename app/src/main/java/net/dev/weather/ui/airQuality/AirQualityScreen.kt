@@ -17,8 +17,10 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import net.dev.weather.R
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.datetime.LocalDateTime
@@ -27,6 +29,7 @@ import net.dev.weather.components.ErrorScreen
 import net.dev.weather.components.LoadingScreen
 import net.dev.weather.data.AirPollutionForecast
 import net.dev.weather.data.NetworkRepository
+import net.dev.weather.fromAqiIndex
 import net.dev.weather.imageFromAqi
 
 @Composable
@@ -76,7 +79,6 @@ internal fun AirQualityScreen(data: AirPollution, modifier: Modifier = Modifier)
 @Composable
 fun Box(data: AirPollution) {
     val currentWeather = data.forecast.first()
-    val airQuality = currentWeather.airQuality
 
     Card(
         modifier = Modifier
@@ -87,7 +89,7 @@ fun Box(data: AirPollution) {
     ) {
         Image(
             painterResource(id = imageFromAqi(currentWeather.aqi)),
-            contentDescription = "Weather condition",
+            contentDescription = stringResource(R.string.weather_condition),
             contentScale = ContentScale.Crop,
             colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.5f), blendMode = BlendMode.SrcOver),
             modifier = Modifier
@@ -96,13 +98,13 @@ fun Box(data: AirPollution) {
 
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(10.dp).fillMaxWidth()) {
             Row {
-                Image(imageVector = Icons.Filled.Place, contentDescription = "Place", colorFilter = ColorFilter.tint(Color.White))
+                Image(imageVector = Icons.Filled.Place, contentDescription = stringResource(R.string.place), colorFilter = ColorFilter.tint(Color.White))
                 Text(text = data.location, color = Color.White)
             }
 
             Row {
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = airQuality, color = Color.White)
+                    Text(text = fromAqiIndex(currentWeather.aqi), color = Color.White)
                 }
             }
 
@@ -112,8 +114,8 @@ fun Box(data: AirPollution) {
                     .padding(top = 10.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Text(text = "PM 2.5: ${currentWeather.pm2_5} µg/m3", color = Color.White)
-                Text(text = "PM 10: ${currentWeather.pm10} µg/m3", color = Color.White)
+                Text(text = stringResource(R.string.pm25_extended, currentWeather.pm2_5), color = Color.White)
+                Text(text = stringResource(R.string.pm10_extended, currentWeather.pm10), color = Color.White)
             }
         }
     }
@@ -127,7 +129,6 @@ fun AirQualityScreenPreview() {
             "Paris", listOf(
                 AirPollutionForecast(
                     dt = LocalDateTime(2021, 5, 1, 10, 0),
-                    airQuality = "Bardzo dobra",
                     co = 607.49,
                     no = 14.53,
                     no2 = 23.31,
@@ -140,7 +141,6 @@ fun AirQualityScreenPreview() {
                 ),
                 AirPollutionForecast(
                     dt = LocalDateTime(2021, 5, 1, 11, 0),
-                    airQuality = "Średnia",
                     co = 594.14,
                     no = 12.41,
                     no2 = 23.99,

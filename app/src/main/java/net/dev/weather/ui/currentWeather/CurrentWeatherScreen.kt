@@ -23,16 +23,20 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import net.dev.weather.R
 import net.dev.weather.api.WeatherServiceApi
 import net.dev.weather.components.ErrorScreen
 import net.dev.weather.components.LoadingScreen
 import net.dev.weather.components.WeatherIcon
 import net.dev.weather.data.NetworkRepository
 import net.dev.weather.data.WeatherHourly
+import net.dev.weather.dayOfWeek
+import net.dev.weather.fromAqiIndex
 import kotlin.math.roundToInt
 
 @Composable
@@ -68,9 +72,11 @@ fun CurrentWeatherScreen(modifier: Modifier = Modifier, viewModel: CurrentWeathe
 
 @Composable
 internal fun CurrentWeatherScreen(data: MainWeather, modifier: Modifier = Modifier) {
-    Column(modifier = Modifier
-        .padding(5.dp)
-        .verticalScroll(rememberScrollState())) {
+    Column(
+        modifier = Modifier
+            .padding(5.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
         Box(data)
         Spacer(modifier = Modifier.height(20.dp))
         HourForecast(data)
@@ -89,7 +95,6 @@ fun CurrentWeatherPagePreview() {
 @Composable
 fun Box(data: MainWeather) {
     val currentWeather = data.current
-    val airQuality = data.airQuality
 
     Card(
         modifier = Modifier
@@ -99,7 +104,7 @@ fun Box(data: MainWeather) {
     ) {
         Image(
             painterResource(id = currentWeather.backgroundImage),
-            contentDescription = "Weather condition",
+            contentDescription = stringResource(R.string.weather_condition),
             contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.5f), blendMode = BlendMode.SrcOver),
             modifier = Modifier
@@ -108,19 +113,19 @@ fun Box(data: MainWeather) {
 
         Column(modifier = Modifier.padding(10.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(text = "Prognoza na: ${currentWeather.dt.date}", color = Color.White)
-                Text(text = "Godz. ${currentWeather.dt.time.toString().substringBeforeLast(":")}", color = Color.White)
+                Text(text = stringResource(R.string.forecast_updated_on, currentWeather.dt.date), color = Color.White)
+                Text(text = stringResource(R.string.forecast_updated_on_time, currentWeather.dt.time.toString().substringBeforeLast(":")), color = Color.White)
             }
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(imageVector = Icons.Filled.Place, contentDescription = "Place", colorFilter = ColorFilter.tint(Color.White))
+                    Image(imageVector = Icons.Filled.Place, contentDescription = stringResource(R.string.place), colorFilter = ColorFilter.tint(Color.White))
                     Text(text = data.location, color = Color.White)
                 }
-                Text(text = "${currentWeather.temp} °C", color = Color.White)
+                Text(text = stringResource(R.string.temperatureC, currentWeather.temp), color = Color.White)
             }
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "Jakość powietrza", color = Color.White)
-                Text(text = airQuality, color = Color.White)
+                Text(text = stringResource(R.string.air_quality), color = Color.White)
+                Text(text = fromAqiIndex(data.airQuality), color = Color.White)
             }
         }
     }
@@ -139,8 +144,6 @@ fun HourForecast(data: MainWeather) {
 
 @Composable
 fun HourForecastItem(item: WeatherHourly) {
-    val dayOfWeek = "${item.dt.dayOfWeek.toString().lowercase().substring(0, 3).replaceFirstChar { it.uppercase() }}."
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -148,7 +151,7 @@ fun HourForecastItem(item: WeatherHourly) {
             .border(1.dp, shape = RoundedCornerShape(8.dp), color = Color(0xFFE0EAFF))
             .width(70.dp)
     ) {
-        Text(text = dayOfWeek)
+        Text(text = dayOfWeek(item.dt.dayOfWeek))
         WeatherIcon(item.weatherIcon)
         Text(text = item.dt.time.toString())
         Text(text = "${item.temp.roundToInt()}°", modifier = Modifier.padding(bottom = 5.dp))
@@ -169,22 +172,22 @@ fun CurrentWeatherDetails(data: MainWeather) {
         Column {
             DetailsItem(
                 image = Icons.Filled.ArrowForward,
-                name = "Wschód słońca",
+                name = stringResource(R.string.sunrise),
                 value = weather.sunrise
             )
             DetailsItem(
                 image = Icons.Filled.ArrowForward,
-                name = "Ciśnienie",
+                name = stringResource(R.string.pressure),
                 value = weather.pressure
             )
             DetailsItem(
                 image = Icons.Filled.ArrowForward,
-                name = "Indeks UV",
+                name = stringResource(R.string.uv_Index),
                 value = weather.uvi,
             )
             DetailsItem(
                 image = Icons.Filled.ArrowForward,
-                name = "Deszcz",
+                name = stringResource(R.string.rain),
                 value = weather.rain,
             )
         }
@@ -192,22 +195,22 @@ fun CurrentWeatherDetails(data: MainWeather) {
         Column {
             DetailsItem(
                 image = Icons.Filled.ArrowForward,
-                name = "Zachód słońca",
+                name = stringResource(R.string.sunset),
                 value = weather.sunset
             )
             DetailsItem(
                 image = Icons.Filled.ArrowForward,
-                name = "Wilgotność",
+                name = stringResource(R.string.humidity),
                 value = weather.humidity
             )
             DetailsItem(
                 image = Icons.Filled.ArrowForward,
-                name = "Wiatr",
+                name = stringResource(R.string.wind),
                 value = weather.wind
             )
             DetailsItem(
                 image = Icons.Filled.ArrowForward,
-                name = "Odczuwana",
+                name = stringResource(R.string.feels_like),
                 value = weather.feels_like,
             )
         }
@@ -234,7 +237,7 @@ fun DetailsItem(image: ImageVector, name: String, value: String) {
 @Preview(showBackground = true)
 @Composable
 fun DetailsItemPreview() {
-    DetailsItem(image = Icons.Filled.ArrowForward, name = "Wschód słońca", value = "06:00")
+    DetailsItem(image = Icons.Filled.ArrowForward, name = stringResource(R.string.sunrise), value = "06:00")
 }
 
 @Preview(showBackground = true)

@@ -1,3 +1,47 @@
 <resources>
     <string name="app_name">weather</string>
+    <string name="weather_Forecast">Weather forecast</string>
+    <string name="weather_condition">Weather condition</string>
+    <string name="air_quality">Air quality</string>
+    <string name="air_quality_with_value">Air quality: %s</string>
+    <string name="air_quality_icon" translatable="false">Air quality icon</string>
+    <string name="privacyPolicy">Privacy policy</string>
+    <string name="forecastForPM25">Forecast for PM 2.5</string>
+    <string name="forecastForPM10">Forecast for PM 10</string>
+    <string name="pm25" translatable="false">PM 2.5</string>
+    <string name="pm25_extended" translatable="false">PM 2.5 %s µg/m3</string>
+    <string name="pm10" translatable="false">PM 10</string>
+    <string name="pm10_extended" translatable="false">PM 10 %s µg/m3</string>
+    <string name="no2" translatable="false">NO2</string>
+    <string name="o3" translatable="false">O3</string>
+    <string name="temperature">Temperature</string>
+    <string name="temperatureC" translatable="false">%s °C</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
+    <string name="pressure">Pressure</string>
+    <string name="humidity">Humidity</string>
+    <string name="wind">Wind</string>
+    <string name="rain">Rain</string>
+    <string name="uv_Index">UV index</string>
+    <string name="forecast_updated_on">Forecast for %s</string>
+    <string name="forecast_updated_on_time">Time: %s</string>
+    <string name="feels_like">Feels like</string>
+    <string name="very_good">Very good</string>
+    <string name="good">Good</string>
+    <string name="moderate">Moderate</string>
+    <string name="bad">Bad</string>
+    <string name="very_bad">Very bad</string>
+    <string name="unknown">Unknown</string>
+    <string name="monday">Mon.</string>
+    <string name="tuesday">Tues.</string>
+    <string name="wednesday">Wed.</string>
+    <string name="thursday">Thurs.</string>
+    <string name="friday">Fri.</string>
+    <string name="saturday">Sat.</string>
+    <string name="sunday">Sun.</string>
+    <string name="days">Days</string>
+    <string name="place">Place</string>
+    <string name="arrow_up" translatable="false">Arrow up</string>
+    <string name="arrow_down" translatable="false">Arrow down</string>
+    <string name="current_weather_screen">Current weather</string>
 </resources>

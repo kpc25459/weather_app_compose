@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">weather</string>
+    <string name="weather_condition">Weather condition</string>
+    <string name="weather_Forecast">Prognoza pogody</string>
+    <string name="air_quality">Jakość powietrza</string>
+    <string name="air_quality_with_value">Jakość powietrza: %s</string>
+    <string name="privacyPolicy">Polityka prywatności</string>
+    <string name="forecastForPM25">Prognoza dla PM 2.5</string>
+    <string name="forecastForPM10">Prognoza dla PM 2.5</string>
+    <string name="temperature">Temperatura</string>
+    <string name="sunrise">Wschód słońca</string>
+    <string name="sunset">Zachód słońca</string>
+    <string name="pressure">Ciśnienie</string>
+    <string name="humidity">Wilgotność</string>
+    <string name="wind">Wiatr</string>
+    <string name="rain">Deszcz</string>
+    <string name="uv_Index">Indeks UV</string>
+    <string name="forecast_updated_on">Prognoza na: %s</string>
+    <string name="forecast_updated_on_time">Godz. %s</string>
+    <string name="feels_like">Odczuwana</string>
+    <string name="very_good">Bardzo dobra</string>
+    <string name="good">Dobra</string>
+    <string name="moderate">Umiarkowana</string>
+    <string name="bad">Zła</string>
+    <string name="very_bad">Bardzo zła</string>
+    <string name="unknown">Brak danych</string>
+    <string name="monday">Pon.</string>
+    <string name="tuesday">Wt.</string>
+    <string name="wednesday">Śr.</string>
+    <string name="thursday">Czw.</string>
+    <string name="friday">Pt.</string>
+    <string name="saturday">Sob.</string>
+    <string name="sunday">Niedz.</string>
+    <string name="days">Dni</string>
+    <string name="place">Miejsce</string>
+    <string name="current_weather_screen">Aktualna pogoda</string>
+</resources>

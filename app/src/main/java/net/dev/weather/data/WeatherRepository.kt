@@ -117,7 +117,6 @@ class NetworkRepository(private val weatherServiceApi: WeatherServiceApi) : Weat
                     AirPollutionForecast(
                         dt = Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(timeZone),
                         aqi = it.main.aqi,
-                        airQuality = fromAqiIndex(it.main.aqi),
                         co = it.components.co,
                         no = it.components.no,
                         no2 = it.components.no2,

@@ -10,10 +10,12 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDateTime
+import net.dev.weather.R
 import net.dev.weather.components.WeatherIcon
 import net.dev.weather.data.WeatherDaily
 import net.dev.weather.localDate
@@ -37,14 +39,15 @@ fun DayForecastItem(weatherDaily: WeatherDaily, modifier: Modifier = Modifier) {
                 if (expanded) {
                     Spacer(modifier = Modifier.height(5.dp))
 
-                    ListItemRow(description = "Temperatura", value = "${weatherDaily.temp}°C")
-                    ListItemRow(description = "Wschód słońca", value = weatherDaily.sunrise)
-                    ListItemRow(description = "Zachód słońca", value = weatherDaily.sunset)
-                    ListItemRow(description = "Ciśnienie", value = weatherDaily.pressure)
-                    ListItemRow(description = "Wilgotność", value = weatherDaily.humidity)
-                    ListItemRow(description = "Wiatr", value = weatherDaily.wind)
-                    ListItemRow(description = "Deszcz", value = weatherDaily.rain)
-                    ListItemRow(description = "Indeks Uv", value = weatherDaily.uvi)
+                    //TODO: powtórzenie kodu w innym pliku
+                    ListItemRow(description = stringResource(R.string.temperature), value = "${weatherDaily.temp}°C")
+                    ListItemRow(description = stringResource(R.string.sunrise), value = weatherDaily.sunrise)
+                    ListItemRow(description = stringResource(R.string.sunset), value = weatherDaily.sunset)
+                    ListItemRow(description = stringResource(R.string.pressure), value = weatherDaily.pressure)
+                    ListItemRow(description = stringResource(R.string.humidity), value = weatherDaily.humidity)
+                    ListItemRow(description = stringResource(R.string.wind), value = weatherDaily.wind)
+                    ListItemRow(description = stringResource(R.string.rain), value = weatherDaily.rain)
+                    ListItemRow(description = stringResource(R.string.uv_Index), value = weatherDaily.uvi)
                 }
             }
         },
@@ -61,11 +64,11 @@ fun DayForecastItem(weatherDaily: WeatherDaily, modifier: Modifier = Modifier) {
 private fun ListItemArrow(expanded: Boolean, onClick: () -> Unit = {}) {
     if (expanded) {
         IconButton(onClick = { onClick() }) {
-            Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Arrow up")
+            Icon(Icons.Filled.KeyboardArrowUp, contentDescription = stringResource(R.string.arrow_up))
         }
     } else {
         IconButton(onClick = { onClick() }) {
-            Icon(Icons.Filled.KeyboardArrowDown, contentDescription = "Arrow down")
+            Icon(Icons.Filled.KeyboardArrowDown, contentDescription = stringResource(R.string.arrow_down))
         }
     }
 }

@@ -1,26 +1,40 @@
 package net.dev.weather
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDateTime
 import java.time.format.TextStyle
 import java.util.*
 
-//TODO: zmienić nazwę i dać przykład z użyciem
+//TODO: zmienić nazwę i dać przykład z użycia
 fun localDate(dt: LocalDateTime) = "${dt.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())}, ${dt.dayOfMonth} ${
     dt.month.getDisplayName(
         TextStyle.FULL, Locale.getDefault()
     )
 }"
 
-//TODO: resursy
+@Composable
 fun fromAqiIndex(aqi: Int): String {
     return when (aqi) {
-        1 -> "Bardzo dobra"
-        2 -> "Dobra"
-        3 -> "Dostateczna"
-        4 -> "Zła"
-        5 -> "Bardzo zła"
-        else -> "Nieznana"
+        1 ->  stringResource(R.string.very_good)
+        2 -> stringResource(R.string.good)
+        3 -> stringResource(R.string.moderate)
+        4 -> stringResource(R.string.bad)
+        5 -> stringResource(R.string.very_bad)
+        else -> stringResource(R.string.unknown)
     }
+}
+
+@Composable
+fun dayOfWeek(dayOfWeek: DayOfWeek): String = when(dayOfWeek){
+    DayOfWeek.SUNDAY -> stringResource(R.string.sunday)
+    DayOfWeek.MONDAY -> stringResource(R.string.monday)
+    DayOfWeek.TUESDAY -> stringResource(R.string.tuesday)
+    DayOfWeek.WEDNESDAY -> stringResource(R.string.wednesday)
+    DayOfWeek.THURSDAY -> stringResource(R.string.thursday)
+    DayOfWeek.FRIDAY -> stringResource(R.string.friday)
+    DayOfWeek.SATURDAY -> stringResource(R.string.saturday)
 }
 
 fun toHumanFromDegrees(deg: Int): String {
