@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
@@ -86,12 +87,6 @@ internal fun CurrentWeatherScreen(data: MainWeather, modifier: Modifier = Modifi
 
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CurrentWeatherPagePreview() {
-    CurrentWeatherScreen()
-}
-
 @Composable
 fun Box(data: MainWeather) {
     val currentWeather = data.current
@@ -113,19 +108,23 @@ fun Box(data: MainWeather) {
 
         Column(modifier = Modifier.padding(10.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(text = stringResource(R.string.forecast_updated_on, currentWeather.dt.date), color = Color.White)
-                Text(text = stringResource(R.string.forecast_updated_on_time, currentWeather.dt.time.toString().substringBeforeLast(":")), color = Color.White)
+                Text(text = stringResource(R.string.forecast_updated_on, currentWeather.dt.date), style = MaterialTheme.typography.caption, color = Color.White)
+                Text(
+                    text = stringResource(R.string.forecast_updated_on_time, currentWeather.dt.time.toString().substringBeforeLast(":")),
+                    style = MaterialTheme.typography.caption,
+                    color = Color.White
+                )
             }
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(imageVector = Icons.Filled.Place, contentDescription = stringResource(R.string.place), colorFilter = ColorFilter.tint(Color.White))
-                    Text(text = data.location, color = Color.White)
+                    Text(text = data.location, style = MaterialTheme.typography.subtitle2, color = Color.White)
                 }
-                Text(text = stringResource(R.string.temperatureC, currentWeather.temp), color = Color.White)
+                Text(text = stringResource(R.string.temperatureC, currentWeather.temp), style = MaterialTheme.typography.h1, color = Color.White)
             }
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = stringResource(R.string.air_quality), color = Color.White)
-                Text(text = fromAqiIndex(data.airQuality), color = Color.White)
+                Text(text = stringResource(R.string.air_quality), style = MaterialTheme.typography.subtitle2, color = Color.White)
+                Text(text = fromAqiIndex(data.airQuality), style = MaterialTheme.typography.subtitle1, color = Color.White)
             }
         }
     }
@@ -228,7 +227,7 @@ fun DetailsItem(image: ImageVector, name: String, value: String) {
     ) {
         Icon(imageVector = image, contentDescription = null, modifier = Modifier.padding(10.dp))
         Column(modifier = Modifier.padding(10.dp)) {
-            Text(text = name)
+            Text(text = name, style = MaterialTheme.typography.caption)
             Text(text = value)
         }
     }
@@ -240,10 +239,22 @@ fun DetailsItemPreview() {
     DetailsItem(image = Icons.Filled.ArrowForward, name = stringResource(R.string.sunrise), value = "06:00")
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun CurrentWeatherDetailsPreview() {
-    /*Column {
+    */
+/*Column {
         CurrentWeatherDetails(viewModel)
-    }*/
+    }*//*
+
 }
+*/
+
+
+/*
+@Preview(showBackground = true)
+@Composable
+fun CurrentWeatherPagePreview() {
+    CurrentWeatherScreen()
+}*/
