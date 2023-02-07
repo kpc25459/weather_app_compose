@@ -46,10 +46,13 @@ fun HourForecastItem(item: AirPollutionForecast, modifier: Modifier = Modifier) 
     val interactionSource = remember { MutableInteractionSource() }
 
     ListItem(
-        text = { Text(text = item.dt.time.toString(), Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() }) },
+        text = { Text(text = item.dt.time.toString(), style = MaterialTheme.typography.body1, modifier = Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() }) },
         secondaryText = {
             Column {
-                Text(text = stringResource(R.string.air_quality_with_value, fromAqiIndex(item.aqi)), Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() })
+                Text(
+                    text = stringResource(R.string.air_quality_with_value, fromAqiIndex(item.aqi)),
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() })
 
                 if (expanded) {
                     Spacer(modifier = Modifier.height(5.dp))
@@ -107,8 +110,8 @@ fun ListItemRow(description: String, value: String) {
             .fillMaxWidth()
             .padding(vertical = 4.dp)
     ) {
-        Text(text = description)
-        Text(text = value, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 10.dp))
+        Text(text = description, style = MaterialTheme.typography.body2)
+        Text(text = value, style = MaterialTheme.typography.body2, modifier = Modifier.padding(start = 10.dp))
     }
 }
 
