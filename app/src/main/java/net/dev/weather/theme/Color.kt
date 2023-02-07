@@ -8,3 +8,5 @@ val Purple700 = Color(0xFF3700B3)
 val Teal200 = Color(0xFF03DAC5)
 val cardCollapsedBackgroundColor = Color(0xFFFEFFFD)
 val cardExpandedBackgroundColor = Color(0xFFFFDA6D)
+
+val primaryColor = Color(0xFFA4BCFD)
