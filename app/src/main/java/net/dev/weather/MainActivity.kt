@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import net.dev.weather.ui.currentWeather.CurrentWeatherScreen
 import net.dev.weather.ui.weatherForecast.WeatherForecastScreen
 import net.dev.weather.theme.WeatherTheme
+import net.dev.weather.theme.iconColor
 import net.dev.weather.ui.airQuality.AirQualityScreen
 
 class MainActivity : ComponentActivity() {
@@ -67,7 +69,7 @@ private fun topBar(navController: NavHostController/*, title: String*/): @Compos
 @Composable
 private fun bottomNavigationBar(navController: NavHostController): @Composable () -> Unit {
     return {
-        BottomNavigation {
+        BottomNavigation(backgroundColor = MaterialTheme.colors.background) {
             val backStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = backStackEntry?.destination
 
@@ -78,9 +80,11 @@ private fun bottomNavigationBar(navController: NavHostController): @Composable (
             )
 
             items.forEach { screen ->
+                val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
+
                 BottomNavigationItem(
-                    icon = { Image(painter = painterResource(screen.iconResourceId), contentDescription = stringResource(screen.titleResourceId)) },
-                    selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                    icon = { Icon(painter = painterResource(screen.iconResourceId), contentDescription = stringResource(screen.titleResourceId), tint = if (selected) iconColor else Color.Black) },
+                    selected = selected,
                     onClick = {
                         navController.navigate(screen.route) {
                             popUpTo(navController.graph.findStartDestination().id) {
