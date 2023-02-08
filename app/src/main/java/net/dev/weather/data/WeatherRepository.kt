@@ -72,7 +72,7 @@ class NetworkRepository(private val weatherServiceApi: WeatherServiceApi) : Weat
                         description = it.weather.first().description,
                         sunrise = Instant.fromEpochSeconds(it.sunrise.toLong()).toLocalDateTime(timeZone).time.toString().substringBeforeLast(":"),
                         sunset = Instant.fromEpochSeconds(it.sunset.toLong()).toLocalDateTime(timeZone).time.toString().substringBeforeLast(":"),
-                        temp = "${it.temp.day}°C / ${it.temp.night}°C",
+                        temp = "${it.temp.day.roundToInt()}°C / ${it.temp.night.roundToInt()}°C",
                         pressure = "${it.pressure} hPa",
                         humidity = "${it.humidity} %",
                         wind = "${((it.wind_speed * 3.6 * 100) / 100).roundToInt()} km/h ${toHumanFromDegrees(it.wind_deg)}",

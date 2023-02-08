@@ -40,7 +40,7 @@ fun DayForecastItem(weatherDaily: WeatherDaily, modifier: Modifier = Modifier) {
                     Spacer(modifier = Modifier.height(5.dp))
 
                     //TODO: powtórzenie kodu w innym pliku
-                    ListItemRow(description = stringResource(R.string.temperature), value = "${weatherDaily.temp}°C")
+                    ListItemRow(description = stringResource(R.string.temperature), value = weatherDaily.temp)
                     ListItemRow(description = stringResource(R.string.sunrise), value = weatherDaily.sunrise)
                     ListItemRow(description = stringResource(R.string.sunset), value = weatherDaily.sunset)
                     ListItemRow(description = stringResource(R.string.pressure), value = weatherDaily.pressure)
