@@ -10,3 +10,5 @@ val cardCollapsedBackgroundColor = Color(0xFFFEFFFD)
 val cardExpandedBackgroundColor = Color(0xFFFFDA6D)
 
 val primaryColor = Color(0xFFA4BCFD)
+
+val iconColor = Color(0xFF3538CD)

@@ -35,6 +35,7 @@ import net.dev.weather.data.NetworkRepository
 import net.dev.weather.data.WeatherHourly
 import net.dev.weather.dayOfWeek
 import net.dev.weather.fromAqiIndex
+import net.dev.weather.theme.iconColor
 import kotlin.math.roundToInt
 
 @Composable
@@ -222,7 +223,11 @@ fun DetailsItem(name: String, value: String, @DrawableRes icon: Int) {
             .width(180.dp)
             .background(color = Color(0xFFE0EAFF), shape = RoundedCornerShape(10.dp))
     ) {
-        Icon(painter = painterResource(icon), contentDescription = null, modifier = Modifier.padding(10.dp))
+        Icon(
+            painter = painterResource(icon), tint = iconColor, contentDescription = name, modifier = Modifier
+                .padding(10.dp)
+                .background(color = Color.White, shape = RoundedCornerShape(100))
+        )
         Column(modifier = Modifier.padding(10.dp)) {
             Text(text = name, style = MaterialTheme.typography.caption)
             Text(text = value)
