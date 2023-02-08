@@ -1,5 +1,6 @@
 package net.dev.weather.ui.currentWeather
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -9,9 +10,6 @@ import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
@@ -20,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
@@ -117,7 +114,7 @@ fun Box(data: MainWeather) {
             }
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(imageVector = Icons.Filled.Place, contentDescription = stringResource(R.string.place), colorFilter = ColorFilter.tint(Color.White))
+                    Image(painter = painterResource(R.drawable.outline_location_on_24), contentDescription = stringResource(R.string.place), colorFilter = ColorFilter.tint(Color.White))
                     Text(text = data.location, style = MaterialTheme.typography.subtitle2, color = Color.White)
                 }
                 Text(text = stringResource(R.string.temperatureC, currentWeather.temp), style = MaterialTheme.typography.h1, color = Color.White)
@@ -170,54 +167,54 @@ fun CurrentWeatherDetails(data: MainWeather) {
     ) {
         Column {
             DetailsItem(
-                image = Icons.Filled.ArrowForward,
                 name = stringResource(R.string.sunrise),
-                value = weather.sunrise
+                value = weather.sunrise,
+                icon = R.drawable.outline_wb_twilight_24
             )
             DetailsItem(
-                image = Icons.Filled.ArrowForward,
                 name = stringResource(R.string.pressure),
-                value = weather.pressure
+                value = weather.pressure,
+                icon = R.drawable.outline_tune_24
             )
             DetailsItem(
-                image = Icons.Filled.ArrowForward,
                 name = stringResource(R.string.uv_Index),
                 value = weather.uvi,
+                icon = R.drawable.eyeglasses_24px,
             )
             DetailsItem(
-                image = Icons.Filled.ArrowForward,
                 name = stringResource(R.string.rain),
                 value = weather.rain,
+                icon = R.drawable.rainy_24px,
             )
         }
 
         Column {
             DetailsItem(
-                image = Icons.Filled.ArrowForward,
                 name = stringResource(R.string.sunset),
-                value = weather.sunset
+                value = weather.sunset,
+                icon = R.drawable.outline_nightlight_24
             )
             DetailsItem(
-                image = Icons.Filled.ArrowForward,
                 name = stringResource(R.string.humidity),
-                value = weather.humidity
+                value = weather.humidity,
+                icon = R.drawable.humidity_percentage_24px
             )
             DetailsItem(
-                image = Icons.Filled.ArrowForward,
                 name = stringResource(R.string.wind),
-                value = weather.wind
+                value = weather.wind,
+                icon = R.drawable.outline_air_24
             )
             DetailsItem(
-                image = Icons.Filled.ArrowForward,
                 name = stringResource(R.string.feels_like),
                 value = weather.feels_like,
+                icon = R.drawable.thermostat_24px,
             )
         }
     }
 }
 
 @Composable
-fun DetailsItem(image: ImageVector, name: String, value: String) {
+fun DetailsItem(name: String, value: String, @DrawableRes icon: Int) {
     Row(
         modifier = Modifier
             .padding(8.dp)
@@ -225,7 +222,7 @@ fun DetailsItem(image: ImageVector, name: String, value: String) {
             .width(180.dp)
             .background(color = Color(0xFFE0EAFF), shape = RoundedCornerShape(10.dp))
     ) {
-        Icon(imageVector = image, contentDescription = null, modifier = Modifier.padding(10.dp))
+        Icon(painter = painterResource(icon), contentDescription = null, modifier = Modifier.padding(10.dp))
         Column(modifier = Modifier.padding(10.dp)) {
             Text(text = name, style = MaterialTheme.typography.caption)
             Text(text = value)
@@ -236,7 +233,7 @@ fun DetailsItem(image: ImageVector, name: String, value: String) {
 @Preview(showBackground = true)
 @Composable
 fun DetailsItemPreview() {
-    DetailsItem(image = Icons.Filled.ArrowForward, name = stringResource(R.string.sunrise), value = "06:00")
+    DetailsItem(name = stringResource(R.string.sunrise), value = "06:00", icon = R.drawable.outline_wb_twilight_24)
 }
 
 /*

@@ -14,8 +14,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDateTime
@@ -65,11 +65,11 @@ fun HourForecastItem(item: AirPollutionForecast, modifier: Modifier = Modifier) 
             }
         },
         icon = {
-            Image(imageVector = Icons.Filled.CheckCircle,
+            Image(painter = painterResource(R.drawable.circle_24px),
                 contentDescription = stringResource(R.string.air_quality_icon),
                 colorFilter = ColorFilter.tint(visualIndex(item.aqi).copy(alpha = 0.5f)),
                 modifier = Modifier
-                    .size(30.dp)
+                    .size(20.dp)
                     .clickable(indication = null, interactionSource = interactionSource) { onClick() })
         },
         trailing = {

@@ -1,22 +1,19 @@
 package net.dev.weather
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 
 sealed class Screen(
     val route: String,
     @StringRes val titleResourceId: Int,
-    val icon: ImageVector
+
+    @DrawableRes val iconResourceId: Int
 ) {
-    object CurrentWeather : Screen("current_weather", R.string.current_weather_screen_title, Icons.Filled.Home)
-    object WeatherForecast : Screen("weather_forecast", R.string.weather_forecast_screen_title, Icons.Filled.ArrowForward)
-    object AirQuality : Screen("air_quality", R.string.air_quality_screen_title, Icons.Filled.Call)
+    object CurrentWeather : Screen("current_weather", R.string.current_weather_screen_title, R.drawable.outline_home_24)
+    object WeatherForecast : Screen("weather_forecast", R.string.weather_forecast_screen_title, R.drawable.baseline_format_list_bulleted_24)
+    object AirQuality : Screen("air_quality", R.string.air_quality_screen_title, R.drawable.outline_air_24)
 }
 
 @Composable

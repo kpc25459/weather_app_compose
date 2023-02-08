@@ -3,12 +3,14 @@ package net.dev.weather
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -77,8 +79,7 @@ private fun bottomNavigationBar(navController: NavHostController): @Composable (
 
             items.forEach { screen ->
                 BottomNavigationItem(
-                    icon = { Icon(screen.icon, contentDescription = stringResource(screen.titleResourceId)) },
-                    label = { Text(stringResource(screen.titleResourceId)) },
+                    icon = { Image(painter = painterResource(screen.iconResourceId), contentDescription = stringResource(screen.titleResourceId)) },
                     selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                     onClick = {
                         navController.navigate(screen.route) {
