@@ -7,8 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,10 +41,8 @@ fun MainPage() {
 
     val navController = rememberNavController()
 
-    val currentTabRoute = navController.currentBackStackEntryAsState().value?.destination?.hierarchy?.firstOrNull()?.route
-
     Scaffold(
-        topBar = topBar(currentTabRoute),
+        topBar = topBar(navController = navController),
         bottomBar = bottomNavigationBar(navController = navController)
     )
     { innerPadding ->
@@ -54,9 +51,12 @@ fun MainPage() {
 }
 
 @Composable
-private fun topBar(currentTab: String?): @Composable () -> Unit {
-    if (currentTab != NavRoutes.CurrentWeather.route) {
-        return { TopAppBar(title = { Text(text = "Weather") }) }
+private fun topBar(navController: NavHostController/*, title: String*/): @Composable () -> Unit {
+
+    val currentTab = navController.currentBackStackEntryAsState().value?.destination?.hierarchy?.firstOrNull() ?: return {}
+
+    if (currentTab.route != NavRoutes.CurrentWeather.route) {
+        return { TopAppBar(title = { Text(text = getTitleByRoute(route = currentTab.route!!)) }) }
     } else {
         return {}
     }

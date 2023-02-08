@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">weather</string>
     <string name="weather_condition">Weather condition</string>
-    <string name="weather_Forecast">Prognoza pogody</string>
+    <string name="weather_forecast">Prognoza pogody</string>
     <string name="air_quality">Jakość powietrza</string>
     <string name="air_quality_with_value">Jakość powietrza: %s</string>
     <string name="privacyPolicy">Polityka prywatności</string>
@@ -33,5 +33,7 @@
     <string name="sunday">Niedz.</string>
     <string name="days">Dni</string>
     <string name="place">Miejsce</string>
-    <string name="current_weather_screen">Aktualna pogoda</string>
+    <string name="current_weather_screen_title">Aktualna pogoda</string>
+    <string name="weather_forecast_screen_title">Prognoza pogody</string>
+    <string name="air_quality_screen_title">Jakość powietrza</string>
 </resources>

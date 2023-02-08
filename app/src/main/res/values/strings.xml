@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">weather</string>
-    <string name="weather_Forecast">Weather forecast</string>
+    <string name="weather_forecast">Weather forecast</string>
     <string name="weather_condition">Weather condition</string>
     <string name="air_quality">Air quality</string>
     <string name="air_quality_with_value">Air quality: %s</string>
@@ -43,5 +43,7 @@
     <string name="place">Place</string>
     <string name="arrow_up" translatable="false">Arrow up</string>
     <string name="arrow_down" translatable="false">Arrow down</string>
-    <string name="current_weather_screen">Current weather</string>
+    <string name="current_weather_screen_title">Current weather</string>
+    <string name="weather_forecast_screen_title">Weather forecast</string>
+    <string name="air_quality_screen_title">Air quality</string>
 </resources>
