@@ -148,9 +148,9 @@ fun HourForecastItem(item: WeatherHourly) {
             .border(1.dp, shape = RoundedCornerShape(8.dp), color = Color(0xFFE0EAFF))
             .width(70.dp)
     ) {
-        Text(text = dayOfWeek(item.dt.dayOfWeek))
+        Text(text = dayOfWeek(item.dt.dayOfWeek), style = MaterialTheme.typography.caption)
         WeatherIcon(item.weatherIcon)
-        Text(text = item.dt.time.toString())
+        Text(text = item.dt.time.toString(), style = MaterialTheme.typography.caption)
         Text(text = "${item.temp.roundToInt()}°", modifier = Modifier.padding(bottom = 5.dp))
     }
 

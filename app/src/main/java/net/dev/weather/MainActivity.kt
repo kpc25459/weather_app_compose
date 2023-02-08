@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -21,10 +22,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import net.dev.weather.theme.*
 import net.dev.weather.ui.currentWeather.CurrentWeatherScreen
 import net.dev.weather.ui.weatherForecast.WeatherForecastScreen
-import net.dev.weather.theme.WeatherTheme
-import net.dev.weather.theme.iconColor
 import net.dev.weather.ui.airQuality.AirQualityScreen
 
 class MainActivity : ComponentActivity() {
@@ -60,7 +60,14 @@ private fun topBar(navController: NavHostController/*, title: String*/): @Compos
     val currentTab = navController.currentBackStackEntryAsState().value?.destination?.hierarchy?.firstOrNull() ?: return {}
 
     if (currentTab.route != NavRoutes.CurrentWeather.route) {
-        return { TopAppBar(title = { Text(text = getTitleByRoute(route = currentTab.route!!)) }) }
+        return {
+            TopAppBar(
+                title = { Text(text = getTitleByRoute(route = currentTab.route!!)) },
+                backgroundColor = tabBarBackgroundColor,
+                contentColor = tabBarTextColor,
+                elevation = 0.dp
+            )
+        }
     } else {
         return {}
     }

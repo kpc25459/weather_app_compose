@@ -12,3 +12,5 @@ val cardExpandedBackgroundColor = Color(0xFFFFDA6D)
 val primaryColor = Color(0xFFA4BCFD)
 
 val iconColor = Color(0xFF3538CD)
+val tabBarBackgroundColor = Color(0xFFE0EAFF)
+val tabBarTextColor = Color(0xFF475467)
