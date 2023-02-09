@@ -11,83 +11,42 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
+import net.dev.weather.*
 import net.dev.weather.R
-import net.dev.weather.api.WeatherServiceApi
-import net.dev.weather.components.ErrorScreen
-import net.dev.weather.components.LoadingScreen
 import net.dev.weather.components.WeatherIcon
-import net.dev.weather.data.NetworkRepository
+import net.dev.weather.data.WeatherCurrent
 import net.dev.weather.data.WeatherHourly
-import net.dev.weather.dayOfWeek
-import net.dev.weather.fromAqiIndex
 import net.dev.weather.theme.iconColor
 import kotlin.math.roundToInt
 
 @Composable
-fun CurrentWeatherScreen(modifier: Modifier = Modifier, viewModel: CurrentWeatherViewModel = CurrentWeatherViewModel(NetworkRepository(WeatherServiceApi.create()))) {
-
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-
-    val uiState by produceState<CurrentWeatherUiState>(
-        initialValue = CurrentWeatherUiState.Loading,
-        key1 = lifecycle,
-        key2 = viewModel
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.uiState.collect { value = it }
-        }
-    }
-
-    if (uiState is CurrentWeatherUiState.Loading) {
-        LoadingScreen()
-    }
-
-    if (uiState is CurrentWeatherUiState.Success) {
-        CurrentWeatherScreen(
-            data = (uiState as CurrentWeatherUiState.Success).data,
-            modifier = modifier
-        )
-    }
-
-    if (uiState is CurrentWeatherUiState.Error) {
-        ErrorScreen()
-    }
-}
-
-@Composable
-internal fun CurrentWeatherScreen(data: MainWeather, modifier: Modifier = Modifier) {
+fun CurrentWeatherScreen(data: Main, modifier: Modifier = Modifier) {
     Column(
         modifier = Modifier
             .padding(5.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Box(data)
+        Box(data.location, data.current, data.airQuality)
         Spacer(modifier = Modifier.height(20.dp))
-        HourForecast(data)
+        HourForecast(data.hourlyForecast)
         Spacer(modifier = Modifier.height(20.dp))
-        CurrentWeatherDetails(data)
+        CurrentWeatherDetails(data.current)
     }
 
 }
 
 @Composable
-fun Box(data: MainWeather) {
-    val currentWeather = data.current
+fun Box(location: String, data: WeatherCurrent, airQuality: Int) {
 
     Card(
         modifier = Modifier
@@ -96,7 +55,7 @@ fun Box(data: MainWeather) {
         elevation = 8.dp,
     ) {
         Image(
-            painterResource(id = currentWeather.backgroundImage),
+            painterResource(id = data.backgroundImage),
             contentDescription = stringResource(R.string.weather_condition),
             contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.5f), blendMode = BlendMode.SrcOver),
@@ -106,9 +65,9 @@ fun Box(data: MainWeather) {
 
         Column(modifier = Modifier.padding(10.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(text = stringResource(R.string.forecast_updated_on, currentWeather.dt.date), style = MaterialTheme.typography.caption, color = Color.White)
+                Text(text = stringResource(R.string.forecast_updated_on, data.dt.date), style = MaterialTheme.typography.caption, color = Color.White)
                 Text(
-                    text = stringResource(R.string.forecast_updated_on_time, currentWeather.dt.time.toString().substringBeforeLast(":")),
+                    text = stringResource(R.string.forecast_updated_on_time, data.dt.time.toString().substringBeforeLast(":")),
                     style = MaterialTheme.typography.caption,
                     color = Color.White
                 )
@@ -116,22 +75,20 @@ fun Box(data: MainWeather) {
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(painter = painterResource(R.drawable.outline_location_on_24), contentDescription = stringResource(R.string.place), colorFilter = ColorFilter.tint(Color.White))
-                    Text(text = data.location, style = MaterialTheme.typography.subtitle2, color = Color.White)
+                    Text(text = location, style = MaterialTheme.typography.subtitle2, color = Color.White)
                 }
-                Text(text = stringResource(R.string.temperatureC, currentWeather.temp), style = MaterialTheme.typography.h1, color = Color.White)
+                Text(text = stringResource(R.string.temperatureC, data.temp), style = MaterialTheme.typography.h1, color = Color.White)
             }
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = stringResource(R.string.air_quality), style = MaterialTheme.typography.subtitle2, color = Color.White)
-                Text(text = fromAqiIndex(data.airQuality), style = MaterialTheme.typography.subtitle1, color = Color.White)
+                Text(text = fromAqiIndex(airQuality), style = MaterialTheme.typography.subtitle1, color = Color.White)
             }
         }
     }
 }
 
 @Composable
-fun HourForecast(data: MainWeather) {
-    val forecast = data.hourlyForecast
-
+fun HourForecast(forecast: List<WeatherHourly>) {
     LazyRow(/*modifier = Modifier.horizontalScroll(rememberScrollState())*/) {
         items(forecast) { item ->
             HourForecastItem(item)
@@ -157,10 +114,7 @@ fun HourForecastItem(item: WeatherHourly) {
 }
 
 @Composable
-fun CurrentWeatherDetails(data: MainWeather) {
-
-    val weather = data.current
-
+fun CurrentWeatherDetails(weather: WeatherCurrent) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -241,22 +195,9 @@ fun DetailsItemPreview() {
     DetailsItem(name = stringResource(R.string.sunrise), value = "06:00", icon = R.drawable.outline_wb_twilight_24)
 }
 
-/*
+
 @Preview(showBackground = true)
 @Composable
-fun CurrentWeatherDetailsPreview() {
-    */
-/*Column {
-        CurrentWeatherDetails(viewModel)
-    }*//*
-
+fun CurrentWeatherScreenPreview() {
+    CurrentWeatherScreen(data = sampleMain)
 }
-*/
-
-
-/*
-@Preview(showBackground = true)
-@Composable
-fun CurrentWeatherPagePreview() {
-    CurrentWeatherScreen()
-}*/

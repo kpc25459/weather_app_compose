@@ -106,11 +106,3 @@ val exampleCard = WeatherDaily(
 fun DayForecastItemPreview() {
     DayForecastItem(exampleCard)
 }
-
-/*
-@Composable
-@Preview()
-fun DayForecastItemExpandedPreview() {
-    DayForecastItem(exampleCard)
-}
-*/

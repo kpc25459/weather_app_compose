@@ -7,15 +7,13 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import net.dev.weather.api.WeatherServiceApi
 import net.dev.weather.backgroundImageFromWeather
-import net.dev.weather.fromAqiIndex
 import net.dev.weather.toHumanFromDegrees
 import kotlin.math.roundToInt
 
 interface WeatherRepository {
     val location: Flow<String>
-    val weatherCurrent: Flow<WeatherCurrent>
-    val weatherDaily: Flow<List<WeatherDaily>>
-    val weatherHourly: Flow<List<WeatherHourly>>
+
+    val weather: Flow<Weather>
 
     val airPollutionForecast: Flow<List<AirPollutionForecast>>
 
@@ -31,42 +29,32 @@ class NetworkRepository(private val weatherServiceApi: WeatherServiceApi) : Weat
             emit(location)
         }
 
-    override val weatherCurrent: Flow<WeatherCurrent>
+
+    override val weather: Flow<Weather>
         get() = flow {
-            val weather = weatherServiceApi.getWeather()
-            if (weather.isSuccessful) {
-                val body = weather.body()!!
-                val current = body.current
+            val weatherResponse = weatherServiceApi.getWeather()
+            if (weatherResponse.isSuccessful) {
+                val body = weatherResponse.body()!!
 
                 val timeZone = TimeZone.of(body.timezone)
 
-                val currentWeather = WeatherCurrent(
-                    dt = Instant.fromEpochSeconds(current.dt.toLong()).toLocalDateTime(timeZone),
-                    sunrise = Instant.fromEpochSeconds(current.sunrise.toLong()).toLocalDateTime(timeZone).time.toString().substringBeforeLast(":"),
-                    sunset = Instant.fromEpochSeconds(current.sunset.toLong()).toLocalDateTime(timeZone).time.toString().substringBeforeLast(":"),
-                    temp = current.temp.roundToInt(),
-                    feels_like = "${current.feels_like.roundToInt()} °",
-                    pressure = "${current.pressure} hPa",
-                    humidity = "${current.humidity} %",
-                    uvi = current.uvi.roundToInt().toString(),
-                    wind = "${((current.wind_speed * 3.6 * 100) / 100).roundToInt()} km/h ${toHumanFromDegrees(current.wind_deg)}",
+                val current1 = body.current
+
+                val current = WeatherCurrent(
+                    dt = Instant.fromEpochSeconds(current1.dt.toLong()).toLocalDateTime(timeZone),
+                    sunrise = Instant.fromEpochSeconds(current1.sunrise.toLong()).toLocalDateTime(timeZone).time.toString().substringBeforeLast(":"),
+                    sunset = Instant.fromEpochSeconds(current1.sunset.toLong()).toLocalDateTime(timeZone).time.toString().substringBeforeLast(":"),
+                    temp = current1.temp.roundToInt(),
+                    feels_like = "${current1.feels_like.roundToInt()} °",
+                    pressure = "${current1.pressure} hPa",
+                    humidity = "${current1.humidity} %",
+                    uvi = current1.uvi.roundToInt().toString(),
+                    wind = "${((current1.wind_speed * 3.6 * 100) / 100).roundToInt()} km/h ${toHumanFromDegrees(current1.wind_deg)}",
                     rain = "${body.daily.first().rain.roundToInt()} mm/24h",
-                    backgroundImage = backgroundImageFromWeather(current.weather.first().main)
+                    backgroundImage = backgroundImageFromWeather(current1.weather.first().main)
                 )
-                emit(currentWeather)
-            }
-        }
 
-    override val weatherDaily: Flow<List<WeatherDaily>>
-        get() = flow {
-            val weather = weatherServiceApi.getWeather()
-            if (weather.isSuccessful) {
-
-                val body = weather.body()!!
-
-                val timeZone = TimeZone.of(body.timezone)
-
-                emit(body.daily.map {
+                val weatherDaily = body.daily.map {
                     WeatherDaily(
                         Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(timeZone),
                         description = it.weather.first().description,
@@ -80,27 +68,23 @@ class NetworkRepository(private val weatherServiceApi: WeatherServiceApi) : Weat
                         uvi = it.uvi.roundToInt().toString(),
                         icon = it.weather[0].icon
                     )
-                })
-            }
-        }
+                }
 
-    override val weatherHourly: Flow<List<WeatherHourly>>
-        get() = flow {
-            val weather = weatherServiceApi.getWeather()
-
-            if (weather.isSuccessful) {
-
-                val body = weather.body()!!
-                val timeZone = TimeZone.of(body.timezone)
-
-                val last24h = body.hourly
-                emit(last24h.map {
+                val weatherHourly = body.hourly.map {
                     WeatherHourly(
                         dt = Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(timeZone),
                         temp = it.temp,
                         weatherIcon = it.weather[0].icon
                     )
-                })
+                }
+
+                emit(
+                    Weather(
+                        current = current,
+                        daily = weatherDaily,
+                        hourly = weatherHourly
+                    )
+                )
             }
         }
 
@@ -138,4 +122,5 @@ class NetworkRepository(private val weatherServiceApi: WeatherServiceApi) : Weat
                 emit(body.list.first().main.aqi)
             }
         }
+
 }
