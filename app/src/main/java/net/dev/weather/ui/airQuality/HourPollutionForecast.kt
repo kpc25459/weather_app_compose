@@ -26,7 +26,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun HourPollutionForecast(forecast: List<AirPollutionForecast>) {
-    LazyColumn {
+    LazyColumn(modifier = Modifier.height(320.dp)) {
         items(forecast) { item ->
             HourForecastItem(item)
             Spacer(modifier = Modifier.height(5.dp))
@@ -80,6 +80,7 @@ fun HourForecastItem(item: AirPollutionForecast, modifier: Modifier = Modifier) 
 
 fun visualIndex(aqi: Int): Color {
     return when (aqi) {
+        //TODO: zmienić te kolory
         1 -> Color.Green
         2 -> Color.Green
         3 -> Color.Magenta

@@ -19,7 +19,7 @@ class MainViewModel(weatherRepository: WeatherRepository) : ViewModel() {
         }
         .combine(weatherRepository.airPollutionForecast) { main, airPollution ->
             return@combine main.copy(
-                airPollutionForecast = airPollution.take(4)
+                airPollutionForecast = airPollution
             )
         }
         .combine(weatherRepository.airQuality) { main, airQuality ->
