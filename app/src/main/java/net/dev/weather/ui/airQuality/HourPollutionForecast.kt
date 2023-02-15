@@ -67,9 +67,9 @@ fun HourForecastItem(item: AirPollutionForecast, modifier: Modifier = Modifier) 
         icon = {
             Image(painter = painterResource(R.drawable.circle_24px),
                 contentDescription = stringResource(R.string.air_quality_icon),
-                colorFilter = ColorFilter.tint(visualIndex(item.aqi).copy(alpha = 0.5f)),
+                colorFilter = ColorFilter.tint(visualIndex(item.aqi)/*.copy(alpha = 0.5f)*/),
                 modifier = Modifier
-                    .size(20.dp)
+                    .size(10.dp)
                     .clickable(indication = null, interactionSource = interactionSource) { onClick() })
         },
         trailing = {
@@ -80,13 +80,12 @@ fun HourForecastItem(item: AirPollutionForecast, modifier: Modifier = Modifier) 
 
 fun visualIndex(aqi: Int): Color {
     return when (aqi) {
-        //TODO: zmienić te kolory
-        1 -> Color.Green
-        2 -> Color.Green
-        3 -> Color.Magenta
-        4 -> Color.Red
+        1 -> Color(0xFF2E7D32)  // Green800
+        2 -> Color(0xFF4CAF50)  // MaterialGreen500
+        3 -> Color(0xFFFF9800)  // MaterialOrange500
+        4 -> Color(0xFFF44336)  // MaterialRed500
         5 -> Color.Black
-        else -> Color.Gray
+        else -> Color(0xFF9E9E9E) // MaterialGrey500
     }
 }
 
