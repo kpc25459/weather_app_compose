@@ -13,7 +13,7 @@ import net.dev.weather.theme.*
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: MainViewModel = MainViewModel(NetworkRepository(WeatherServiceApi.create()))
+    private val viewModel: MainViewModel = MainViewModel(NetworkRepository(WeatherServiceApi.create(), refreshIntervalMs = 1000 * 60))
 
     @OptIn(ExperimentalLifecycleComposeApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
