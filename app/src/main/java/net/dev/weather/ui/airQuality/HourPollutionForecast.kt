@@ -30,7 +30,6 @@ fun HourPollutionForecast(forecast: List<AirPollutionForecast>) {
         items(forecast) { item ->
             HourForecastItem(item)
             Spacer(modifier = Modifier.height(5.dp))
-            Divider()
         }
     }
 }
