@@ -22,9 +22,9 @@ import net.dev.weather.localDate
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DayForecastItem(weatherDaily: WeatherDaily, modifier: Modifier = Modifier) {
+fun DayForecastItem(weatherDaily: WeatherDaily, initiallyExpanded: Boolean = false, modifier: Modifier = Modifier) {
 
-    var expanded by rememberSaveable { mutableStateOf(false) }
+    var expanded by rememberSaveable { mutableStateOf(initiallyExpanded) }
 
     val onClick = { expanded = !expanded }
 
