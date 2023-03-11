@@ -35,7 +35,7 @@ fun CurrentWeatherScreen(data: Main, modifier: Modifier = Modifier) {
     ) {
         Box(data.location, data.current, data.airQuality)
         Spacer(modifier = Modifier.height(20.dp))
-        HourForecast(data.hourlyForecast)
+        HourForecast(data.hourlyForecast.take(24))
         Spacer(modifier = Modifier.height(20.dp))
         CurrentWeatherDetails(data.current)
     }

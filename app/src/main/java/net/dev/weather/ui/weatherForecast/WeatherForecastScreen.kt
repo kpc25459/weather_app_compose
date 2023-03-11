@@ -16,7 +16,7 @@ import net.dev.weather.sampleMain
 @Composable
 fun WeatherForecastScreen(data: Main, modifier: Modifier = Modifier) {
     LazyColumn {
-        items(data.daily) { weatherDaily ->
+        items(data.daily.drop(1)) { weatherDaily ->
             DayForecastItem(weatherDaily, modifier = modifier)
             Spacer(modifier = Modifier.height(5.dp))
             Divider()
