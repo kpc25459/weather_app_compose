@@ -15,7 +15,7 @@
     <string name="no2" translatable="false">NO2</string>
     <string name="o3" translatable="false">O3</string>
     <string name="temperature">Temperature</string>
-    <string name="temperatureC" translatable="false">%s °C</string>
+    <string name="temperatureC" translatable="false">%s°C</string>
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>
     <string name="pressure">Pressure</string>
