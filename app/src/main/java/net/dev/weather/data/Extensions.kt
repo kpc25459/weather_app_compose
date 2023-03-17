@@ -1,21 +1,17 @@
 package net.dev.weather.data
 
 import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import net.dev.weather.api.AirPollutionResponse
 import net.dev.weather.api.OneCallResponse
 import net.dev.weather.backgroundImageFromWeather
 import net.dev.weather.toHumanFromDegrees
-
+import net.dev.weather.defaultTimeZone
 
 fun AirPollutionResponse.toDomainModel(): List<AirPollutionForecastC> {
-    //TODO: zahardkodowana strefa czasowa - do poprawy
-    val timeZone = TimeZone.of("Europe/Warsaw")
-
     return this.list.map {
         AirPollutionForecastC(
-            dt = Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(timeZone),
+            dt = Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(defaultTimeZone),
             aqi = it.main.aqi,
             no2 = it.components.no2,
             o3 = it.components.o3,
@@ -25,13 +21,13 @@ fun AirPollutionResponse.toDomainModel(): List<AirPollutionForecastC> {
     }
 }
 
-fun OneCallResponse.toDomainModel(timeZone: TimeZone): WeatherC {
+fun OneCallResponse.toDomainModel(): WeatherC {
     val current1 = this.current
 
     val current = WeatherCurrentC(
-        dt = Instant.fromEpochSeconds(current1.dt.toLong()).toLocalDateTime(timeZone),
-        sunrise = Instant.fromEpochSeconds(current1.sunrise.toLong()).toLocalDateTime(timeZone).time,
-        sunset = Instant.fromEpochSeconds(current1.sunset.toLong()).toLocalDateTime(timeZone).time,
+        dt = Instant.fromEpochSeconds(current1.dt.toLong()).toLocalDateTime(defaultTimeZone),
+        sunrise = Instant.fromEpochSeconds(current1.sunrise.toLong()).toLocalDateTime(defaultTimeZone).time,
+        sunset = Instant.fromEpochSeconds(current1.sunset.toLong()).toLocalDateTime(defaultTimeZone).time,
         temp = current1.temp,
         feels_like = current1.feels_like,
         pressure = current1.pressure,
@@ -45,10 +41,10 @@ fun OneCallResponse.toDomainModel(timeZone: TimeZone): WeatherC {
 
     val weatherDaily = this.daily.map {
         WeatherDailyC(
-            dt = Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(timeZone),
+            dt = Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(defaultTimeZone),
             description = it.weather.first().description,
-            sunrise = Instant.fromEpochSeconds(it.sunrise.toLong()).toLocalDateTime(timeZone).time,
-            sunset = Instant.fromEpochSeconds(it.sunset.toLong()).toLocalDateTime(timeZone).time,
+            sunrise = Instant.fromEpochSeconds(it.sunrise.toLong()).toLocalDateTime(defaultTimeZone).time,
+            sunset = Instant.fromEpochSeconds(it.sunset.toLong()).toLocalDateTime(defaultTimeZone).time,
             tempDay = it.temp.day,
             tempNight = it.temp.night,
             pressure = it.pressure,
@@ -63,7 +59,7 @@ fun OneCallResponse.toDomainModel(timeZone: TimeZone): WeatherC {
 
     val weatherHourly = this.hourly.map {
         WeatherHourlyC(
-            dt = Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(timeZone),
+            dt = Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(defaultTimeZone),
             temp = it.temp,
             weatherIcon = it.weather[0].icon
         )

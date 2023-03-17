@@ -3,9 +3,12 @@ package net.dev.weather
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.LocalDateTime
 import java.time.format.TextStyle
 import java.util.*
+
+val defaultTimeZone = TimeZone.of("Europe/Warsaw")
 
 //TODO: zmienić nazwę i dać przykład z użycia
 fun localDate(dt: LocalDateTime) = "${dt.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())}, ${dt.dayOfMonth} ${
@@ -17,7 +20,7 @@ fun localDate(dt: LocalDateTime) = "${dt.dayOfWeek.getDisplayName(TextStyle.FULL
 @Composable
 fun fromAqiIndex(aqi: Int): String {
     return when (aqi) {
-        1 ->  stringResource(R.string.very_good)
+        1 -> stringResource(R.string.very_good)
         2 -> stringResource(R.string.good)
         3 -> stringResource(R.string.moderate)
         4 -> stringResource(R.string.bad)
@@ -27,7 +30,7 @@ fun fromAqiIndex(aqi: Int): String {
 }
 
 @Composable
-fun dayOfWeek(dayOfWeek: DayOfWeek): String = when(dayOfWeek){
+fun dayOfWeek(dayOfWeek: DayOfWeek): String = when (dayOfWeek) {
     DayOfWeek.SUNDAY -> stringResource(R.string.sunday)
     DayOfWeek.MONDAY -> stringResource(R.string.monday)
     DayOfWeek.TUESDAY -> stringResource(R.string.tuesday)

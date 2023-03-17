@@ -3,7 +3,6 @@ package net.dev.weather.data
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.datetime.TimeZone
 import net.dev.weather.api.WeatherServiceApi
 
 interface WeatherRepository {
@@ -32,8 +31,7 @@ class NetworkRepository(private val weatherServiceApi: WeatherServiceApi, privat
                 val weatherResponse = weatherServiceApi.getWeather()
                 if (weatherResponse.isSuccessful) {
                     val body = weatherResponse.body()!!
-                    //TODO: zahardkodowana strefa czasowa - do poprawy
-                    emit(body.toDomainModel(TimeZone.of("Europe/Warsaw")))
+                    emit(body.toDomainModel())
                 }
                 delay(refreshIntervalMs)
             }
