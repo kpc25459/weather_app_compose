@@ -17,14 +17,10 @@ fun AirPollutionResponse.toDomainModel(): List<AirPollutionForecastC> {
         AirPollutionForecastC(
             dt = Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(timeZone),
             aqi = it.main.aqi,
-            co = it.components.co,
-            no = it.components.no,
             no2 = it.components.no2,
             o3 = it.components.o3,
-            so2 = it.components.so2,
             pm2_5 = it.components.pm2_5,
             pm10 = it.components.pm10,
-            nh3 = it.components.nh3
         )
     }
 }

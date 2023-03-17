@@ -62,7 +62,7 @@ class MainViewModel(weatherRepository: WeatherRepository) : ViewModel() {
                 temp = "${it.tempDay.roundToInt()}°C / ${it.tempNight.roundToInt()}°C",
                 pressure = "${it.pressure} hPa",
                 humidity = "${it.humidity} %",
-                wind = "${it.wind} km/h ${it.windDirection}",
+                wind = "${it.wind.roundToInt()} km/h ${it.windDirection}",
                 rain = "${it.rain.roundToInt()} mm/24h",
                 uvi = it.uvi.roundToInt().toString(),
                 icon = it.icon
@@ -89,16 +89,12 @@ class MainViewModel(weatherRepository: WeatherRepository) : ViewModel() {
             UiAirPollutionForecast(
                 dt = it.dt.time.toString(),
                 aqi = it.aqi,
-                co = it.co,
-                no = it.no,
                 no2 = it.no2.roundToInt().toString(),
                 o3 = it.o3.roundToInt().toString(),
-                so2 = it.so2,
                 pm2_5 = it.pm2_5,
                 pm2_5String = "${it.pm2_5.roundToInt()} μg/m3",
                 pm10 = it.pm10,
                 pm10String = "${it.pm10.roundToInt()} μg/m3",
-                nh3 = it.nh3
             )
         }
     }
