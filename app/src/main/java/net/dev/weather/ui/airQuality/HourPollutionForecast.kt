@@ -113,30 +113,25 @@ fun ListItemRow(description: String, value: String) {
     }
 }
 
-/*
 val exampleCards = listOf(
     UiAirPollutionForecast(
         dt = "12:23",
-        co = 607.49,
-        no = 14.53,
         no2 = "23.31",
-        o3 = 0.08,
-        so2 = 23.84,
+        o3 = "0.08",
         pm2_5 = 40.52,
+        pm2_5String = "40.52",
         pm10 = 49.45,
-        nh3 = 1.5,
+        pm10String = "49.45",
         aqi = 2
     ),
     UiAirPollutionForecast(
-        dt = LocalDateTime(2021, 5, 1, 11, 0),
-        co = 594.14,
-        no = 12.41,
-        no2 = 23.99,
-        o3 = 0.13,
-        so2 = 21.7,
+        dt = "11:00",
+        no2 = "23.99",
+        o3 = "0.13",
         pm2_5 = 39.76,
+        pm2_5String = "39.76",
         pm10 = 47.98,
-        nh3 = 1.38,
+        pm10String = "47.98",
         aqi = 4
     )
 )
@@ -153,4 +148,3 @@ fun HourForecastItemPreview() {
     HourForecastItem(exampleCards.first())
 }
 
-*/

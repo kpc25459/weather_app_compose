@@ -39,7 +39,6 @@ fun DayForecastItem(weatherDaily: UiWeatherDaily, initiallyExpanded: Boolean = f
                 if (expanded) {
                     Spacer(modifier = Modifier.height(5.dp))
 
-                    //TODO: powtórzenie kodu w innym pliku
                     ListItemRow(description = stringResource(R.string.temperature), value = weatherDaily.temp)
                     ListItemRow(description = stringResource(R.string.sunrise), value = weatherDaily.sunrise)
                     ListItemRow(description = stringResource(R.string.sunset), value = weatherDaily.sunset)

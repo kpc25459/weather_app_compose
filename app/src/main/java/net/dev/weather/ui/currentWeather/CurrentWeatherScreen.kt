@@ -191,10 +191,8 @@ fun DetailsItemPreview() {
 }
 
 
-/*
 @Preview(showBackground = true)
 @Composable
 fun CurrentWeatherScreenPreview() {
     CurrentWeatherScreen(data = sampleMain)
 }
-*/

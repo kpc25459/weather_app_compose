@@ -7,9 +7,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.dev.weather.Main
-
+import net.dev.weather.sampleMain
 
 @Composable
 fun WeatherForecastScreen(data: Main, modifier: Modifier = Modifier) {
@@ -22,11 +23,9 @@ fun WeatherForecastScreen(data: Main, modifier: Modifier = Modifier) {
     }
 }
 
-/*
 
 @Preview(showBackground = true)
 @Composable
 fun WeatherForecastScreenPreview() {
     WeatherForecastScreen(data = sampleMain)
 }
-*/

@@ -171,7 +171,6 @@ private fun CurveLineChart(data: List<UiAirPollutionForecast>, transform: (UiAir
     )
 }
 
-/*
 @Composable
 @Preview()
 fun ChartPreview() {
@@ -184,4 +183,3 @@ fun AirQualityScreenPreview() {
     AirQualityScreen(data = sampleMain)
 }
 
-*/

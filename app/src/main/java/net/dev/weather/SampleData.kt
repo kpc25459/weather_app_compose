@@ -3,7 +3,6 @@ package net.dev.weather
 import kotlinx.datetime.LocalDateTime
 import net.dev.weather.ui.model.UiAirPollutionForecast
 import net.dev.weather.ui.model.UiWeatherCurrent
-/*
 
 val sampleMain = Main(
     location = "Warsaw",
@@ -25,29 +24,24 @@ val sampleMain = Main(
     airPollutionCurrent = 0,
     airPollutionForecast = listOf(
         UiAirPollutionForecast(
-            dt = LocalDateTime(2021, 5, 1, 10, 0),
-            co = 607.49,
-            no = 14.53,
-            no2 = 23.31,
-            o3 = 0.08,
-            so2 = 23.84,
+            dt = "10:00",
+            no2 = "23.31",
+            o3 = "0.08",
             pm2_5 = 40.52,
+            pm2_5String = "40.52",
             pm10 = 49.45,
-            nh3 = 1.5,
+            pm10String = "49.45",
             aqi = 4
         ),
         UiAirPollutionForecast(
-            dt = LocalDateTime(2021, 5, 1, 11, 0),
-            co = 594.14,
-            no = 12.41,
-            no2 = 23.99,
-            o3 = 0.13,
-            so2 = 21.7,
+            dt = "11:00",
+            no2 = "23.99",
+            o3 = "0.13",
             pm2_5 = 39.76,
+            pm2_5String = "39.76",
             pm10 = 47.98,
-            nh3 = 1.38,
+            pm10String = "47.98",
             aqi = 2
         )
     )
 )
-*/
