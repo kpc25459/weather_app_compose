@@ -29,6 +29,16 @@ fun fromAqiIndex(aqi: Int): String {
     }
 }
 
+fun imageFromAqi(aqi: Int): Int = when (aqi) {
+    1 -> R.drawable.good_air
+    2 -> R.drawable.good_air
+    3 -> R.drawable.moderate_air
+    4 -> R.drawable.bad_air
+    5 -> R.drawable.very_bad_air
+    else ->
+        R.drawable.unknown
+}
+
 @Composable
 fun dayOfWeek(dayOfWeek: DayOfWeek): String = when (dayOfWeek) {
     DayOfWeek.SUNDAY -> stringResource(R.string.sunday)
@@ -62,15 +72,7 @@ fun toHumanFromDegrees(deg: Int): String {
     }
 }
 
-fun imageFromAqi(aqi: Int): Int = when (aqi) {
-    1 -> R.drawable.good_air
-    2 -> R.drawable.good_air
-    3 -> R.drawable.moderate_air
-    4 -> R.drawable.bad_air
-    5 -> R.drawable.very_bad_air
-    else ->
-        R.drawable.unknown
-}
+
 
 
 fun backgroundImageFromWeather(input: String): Int {
