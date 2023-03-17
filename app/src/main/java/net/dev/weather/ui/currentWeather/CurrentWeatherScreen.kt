@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.dp
 import net.dev.weather.*
 import net.dev.weather.R
 import net.dev.weather.components.WeatherIcon
-import net.dev.weather.data.WeatherCurrent
-import net.dev.weather.data.WeatherHourly
+import net.dev.weather.ui.model.UiWeatherCurrent
+import net.dev.weather.ui.model.UiWeatherHourly
 import net.dev.weather.theme.iconColor
 import kotlin.math.roundToInt
 
@@ -33,7 +33,7 @@ fun CurrentWeatherScreen(data: Main, modifier: Modifier = Modifier) {
             .padding(5.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Box(data.location, data.current, data.airQuality)
+        Box(data.location, data.current, data.airPollutionCurrent)
         Spacer(modifier = Modifier.height(20.dp))
         HourForecast(data.hourlyForecast.take(24))
         Spacer(modifier = Modifier.height(20.dp))
@@ -42,7 +42,7 @@ fun CurrentWeatherScreen(data: Main, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun Box(location: String, data: WeatherCurrent, airQuality: Int) {
+fun Box(location: String, data: UiWeatherCurrent, airQuality: Int) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -83,7 +83,7 @@ fun Box(location: String, data: WeatherCurrent, airQuality: Int) {
 }
 
 @Composable
-fun HourForecast(forecast: List<WeatherHourly>) {
+fun HourForecast(forecast: List<UiWeatherHourly>) {
     LazyRow(/*modifier = Modifier.horizontalScroll(rememberScrollState())*/) {
         items(forecast) { item ->
             HourForecastItem(item)
@@ -92,7 +92,7 @@ fun HourForecast(forecast: List<WeatherHourly>) {
 }
 
 @Composable
-fun HourForecastItem(item: WeatherHourly) {
+fun HourForecastItem(item: UiWeatherHourly) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -109,7 +109,7 @@ fun HourForecastItem(item: WeatherHourly) {
 }
 
 @Composable
-fun CurrentWeatherDetails(weather: WeatherCurrent) {
+fun CurrentWeatherDetails(weather: UiWeatherCurrent) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -191,8 +191,10 @@ fun DetailsItemPreview() {
 }
 
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun CurrentWeatherScreenPreview() {
     CurrentWeatherScreen(data = sampleMain)
 }
+*/

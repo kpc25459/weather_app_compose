@@ -26,7 +26,7 @@ import com.himanshoe.charty.line.config.LineConfig
 import com.himanshoe.charty.line.model.LineData
 import net.dev.weather.*
 import net.dev.weather.R
-import net.dev.weather.data.AirPollutionForecast
+import net.dev.weather.ui.model.UiAirPollutionForecast
 import net.dev.weather.theme.iconColor
 import net.dev.weather.theme.tabBarBackgroundColor
 
@@ -43,15 +43,15 @@ fun AirQualityScreen(data: Main, modifier: Modifier = Modifier) {
 
         val forecast5days = data.airPollutionForecast.take(24 * 5)
         Spacer(modifier = Modifier.height(20.dp))
-        Chart(title = "Prognoza dla PM 2.5", data = forecast5days, transform = AirPollutionForecast::pm2_5)
+        Chart(title = "Prognoza dla PM 2.5", data = forecast5days, transform = UiAirPollutionForecast::pm2_5)
 
         Spacer(modifier = Modifier.height(20.dp))
-        Chart(title = "Prognoza dla PM 10", data = forecast5days, transform = AirPollutionForecast::pm10)
+        Chart(title = "Prognoza dla PM 10", data = forecast5days, transform = UiAirPollutionForecast::pm10)
     }
 }
 
 @Composable
-fun Box(location: String, data: List<AirPollutionForecast>) {
+fun Box(location: String, data: List<UiAirPollutionForecast>) {
     val currentWeather = data.first()
 
     Card(
@@ -96,7 +96,7 @@ fun Box(location: String, data: List<AirPollutionForecast>) {
 }
 
 @Composable
-fun Chart(title: String, data: List<AirPollutionForecast>, transform: (AirPollutionForecast) -> Double) {
+fun Chart(title: String, data: List<UiAirPollutionForecast>, transform: (UiAirPollutionForecast) -> Double) {
     Column(modifier = Modifier.padding(10.dp)) {
         Text(text = title)
 
@@ -112,7 +112,7 @@ fun Chart(title: String, data: List<AirPollutionForecast>, transform: (AirPollut
  *  Nie ma tła pod linią, ale nie wyświetla zerowych wartości na początku i końcu
  */
 @Composable
-private fun LineChart(data: List<AirPollutionForecast>, transform: (AirPollutionForecast) -> Double) {
+private fun LineChart(data: List<UiAirPollutionForecast>, transform: (UiAirPollutionForecast) -> Double) {
     LineChart(
         modifier = Modifier
             .fillMaxWidth()
@@ -124,7 +124,7 @@ private fun LineChart(data: List<AirPollutionForecast>, transform: (AirPollution
             hasDotMarker = false,
         ),
         lineData = data.map {
-            LineData(it.dt.time.toString(), transform(it).toFloat())
+            LineData(it.dt, transform(it).toFloat())
         },
         chartDimens = ChartDimens(4.dp),
         axisConfig = AxisConfig(
@@ -144,7 +144,7 @@ private fun LineChart(data: List<AirPollutionForecast>, transform: (AirPollution
  * Jest tło pod linią, ale zerowe wartości są wyświetlane na początku i końcu
  */
 @Composable
-private fun CurveLineChart(data: List<AirPollutionForecast>, transform: (AirPollutionForecast) -> Double) {
+private fun CurveLineChart(data: List<UiAirPollutionForecast>, transform: (UiAirPollutionForecast) -> Double) {
     CurveLineChart(
         modifier = Modifier
             .fillMaxWidth()
@@ -156,7 +156,7 @@ private fun CurveLineChart(data: List<AirPollutionForecast>, transform: (AirPoll
             hasDotMarker = false,
         ),
         lineData = data.map {
-            LineData(it.dt.time.toString(), transform(it).toFloat())
+            LineData(it.dt, transform(it).toFloat())
         },
         chartDimens = ChartDimens(4.dp),
         axisConfig = AxisConfig(
@@ -171,6 +171,7 @@ private fun CurveLineChart(data: List<AirPollutionForecast>, transform: (AirPoll
     )
 }
 
+/*
 @Composable
 @Preview()
 fun ChartPreview() {
@@ -183,3 +184,4 @@ fun AirQualityScreenPreview() {
     AirQualityScreen(data = sampleMain)
 }
 
+*/

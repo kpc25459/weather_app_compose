@@ -17,12 +17,12 @@ import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDateTime
 import net.dev.weather.R
 import net.dev.weather.components.WeatherIcon
-import net.dev.weather.data.WeatherDaily
+import net.dev.weather.ui.model.UiWeatherDaily
 import net.dev.weather.localDate
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DayForecastItem(weatherDaily: WeatherDaily, initiallyExpanded: Boolean = false, modifier: Modifier = Modifier) {
+fun DayForecastItem(weatherDaily: UiWeatherDaily, initiallyExpanded: Boolean = false, modifier: Modifier = Modifier) {
 
     var expanded by rememberSaveable { mutableStateOf(initiallyExpanded) }
 
@@ -87,7 +87,7 @@ fun ListItemRow(description: String, value: String) {
 }
 
 
-val exampleCard = WeatherDaily(
+val exampleCard = UiWeatherDaily(
     dt = LocalDateTime(2021, 5, 1, 0, 0),
     humidity = "84 %",
     pressure = "1014 hPa",

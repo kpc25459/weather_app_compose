@@ -1,8 +1,8 @@
-package net.dev.weather.data
+package net.dev.weather.ui.model
 
 import kotlinx.datetime.LocalDateTime
 
-data class WeatherHourly(
+data class UiWeatherHourly(
     val dt: LocalDateTime,
     val temp: Double,
     val weatherIcon: String

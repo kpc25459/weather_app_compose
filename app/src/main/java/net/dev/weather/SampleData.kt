@@ -1,12 +1,13 @@
 package net.dev.weather
 
 import kotlinx.datetime.LocalDateTime
-import net.dev.weather.data.AirPollutionForecast
-import net.dev.weather.data.WeatherCurrent
+import net.dev.weather.ui.model.UiAirPollutionForecast
+import net.dev.weather.ui.model.UiWeatherCurrent
+/*
 
 val sampleMain = Main(
     location = "Warsaw",
-    current = WeatherCurrent(
+    current = UiWeatherCurrent(
         dt = LocalDateTime(2021, 5, 1, 10, 0),
         sunrise = "10:00",
         sunset = "22:00",
@@ -21,9 +22,9 @@ val sampleMain = Main(
     ),
     daily = listOf(),
     hourlyForecast = listOf(),
-    airQuality = 0,
+    airPollutionCurrent = 0,
     airPollutionForecast = listOf(
-        AirPollutionForecast(
+        UiAirPollutionForecast(
             dt = LocalDateTime(2021, 5, 1, 10, 0),
             co = 607.49,
             no = 14.53,
@@ -35,7 +36,7 @@ val sampleMain = Main(
             nh3 = 1.5,
             aqi = 4
         ),
-        AirPollutionForecast(
+        UiAirPollutionForecast(
             dt = LocalDateTime(2021, 5, 1, 11, 0),
             co = 594.14,
             no = 12.41,
@@ -49,3 +50,4 @@ val sampleMain = Main(
         )
     )
 )
+*/

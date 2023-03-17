@@ -20,12 +20,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDateTime
 import net.dev.weather.R
-import net.dev.weather.data.AirPollutionForecast
+import net.dev.weather.ui.model.UiAirPollutionForecast
 import net.dev.weather.fromAqiIndex
-import kotlin.math.roundToInt
 
 @Composable
-fun HourPollutionForecast(forecast: List<AirPollutionForecast>) {
+fun HourPollutionForecast(forecast: List<UiAirPollutionForecast>) {
     LazyColumn(modifier = Modifier.height(320.dp)) {
         items(forecast) { item ->
             HourForecastItem(item)
@@ -36,7 +35,7 @@ fun HourPollutionForecast(forecast: List<AirPollutionForecast>) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun HourForecastItem(item: AirPollutionForecast, modifier: Modifier = Modifier) {
+fun HourForecastItem(item: UiAirPollutionForecast, modifier: Modifier = Modifier) {
 
     var expanded by rememberSaveable { mutableStateOf(false) }
 
@@ -45,7 +44,7 @@ fun HourForecastItem(item: AirPollutionForecast, modifier: Modifier = Modifier) 
     val interactionSource = remember { MutableInteractionSource() }
 
     ListItem(
-        text = { Text(text = item.dt.time.toString(), style = MaterialTheme.typography.body1, modifier = Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() }) },
+        text = { Text(text = item.dt, style = MaterialTheme.typography.body1, modifier = Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() }) },
         secondaryText = {
             Column {
                 Text(
@@ -56,10 +55,10 @@ fun HourForecastItem(item: AirPollutionForecast, modifier: Modifier = Modifier) 
                 if (expanded) {
                     Spacer(modifier = Modifier.height(5.dp))
 
-                    ListItemRow(description = stringResource(R.string.pm25), value = "${item.pm2_5.roundToInt()} µg/m3")
-                    ListItemRow(description = stringResource(R.string.pm10), value = "${item.pm10.roundToInt()} µg/m3")
-                    ListItemRow(description = stringResource(R.string.no2), value = item.no2.roundToInt().toString())
-                    ListItemRow(description = stringResource(R.string.o3), value = item.o3.roundToInt().toString())
+                    ListItemRow(description = stringResource(R.string.pm25), value = item.pm2_5String)
+                    ListItemRow(description = stringResource(R.string.pm10), value = item.pm10String)
+                    ListItemRow(description = stringResource(R.string.no2), value = item.no2)
+                    ListItemRow(description = stringResource(R.string.o3), value = item.o3)
                 }
             }
         },
@@ -114,13 +113,13 @@ fun ListItemRow(description: String, value: String) {
     }
 }
 
-
+/*
 val exampleCards = listOf(
-    AirPollutionForecast(
-        dt = LocalDateTime(2021, 5, 1, 10, 0),
+    UiAirPollutionForecast(
+        dt = "12:23",
         co = 607.49,
         no = 14.53,
-        no2 = 23.31,
+        no2 = "23.31",
         o3 = 0.08,
         so2 = 23.84,
         pm2_5 = 40.52,
@@ -128,7 +127,7 @@ val exampleCards = listOf(
         nh3 = 1.5,
         aqi = 2
     ),
-    AirPollutionForecast(
+    UiAirPollutionForecast(
         dt = LocalDateTime(2021, 5, 1, 11, 0),
         co = 594.14,
         no = 12.41,
@@ -154,3 +153,4 @@ fun HourForecastItemPreview() {
     HourForecastItem(exampleCards.first())
 }
 
+*/

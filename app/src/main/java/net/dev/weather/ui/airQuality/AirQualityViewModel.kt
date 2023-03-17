@@ -3,9 +3,10 @@ package net.dev.weather.ui.airQuality
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
-import net.dev.weather.data.AirPollutionForecast
+import net.dev.weather.ui.model.UiAirPollutionForecast
 import net.dev.weather.data.WeatherRepository
 
+/*
 class AirQualityViewModel(weatherRepository: WeatherRepository) : ViewModel() {
 
     val uiState: StateFlow<AirQualityUiState> = weatherRepository
@@ -27,5 +28,6 @@ sealed interface AirQualityUiState {
 
 data class AirPollution(
     val location: String = "",
-    val forecast: List<AirPollutionForecast>
+    val forecast: List<UiAirPollutionForecast>
 )
+*/
