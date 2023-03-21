@@ -24,6 +24,7 @@ import net.dev.weather.theme.tabBarBackgroundColor
 import net.dev.weather.theme.tabBarTextColor
 import net.dev.weather.ui.airQuality.AirQualityScreen
 import net.dev.weather.ui.currentWeather.CurrentWeatherScreen
+import net.dev.weather.ui.search.SearchScreen
 import net.dev.weather.ui.weatherForecast.WeatherForecastScreen
 
 @Composable
@@ -88,7 +89,8 @@ private fun bottomNavigationBar(navController: NavHostController): @Composable (
             val items = listOf(
                 Screen.CurrentWeather,
                 Screen.WeatherForecast,
-                Screen.AirQuality
+                Screen.AirQuality,
+                Screen.Search
             )
 
             items.forEach { screen ->
@@ -123,6 +125,9 @@ private fun NavigationHost(navController: NavHostController, innerPadding: Paddi
         }
         composable(NavRoutes.AirQuality.route) {
             AirQualityScreen(data)
+        }
+        composable(NavRoutes.Search.route) {
+            SearchScreen()
         }
     }
 }
