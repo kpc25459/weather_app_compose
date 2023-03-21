@@ -48,7 +48,7 @@ class MainViewModel(weatherRepository: WeatherRepository) : ViewModel() {
             pressure = "${current1.pressure} hPa",
             humidity = "${current1.humidity} %",
             uvi = current1.uvi.roundToInt().toString(),
-            wind = "${current1.wind} km/h ${current1.windDirection}",
+            wind = "${current1.wind.roundToInt()} km/h ${current1.windDirection}",
             rain = "${current1.rain.roundToInt()} mm/24h",
             backgroundImage = current1.backgroundImage
         )
