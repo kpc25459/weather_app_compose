@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
 import net.dev.weather.data.AirPollutionForecastC
-import net.dev.weather.data.WeatherC
+import net.dev.weather.data.Weather
 import net.dev.weather.data.WeatherRepository
 import net.dev.weather.ui.model.*
 import kotlin.math.roundToInt
@@ -37,7 +37,7 @@ class MainViewModel(weatherRepository: WeatherRepository) : ViewModel() {
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MainUiState.Loading)
 
 
-    private fun mapToUiModel(weather: WeatherC): UiWeather {
+    private fun mapToUiModel(weather: Weather): UiWeather {
         val current1 = weather.current
         val current = UiWeatherCurrent(
             dt = current1.dt,

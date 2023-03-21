@@ -21,10 +21,10 @@ fun AirPollutionResponse.toDomainModel(): List<AirPollutionForecastC> {
     }
 }
 
-fun OneCallResponse.toDomainModel(): WeatherC {
+fun OneCallResponse.toDomainModel(): Weather {
     val current1 = this.current
 
-    val current = WeatherCurrentC(
+    val current = WeatherCurrent(
         dt = Instant.fromEpochSeconds(current1.dt.toLong()).toLocalDateTime(defaultTimeZone),
         sunrise = Instant.fromEpochSeconds(current1.sunrise.toLong()).toLocalDateTime(defaultTimeZone).time,
         sunset = Instant.fromEpochSeconds(current1.sunset.toLong()).toLocalDateTime(defaultTimeZone).time,
@@ -40,7 +40,7 @@ fun OneCallResponse.toDomainModel(): WeatherC {
     )
 
     val weatherDaily = this.daily.map {
-        WeatherDailyC(
+        WeatherDaily(
             dt = Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(defaultTimeZone),
             description = it.weather.first().description,
             sunrise = Instant.fromEpochSeconds(it.sunrise.toLong()).toLocalDateTime(defaultTimeZone).time,
@@ -58,14 +58,14 @@ fun OneCallResponse.toDomainModel(): WeatherC {
     }
 
     val weatherHourly = this.hourly.map {
-        WeatherHourlyC(
+        WeatherHourly(
             dt = Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(defaultTimeZone),
             temp = it.temp,
             weatherIcon = it.weather[0].icon
         )
     }
 
-    return WeatherC(
+    return Weather(
         current = current,
         daily = weatherDaily,
         hourly = weatherHourly
