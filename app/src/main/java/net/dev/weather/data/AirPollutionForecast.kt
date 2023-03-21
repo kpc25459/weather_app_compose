@@ -2,7 +2,7 @@ package net.dev.weather.data
 
 import kotlinx.datetime.LocalDateTime
 
-data class AirPollutionForecastC(
+data class AirPollutionForecast(
     val dt: LocalDateTime,
     val aqi: Int,
     val no2: Double,

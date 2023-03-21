@@ -11,7 +11,7 @@ interface WeatherRepository {
 
     val weather: Flow<Weather>
 
-    val airPollutionForecast: Flow<List<AirPollutionForecastC>>
+    val airPollutionForecast: Flow<List<AirPollutionForecast>>
 
     val airPollutionCurrent: Flow<Int>
 }
@@ -37,7 +37,7 @@ class NetworkRepository(private val weatherServiceApi: WeatherServiceApi, privat
             }
         }
 
-    override val airPollutionForecast: Flow<List<AirPollutionForecastC>>
+    override val airPollutionForecast: Flow<List<AirPollutionForecast>>
         get() = flow {
             while (true) {
                 val airPollution = weatherServiceApi.getAirPollutionForecast()

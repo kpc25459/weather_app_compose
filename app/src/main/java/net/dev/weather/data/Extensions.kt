@@ -8,9 +8,9 @@ import net.dev.weather.backgroundImageFromWeather
 import net.dev.weather.toHumanFromDegrees
 import net.dev.weather.defaultTimeZone
 
-fun AirPollutionResponse.toDomainModel(): List<AirPollutionForecastC> {
+fun AirPollutionResponse.toDomainModel(): List<AirPollutionForecast> {
     return this.list.map {
-        AirPollutionForecastC(
+        AirPollutionForecast(
             dt = Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(defaultTimeZone),
             aqi = it.main.aqi,
             no2 = it.components.no2,

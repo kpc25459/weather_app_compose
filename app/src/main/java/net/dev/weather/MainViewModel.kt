@@ -3,7 +3,7 @@ package net.dev.weather
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
-import net.dev.weather.data.AirPollutionForecastC
+import net.dev.weather.data.AirPollutionForecast
 import net.dev.weather.data.Weather
 import net.dev.weather.data.WeatherRepository
 import net.dev.weather.ui.model.*
@@ -84,7 +84,7 @@ class MainViewModel(weatherRepository: WeatherRepository) : ViewModel() {
         )
     }
 
-    private fun mapToUiModel(weather: List<AirPollutionForecastC>): List<UiAirPollutionForecast> {
+    private fun mapToUiModel(weather: List<AirPollutionForecast>): List<UiAirPollutionForecast> {
         return weather.map {
             UiAirPollutionForecast(
                 dt = it.dt.time.toString(),
