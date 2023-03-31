@@ -65,18 +65,25 @@ private fun topBar(navController: NavHostController/*, title: String*/): @Compos
 
     val currentTab = navController.currentBackStackEntryAsState().value?.destination?.hierarchy?.firstOrNull() ?: return {}
 
-    if (currentTab.route != NavRoutes.CurrentWeather.route) {
-        return {
-            TopAppBar(
-                title = { Text(text = getTitleByRoute(route = currentTab.route!!)) },
-                backgroundColor = tabBarBackgroundColor,
-                contentColor = tabBarTextColor,
-                elevation = 0.dp
-            )
-        }
-    } else {
+    if (currentTab.route == NavRoutes.CurrentWeather.route) {
         return {}
     }
+    return {
+        TopAppBar(
+            title = { Text(text = getTitleByRoute(route = currentTab.route!!)) },
+            backgroundColor = tabBarBackgroundColor,
+            contentColor = tabBarTextColor,
+            elevation = 0.dp,
+            actions = {
+                if (currentTab.route == NavRoutes.Search.route) {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(painter = painterResource(id = R.drawable.outline_search_24), contentDescription = "Search")
+                    }
+                }
+            }
+        )
+    }
+
 }
 
 @Composable
