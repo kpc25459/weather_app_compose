@@ -27,7 +27,7 @@ import net.dev.weather.ui.airQuality.*
 fun SearchScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    viewModel: CurrentWeatherViewModel = CurrentWeatherViewModel(NetworkRepository(WeatherServiceApi.create())),
+    viewModel: SearchViewModel = SearchViewModel(NetworkRepository(WeatherServiceApi.create())),
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
 
@@ -38,11 +38,12 @@ fun SearchScreen(
         modifier = modifier.fillMaxSize()
     ) { paddingValues ->
 
+/*
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
         uiState.main?.let { main ->
             Content(main, modifier = Modifier.padding(paddingValues))
-        }
+        }*/
     }
 }
 
