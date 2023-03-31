@@ -1,9 +1,10 @@
-package net.dev.weather
+package net.dev.weather.ui.currentWeather
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
+import net.dev.weather.R
 import net.dev.weather.data.AirPollutionForecast
 import net.dev.weather.data.Main
 import net.dev.weather.data.Weather
@@ -12,13 +13,13 @@ import net.dev.weather.ui.model.*
 import net.dev.weather.utils.Async
 import kotlin.math.roundToInt
 
-data class MainUiState(
+data class CurrentWeatherUiState(
     val main: Main? = null,
     val isLoading: Boolean = false,
     @StringRes val userMessage: Int? = null
 )
 
-class MainViewModel(weatherRepository: WeatherRepository) : ViewModel() {
+class CurrentWeatherViewModel(weatherRepository: WeatherRepository) : ViewModel() {
 
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
@@ -43,16 +44,16 @@ class MainViewModel(weatherRepository: WeatherRepository) : ViewModel() {
             .map { Async.Success(it) }
             .catch<Async<Main>> { emit(Async.Error(R.string.loading_error, it)) }
 
-    val uiState: StateFlow<MainUiState> = combine(
+    val uiState: StateFlow<CurrentWeatherUiState> = combine(
         _data, _userMessage
     ) { data, userMessage ->
         when (data) {
-            is Async.Loading -> MainUiState(isLoading = true)
-            is Async.Error -> MainUiState(userMessage = data.message)
-            is Async.Success -> MainUiState(main = data.data, userMessage = userMessage)
+            is Async.Loading -> CurrentWeatherUiState(isLoading = true)
+            is Async.Error -> CurrentWeatherUiState(userMessage = data.message)
+            is Async.Success -> CurrentWeatherUiState(main = data.data, userMessage = userMessage)
         }
     }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MainUiState(isLoading = true))
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), CurrentWeatherUiState(isLoading = true))
 
 
     private fun mapToUiModel(weather: Weather): UiWeather {

@@ -39,7 +39,7 @@ import kotlin.math.roundToInt
 fun CurrentWeatherScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel = MainViewModel(NetworkRepository(WeatherServiceApi.create())),
+    viewModel: CurrentWeatherViewModel = CurrentWeatherViewModel(NetworkRepository(WeatherServiceApi.create())),
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
 
