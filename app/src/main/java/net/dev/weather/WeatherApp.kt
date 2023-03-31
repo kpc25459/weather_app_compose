@@ -1,53 +1,22 @@
 package net.dev.weather
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import net.dev.weather.components.ErrorScreen
-import net.dev.weather.components.LoadingScreen
-import net.dev.weather.theme.iconColor
-import net.dev.weather.theme.tabBarBackgroundColor
-import net.dev.weather.theme.tabBarTextColor
-import net.dev.weather.ui.airQuality.AirQualityScreen
-import net.dev.weather.ui.currentWeather.CurrentWeatherScreen
-import net.dev.weather.ui.search.SearchScreen
-import net.dev.weather.ui.weatherForecast.WeatherForecastScreen
 
 @Composable
-fun WeatherApp(uiState: MainUiState) {
+fun WeatherApp() {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-        when (uiState) {
-            is MainUiState.Loading -> {
-                LoadingScreen()
-            }
+        NavGraph()
 
-            is MainUiState.Success -> {
-                MainPage(uiState.data)
-            }
-
-            is MainUiState.Error -> {
-                ErrorScreen()
-            }
-        }
+        //MainPage()
     }
 }
-
+/*
 @Composable
-fun MainPage(data: Main) {
+fun MainPage() {
 
     val navController = rememberNavController()
 
@@ -56,88 +25,27 @@ fun MainPage(data: Main) {
         bottomBar = bottomNavigationBar(navController = navController)
     )
     { innerPadding ->
-        NavigationHost(navController = navController, innerPadding, data)
+        NavigationHost(navController = navController, innerPadding)
     }
 }
 
 @Composable
-private fun topBar(navController: NavHostController/*, title: String*/): @Composable () -> Unit {
-
-    val currentTab = navController.currentBackStackEntryAsState().value?.destination?.hierarchy?.firstOrNull() ?: return {}
-
-    if (currentTab.route == NavRoutes.CurrentWeather.route) {
-        return {}
-    }
-    return {
-        TopAppBar(
-            title = { Text(text = getTitleByRoute(route = currentTab.route!!)) },
-            backgroundColor = tabBarBackgroundColor,
-            contentColor = tabBarTextColor,
-            elevation = 0.dp,
-            actions = {
-                if (currentTab.route == NavRoutes.Search.route) {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(painter = painterResource(id = R.drawable.outline_search_24), contentDescription = "Search")
-                    }
-                }
-            }
-        )
-    }
-
-}
-
-@Composable
-private fun bottomNavigationBar(navController: NavHostController): @Composable () -> Unit {
-    return {
-        BottomNavigation(backgroundColor = MaterialTheme.colors.background) {
-            val backStackEntry by navController.currentBackStackEntryAsState()
-            val currentDestination = backStackEntry?.destination
-
-            val items = listOf(
-                Screen.CurrentWeather,
-                Screen.WeatherForecast,
-                Screen.AirQuality,
-                Screen.Search
-            )
-
-            items.forEach { screen ->
-                val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
-
-                BottomNavigationItem(
-                    icon = { Icon(painter = painterResource(screen.iconResourceId), contentDescription = stringResource(screen.titleResourceId), tint = if (selected) iconColor else Color.Black) },
-                    selected = selected,
-                    onClick = {
-                        navController.navigate(screen.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues, data: Main) {
+private fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues) {
     NavHost(navController = navController, startDestination = NavRoutes.CurrentWeather.route, Modifier.padding(innerPadding)) {
         composable(NavRoutes.CurrentWeather.route) {
-            CurrentWeatherScreen(data)
+            CurrentWeatherScreen(navController)
         }
         composable(NavRoutes.WeatherForecast.route) {
-            WeatherForecastScreen(data)
+            WeatherForecastScreen(navController)
         }
         composable(NavRoutes.AirQuality.route) {
-            AirQualityScreen(data)
+            AirQualityScreen(navController)
         }
         composable(NavRoutes.Search.route) {
-            SearchScreen()
+            SearchScreen(navController)
         }
     }
-}
+}*/
 
 /*
 @Preview(showBackground = true)

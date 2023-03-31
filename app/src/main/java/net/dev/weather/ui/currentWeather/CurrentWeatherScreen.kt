@@ -18,18 +18,50 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import net.dev.weather.*
 import net.dev.weather.R
+import net.dev.weather.api.WeatherServiceApi
 import net.dev.weather.components.WeatherIcon
+import net.dev.weather.data.Main
+import net.dev.weather.data.NetworkRepository
+import net.dev.weather.theme.iconColor
 import net.dev.weather.ui.model.UiWeatherCurrent
 import net.dev.weather.ui.model.UiWeatherHourly
-import net.dev.weather.theme.iconColor
+import net.dev.weather.utils.dayOfWeek
+import net.dev.weather.utils.fromAqiIndex
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
-fun CurrentWeatherScreen(data: Main, modifier: Modifier = Modifier) {
+fun CurrentWeatherScreen(
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    viewModel: MainViewModel = MainViewModel(NetworkRepository(WeatherServiceApi.create())),
+    scaffoldState: ScaffoldState = rememberScaffoldState()
+) {
+
+    Scaffold(
+        bottomBar = bottomNavigationBar(navController = navController),
+        scaffoldState = scaffoldState,
+        modifier = modifier.fillMaxSize()
+    )
+    { paddingValues ->
+
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+        uiState.main?.let { main ->
+            Content(main, Modifier.padding(paddingValues))
+        }
+    }
+}
+
+@Composable
+private fun Content(data: Main, modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(5.dp)
             .verticalScroll(rememberScrollState())
     ) {
@@ -190,9 +222,9 @@ fun DetailsItemPreview() {
     DetailsItem(name = stringResource(R.string.sunrise), value = "06:00", icon = R.drawable.outline_wb_twilight_24)
 }
 
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun CurrentWeatherScreenPreview() {
     CurrentWeatherScreen(data = sampleMain)
-}
+}*/

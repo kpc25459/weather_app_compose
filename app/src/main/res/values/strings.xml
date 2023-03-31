@@ -47,4 +47,6 @@
     <string name="weather_forecast_screen_title">Weather forecast</string>
     <string name="air_quality_screen_title">Air quality</string>
     <string name="search_screen_title">Search</string>
+    <string name="loading_error">Error while loading</string>
+    <string name="search">search</string>
 </resources>

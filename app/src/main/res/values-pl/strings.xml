@@ -37,4 +37,6 @@
     <string name="weather_forecast_screen_title">Prognoza pogody</string>
     <string name="air_quality_screen_title">Jakość powietrza</string>
     <string name="search_screen_title">Wyszukaj</string>
+    <string name="loading_error">Nie udało się wczytać danych</string>
+    <string name="search">Wyszukaj</string>
 </resources>

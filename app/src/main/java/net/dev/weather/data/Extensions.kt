@@ -4,9 +4,9 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.toLocalDateTime
 import net.dev.weather.api.AirPollutionResponse
 import net.dev.weather.api.OneCallResponse
-import net.dev.weather.backgroundImageFromWeather
-import net.dev.weather.toHumanFromDegrees
-import net.dev.weather.defaultTimeZone
+import net.dev.weather.utils.backgroundImageFromWeather
+import net.dev.weather.utils.defaultTimeZone
+import net.dev.weather.utils.toHumanFromDegrees
 
 fun AirPollutionResponse.toDomainModel(): List<AirPollutionForecast> {
     return this.list.map {

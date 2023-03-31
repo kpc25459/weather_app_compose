@@ -1,13 +1,82 @@
 package net.dev.weather.ui.search
 
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import net.dev.weather.MainViewModel
+import net.dev.weather.NavRoutes
+import net.dev.weather.R
+import net.dev.weather.api.WeatherServiceApi
+import net.dev.weather.bottomNavigationBar
+import net.dev.weather.data.Main
+import net.dev.weather.data.NetworkRepository
+import net.dev.weather.theme.tabBarBackgroundColor
+import net.dev.weather.theme.tabBarTextColor
+import net.dev.weather.ui.airQuality.*
+import net.dev.weather.ui.model.UiAirPollutionForecast
+
+@OptIn(ExperimentalLifecycleComposeApi::class)
+@Composable
+fun SearchScreen(
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    viewModel: MainViewModel = MainViewModel(NetworkRepository(WeatherServiceApi.create())),
+    scaffoldState: ScaffoldState = rememberScaffoldState()
+) {
+
+    Scaffold(
+        topBar = topBar(),
+        bottomBar = bottomNavigationBar(navController = navController),
+        scaffoldState = scaffoldState,
+        modifier = modifier.fillMaxSize()
+    ) { paddingValues ->
+
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+        uiState.main?.let { main ->
+            Content(main, modifier = Modifier.padding(paddingValues))
+        }
+    }
+}
 
 @Composable
-fun SearchScreen(modifier: Modifier = Modifier) {
+private fun topBar(): @Composable () -> Unit {
+    return {
+        TopAppBar(
+            title = { Text(text = stringResource(id = R.string.search_screen_title)) },
+            backgroundColor = tabBarBackgroundColor,
+            contentColor = tabBarTextColor,
+            elevation = 0.dp,
+            modifier = Modifier.fillMaxWidth(),
+            actions = {
+                IconButton(onClick = { /*TODO*/ }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.outline_search_24),
+                        contentDescription = stringResource(id = R.string.search)
+                    )
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun Content(data: Main, modifier: Modifier = Modifier) {
 
 }
+
 
 @Preview(showBackground = true)
 @Composable

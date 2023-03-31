@@ -18,7 +18,7 @@ import kotlinx.datetime.LocalDateTime
 import net.dev.weather.R
 import net.dev.weather.components.WeatherIcon
 import net.dev.weather.ui.model.UiWeatherDaily
-import net.dev.weather.localDate
+import net.dev.weather.utils.localDate
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

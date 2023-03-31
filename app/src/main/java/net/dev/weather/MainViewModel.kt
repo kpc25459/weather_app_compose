@@ -1,40 +1,58 @@
 package net.dev.weather
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
 import net.dev.weather.data.AirPollutionForecast
+import net.dev.weather.data.Main
 import net.dev.weather.data.Weather
 import net.dev.weather.data.WeatherRepository
 import net.dev.weather.ui.model.*
+import net.dev.weather.utils.Async
 import kotlin.math.roundToInt
+
+data class MainUiState(
+    val main: Main? = null,
+    val isLoading: Boolean = false,
+    @StringRes val userMessage: Int? = null
+)
 
 class MainViewModel(weatherRepository: WeatherRepository) : ViewModel() {
 
-    val uiState: StateFlow<MainUiState> = weatherRepository
-        .location
-        .combine(weatherRepository.weather) { location, weather ->
+    private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
+
+    private val _data: Flow<Async<Main>> =
+        combine(
+            weatherRepository.location,
+            weatherRepository.weather,
+            weatherRepository.airPollutionForecast,
+            weatherRepository.airPollutionCurrent
+        ) { location, weather, airPollutionForecast, airPollutionCurrent ->
+
             val uiWeather = mapToUiModel(weather)
             return@combine Main(
                 location = location,
                 current = uiWeather.current,
                 daily = uiWeather.daily,
-                hourlyForecast = uiWeather.hourly
-            )
-        }
-        .combine(weatherRepository.airPollutionForecast) { main, airPollutionForecast ->
-            return@combine main.copy(
-                airPollutionForecast = mapToUiModel(airPollutionForecast)
-            )
-        }
-        .combine(weatherRepository.airPollutionCurrent) { main, airPollutionCurrent ->
-            return@combine main.copy(
+                hourlyForecast = uiWeather.hourly,
+                airPollutionForecast = mapToUiModel(airPollutionForecast),
                 airPollutionCurrent = airPollutionCurrent
             )
         }
-        .map(MainUiState::Success)
-        .catch { MainUiState.Error(it) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MainUiState.Loading)
+            .map { Async.Success(it) }
+            .catch<Async<Main>> { emit(Async.Error(R.string.loading_error, it)) }
+
+    val uiState: StateFlow<MainUiState> = combine(
+        _data, _userMessage
+    ) { data, userMessage ->
+        when (data) {
+            is Async.Loading -> MainUiState(isLoading = true)
+            is Async.Error -> MainUiState(userMessage = data.message)
+            is Async.Success -> MainUiState(main = data.data, userMessage = userMessage)
+        }
+    }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MainUiState(isLoading = true))
 
 
     private fun mapToUiModel(weather: Weather): UiWeather {
@@ -99,19 +117,4 @@ class MainViewModel(weatherRepository: WeatherRepository) : ViewModel() {
         }
     }
 }
-
-sealed interface MainUiState {
-    object Loading : MainUiState
-    data class Success(val data: Main) : MainUiState
-    data class Error(val throwable: Throwable) : MainUiState
-}
-
-data class Main(
-    val location: String,
-    val current: UiWeatherCurrent,
-    val daily: List<UiWeatherDaily>,
-    val hourlyForecast: List<UiWeatherHourly>,
-    val airPollutionCurrent: Int = 0,
-    val airPollutionForecast: List<UiAirPollutionForecast> = emptyList()
-)
 

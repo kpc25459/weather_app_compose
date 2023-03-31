@@ -1,10 +1,11 @@
-package net.dev.weather
+package net.dev.weather.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.LocalDateTime
+import net.dev.weather.R
 import java.time.format.TextStyle
 import java.util.*
 

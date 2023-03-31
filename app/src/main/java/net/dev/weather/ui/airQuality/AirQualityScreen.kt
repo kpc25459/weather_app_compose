@@ -4,9 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
@@ -17,6 +17,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.himanshoe.charty.common.axis.AxisConfig
 import com.himanshoe.charty.common.dimens.ChartDimens
 import com.himanshoe.charty.line.CurveLineChart
@@ -26,14 +29,58 @@ import com.himanshoe.charty.line.config.LineConfig
 import com.himanshoe.charty.line.model.LineData
 import net.dev.weather.*
 import net.dev.weather.R
-import net.dev.weather.ui.model.UiAirPollutionForecast
+import net.dev.weather.api.WeatherServiceApi
+import net.dev.weather.data.Main
+import net.dev.weather.data.NetworkRepository
 import net.dev.weather.theme.iconColor
 import net.dev.weather.theme.tabBarBackgroundColor
+import net.dev.weather.theme.tabBarTextColor
+import net.dev.weather.ui.model.UiAirPollutionForecast
+import net.dev.weather.utils.fromAqiIndex
+import net.dev.weather.utils.imageFromAqi
+
+@OptIn(ExperimentalLifecycleComposeApi::class)
+@Composable
+fun AirQualityScreen(
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    viewModel: MainViewModel = MainViewModel(NetworkRepository(WeatherServiceApi.create())),
+    scaffoldState: ScaffoldState = rememberScaffoldState()
+) {
+    Scaffold(
+        topBar = topBar(),
+        bottomBar = bottomNavigationBar(navController = navController),
+        scaffoldState = scaffoldState,
+        modifier = modifier.fillMaxSize()
+    ) { paddingValues ->
+
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+        uiState.main?.let { main ->
+            Content(main, modifier = Modifier.padding(paddingValues))
+        }
+    }
+}
+
 
 @Composable
-fun AirQualityScreen(data: Main, modifier: Modifier = Modifier) {
+private fun topBar(): @Composable () -> Unit {
+    return {
+        TopAppBar(
+            title = { Text(text = stringResource(id = R.string.air_quality_screen_title)) },
+            backgroundColor = tabBarBackgroundColor,
+            contentColor = tabBarTextColor,
+            elevation = 0.dp,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+
+@Composable
+private fun Content(data: Main, modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(5.dp)
             .verticalScroll(rememberScrollState())
     ) {
@@ -70,7 +117,11 @@ fun Box(location: String, data: List<UiAirPollutionForecast>) {
                 .fillMaxWidth()
         )
 
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(10.dp).fillMaxWidth()) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth()
+        ) {
             Row {
                 Image(painter = painterResource(R.drawable.outline_location_on_24), contentDescription = stringResource(R.string.place), colorFilter = ColorFilter.tint(Color.White))
                 Text(text = location, color = Color.White)
@@ -177,9 +228,9 @@ fun ChartPreview() {
     Chart(title = "Prognoza dla PM 2.5", data = sampleMain.airPollutionForecast.take(24 * 5), transform = { it.pm2_5 })
 }
 
-@Preview(showBackground = true)
+/*@Preview(showBackground = true)
 @Composable
 fun AirQualityScreenPreview() {
     AirQualityScreen(data = sampleMain)
-}
+}*/
 
