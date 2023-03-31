@@ -31,12 +31,10 @@ import net.dev.weather.*
 import net.dev.weather.R
 import net.dev.weather.api.WeatherServiceApi
 import net.dev.weather.data.AirQuality
-import net.dev.weather.data.Main
 import net.dev.weather.data.NetworkRepository
 import net.dev.weather.theme.iconColor
 import net.dev.weather.theme.tabBarBackgroundColor
 import net.dev.weather.theme.tabBarTextColor
-import net.dev.weather.ui.currentWeather.CurrentWeatherViewModel
 import net.dev.weather.ui.model.UiAirPollutionForecast
 import net.dev.weather.utils.fromAqiIndex
 import net.dev.weather.utils.imageFromAqi
@@ -223,12 +221,12 @@ private fun CurveLineChart(data: List<UiAirPollutionForecast>, transform: (UiAir
         )
     )
 }
-
+/*
 @Composable
 @Preview()
 fun ChartPreview() {
     Chart(title = "Prognoza dla PM 2.5", data = sampleMain.airPollutionForecast.take(24 * 5), transform = { it.pm2_5 })
-}
+}*/
 
 /*@Preview(showBackground = true)
 @Composable

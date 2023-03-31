@@ -1,11 +1,12 @@
 package net.dev.weather
 
 import kotlinx.datetime.LocalDateTime
-import net.dev.weather.data.Main
+import net.dev.weather.data.CurrentWeather
 import net.dev.weather.ui.model.UiAirPollutionForecast
 import net.dev.weather.ui.model.UiWeatherCurrent
 
-val sampleMain = Main(
+/*
+val sampleMain = CurrentWeather(
     location = "Warsaw",
     current = UiWeatherCurrent(
         dt = LocalDateTime(2021, 5, 1, 10, 0),
@@ -46,3 +47,4 @@ val sampleMain = Main(
         )
     )
 )
+*/

@@ -25,7 +25,7 @@ import net.dev.weather.*
 import net.dev.weather.R
 import net.dev.weather.api.WeatherServiceApi
 import net.dev.weather.components.WeatherIcon
-import net.dev.weather.data.Main
+import net.dev.weather.data.CurrentWeather
 import net.dev.weather.data.NetworkRepository
 import net.dev.weather.theme.iconColor
 import net.dev.weather.ui.model.UiWeatherCurrent
@@ -59,7 +59,7 @@ fun CurrentWeatherScreen(
 }
 
 @Composable
-private fun Content(data: Main, modifier: Modifier = Modifier) {
+private fun Content(data: CurrentWeather, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .padding(5.dp)
