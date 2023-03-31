@@ -12,12 +12,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import net.dev.weather.ui.currentWeather.CurrentWeatherViewModel
 import net.dev.weather.R
 import net.dev.weather.api.WeatherServiceApi
 import net.dev.weather.bottomNavigationBar
-import net.dev.weather.data.Main
 import net.dev.weather.data.NetworkRepository
+import net.dev.weather.data.WeatherForecast
 import net.dev.weather.theme.tabBarBackgroundColor
 import net.dev.weather.theme.tabBarTextColor
 
@@ -26,7 +25,7 @@ import net.dev.weather.theme.tabBarTextColor
 fun WeatherForecastScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    viewModel: CurrentWeatherViewModel = CurrentWeatherViewModel(NetworkRepository(WeatherServiceApi.create())),
+    viewModel: WeatherForecastViewModel = WeatherForecastViewModel(NetworkRepository(WeatherServiceApi.create())),
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
 
@@ -39,8 +38,8 @@ fun WeatherForecastScreen(
 
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-        uiState.main?.let { main ->
-            Content(main, modifier = Modifier.padding(paddingValues))
+        uiState.weatherForecast?.let {
+            Content(it, modifier = Modifier.padding(paddingValues))
         }
     }
 }
@@ -60,7 +59,7 @@ private fun topBar(): @Composable () -> Unit {
 
 @Composable
 @OptIn(ExperimentalLifecycleComposeApi::class)
-private fun Content(data: Main, modifier: Modifier) {
+private fun Content(data: WeatherForecast, modifier: Modifier) {
     LazyColumn {
         itemsIndexed(data.daily.drop(1)) { idx, weatherDaily ->
             DayForecastItem(weatherDaily, initiallyExpanded = idx == 0, modifier = modifier)
