@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import net.dev.weather.R
 import net.dev.weather.api.WeatherServiceApi
 import net.dev.weather.bottomNavigationBar
@@ -23,7 +23,7 @@ import net.dev.weather.theme.tabBarTextColor
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun WeatherForecastScreen(
-    navController: NavHostController,
+    navController: NavController,
     modifier: Modifier = Modifier,
     viewModel: WeatherForecastViewModel = WeatherForecastViewModel(NetworkRepository(WeatherServiceApi.create())),
     scaffoldState: ScaffoldState = rememberScaffoldState()

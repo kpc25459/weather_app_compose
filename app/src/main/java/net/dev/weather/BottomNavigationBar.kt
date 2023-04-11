@@ -9,14 +9,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import net.dev.weather.theme.iconColor
 
 @Composable
-fun bottomNavigationBar(navController: NavHostController): @Composable () -> Unit {
+fun bottomNavigationBar(navController: NavController): @Composable () -> Unit {
     return {
         BottomNavigation(backgroundColor = MaterialTheme.colors.background) {
             val backStackEntry by navController.currentBackStackEntryAsState()
@@ -30,11 +29,15 @@ fun bottomNavigationBar(navController: NavHostController): @Composable () -> Uni
             )
 
             items.forEach { screen ->
-                val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
 
                 BottomNavigationItem(
-                    icon = { Icon(painter = painterResource(screen.iconResourceId), contentDescription = stringResource(screen.titleResourceId), tint = if (selected) iconColor else Color.Black) },
-                    selected = selected,
+                    icon = {
+                        Icon(
+                            painter = painterResource(screen.iconResourceId), contentDescription = stringResource(screen.titleResourceId),
+                            tint = if (currentDestination?.route == screen.route) iconColor else Color.Black
+                        )
+                    },
+                    selected = currentDestination?.route == screen.route,
                     onClick = {
                         navController.navigate(screen.route) {
                             popUpTo(navController.graph.findStartDestination().id) {

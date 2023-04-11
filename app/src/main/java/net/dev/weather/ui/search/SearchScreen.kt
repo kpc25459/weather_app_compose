@@ -9,7 +9,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import net.dev.weather.R
 import net.dev.weather.api.WeatherServiceApi
 import net.dev.weather.bottomNavigationBar
@@ -22,7 +22,7 @@ import net.dev.weather.ui.airQuality.*
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun SearchScreen(
-    navController: NavHostController,
+    navController: NavController,
     modifier: Modifier = Modifier,
     viewModel: SearchViewModel = SearchViewModel(NetworkRepository(WeatherServiceApi.create())),
     scaffoldState: ScaffoldState = rememberScaffoldState()

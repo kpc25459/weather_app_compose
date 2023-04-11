@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import net.dev.weather.*
 import net.dev.weather.R
 import net.dev.weather.api.WeatherServiceApi
@@ -37,7 +37,7 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun CurrentWeatherScreen(
-    navController: NavHostController,
+    navController: NavController,
     modifier: Modifier = Modifier,
     viewModel: CurrentWeatherViewModel = CurrentWeatherViewModel(NetworkRepository(WeatherServiceApi.create())),
     scaffoldState: ScaffoldState = rememberScaffoldState()
