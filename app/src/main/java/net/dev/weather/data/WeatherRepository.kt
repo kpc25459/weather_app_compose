@@ -4,6 +4,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import net.dev.weather.api.WeatherServiceApi
+import javax.inject.Inject
+import javax.inject.Singleton
 
 interface WeatherRepository {
 
@@ -16,7 +18,8 @@ interface WeatherRepository {
     val airPollutionCurrent: Flow<Int>
 }
 
-class NetworkRepository(private val weatherServiceApi: WeatherServiceApi, private val refreshIntervalMs: Long = 1000 * 60) : WeatherRepository {
+@Singleton
+class NetworkRepository @Inject constructor(private val weatherServiceApi: WeatherServiceApi) : WeatherRepository {
 
     override val location: Flow<String>
         get() = flow {
@@ -62,6 +65,9 @@ class NetworkRepository(private val weatherServiceApi: WeatherServiceApi, privat
             }
         }
 
+    companion object{
+        private const val refreshIntervalMs = 1000 * 60L
+    }
 }
 
 

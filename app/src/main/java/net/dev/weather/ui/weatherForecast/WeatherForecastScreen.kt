@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -25,7 +26,7 @@ import net.dev.weather.theme.tabBarTextColor
 fun WeatherForecastScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    viewModel: WeatherForecastViewModel = WeatherForecastViewModel(NetworkRepository(WeatherServiceApi.create())),
+    viewModel: WeatherForecastViewModel = hiltViewModel(),
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
 

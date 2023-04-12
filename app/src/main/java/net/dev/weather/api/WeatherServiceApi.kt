@@ -1,10 +1,6 @@
 package net.dev.weather.api
 
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -43,25 +39,9 @@ interface WeatherServiceApi {
     ): Response<AirPollutionResponse>
 
     companion object {
-        private const val BASE_URL = "http://api.openweathermap.org/"
+        const val BASE_URL = "http://api.openweathermap.org/"
         private const val appid = "8c27af4c68a4a3cc4c9d8d009ece6201"
         private const val lat = "52.335833"
         private const val lon = "16.807778"
-
-        fun create(): WeatherServiceApi {
-            val logger =
-                HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC }
-
-            val client = OkHttpClient.Builder()
-                .addInterceptor(logger)
-                .build()
-
-            return Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(WeatherServiceApi::class.java)
-        }
     }
 }

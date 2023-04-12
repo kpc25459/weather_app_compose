@@ -3,11 +3,13 @@ package net.dev.weather.ui.airQuality
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import net.dev.weather.R
 import net.dev.weather.data.*
 import net.dev.weather.ui.model.*
 import net.dev.weather.utils.Async
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
 data class AirQualityUiState(
@@ -16,7 +18,8 @@ data class AirQualityUiState(
     @StringRes val userMessage: Int? = null
 )
 
-class AirQualityViewModel(weatherRepository: WeatherRepository) : ViewModel() {
+@HiltViewModel
+class AirQualityViewModel @Inject constructor(weatherRepository: WeatherRepository) : ViewModel() {
 
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
