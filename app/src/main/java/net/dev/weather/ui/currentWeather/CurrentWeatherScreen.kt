@@ -7,7 +7,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
@@ -19,15 +20,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import net.dev.weather.*
 import net.dev.weather.R
-import net.dev.weather.api.WeatherServiceApi
+import net.dev.weather.bottomNavigationBar
 import net.dev.weather.components.WeatherIcon
 import net.dev.weather.data.CurrentWeather
-import net.dev.weather.data.NetworkRepository
 import net.dev.weather.theme.iconColor
 import net.dev.weather.ui.model.UiWeatherCurrent
 import net.dev.weather.ui.model.UiWeatherHourly
@@ -35,7 +33,6 @@ import net.dev.weather.utils.dayOfWeek
 import net.dev.weather.utils.fromAqiIndex
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun CurrentWeatherScreen(
     navController: NavController,

@@ -17,7 +17,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.himanshoe.charty.common.axis.AxisConfig
@@ -39,7 +38,6 @@ import net.dev.weather.ui.model.UiAirPollutionForecast
 import net.dev.weather.utils.fromAqiIndex
 import net.dev.weather.utils.imageFromAqi
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun AirQualityScreen(
     navController: NavController,

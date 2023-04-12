@@ -1,6 +1,7 @@
 package net.dev.weather.ui.search
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,18 +10,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.navigation.NavController
 import net.dev.weather.R
-import net.dev.weather.api.WeatherServiceApi
 import net.dev.weather.bottomNavigationBar
 import net.dev.weather.data.CurrentWeather
-import net.dev.weather.data.NetworkRepository
 import net.dev.weather.theme.tabBarBackgroundColor
 import net.dev.weather.theme.tabBarTextColor
-import net.dev.weather.ui.airQuality.*
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun SearchScreen(
     navController: NavController,
