@@ -1,16 +1,37 @@
+@file:OptIn(ExperimentalComposeUiApi::class)
+
 package net.dev.weather.ui.search
 
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import net.dev.weather.NavRoutes
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
 import net.dev.weather.data.CurrentWeather
@@ -19,52 +40,134 @@ import net.dev.weather.theme.tabBarTextColor
 
 @Composable
 fun SearchScreen(
-    navController: NavController,
-    modifier: Modifier = Modifier,
-    viewModel: SearchViewModel = hiltViewModel(),
-    scaffoldState: ScaffoldState = rememberScaffoldState()
+    navController: NavController, modifier: Modifier = Modifier, viewModel: SearchViewModel = hiltViewModel(), scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
 
+    val text = remember {
+        mutableStateOf("")
+    }
+
     Scaffold(
-        topBar = topBar(),
-        bottomBar = bottomNavigationBar(navController = navController),
-        scaffoldState = scaffoldState,
-        modifier = modifier.fillMaxSize()
+        //topBar = topBar(),
+        topBar = {
+            SearchBar(
+                text.value,
+                onSearchTextChanged = { text.value = it },
+                onNavigateBack = {
+                    navController.navigate(NavRoutes.CurrentWeather.route)
+                },
+            )
+        },
+        bottomBar = bottomNavigationBar(navController = navController), scaffoldState = scaffoldState, modifier = modifier.fillMaxSize()
     ) { paddingValues ->
 
-/*
-        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+        //val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-        uiState.main?.let { main ->
-            Content(main, modifier = Modifier.padding(paddingValues))
-        }*/
+        //uiState.main?.let { main ->
+        Content(modifier = Modifier.padding(paddingValues))
+        //}
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun SearchBar(
+    searchText: String,
+    placeholderText: String = stringResource(id = R.string.search),
+    onSearchTextChanged: (String) -> Unit = {},
+    onClearClick: () -> Unit = {},
+    onNavigateBack: () -> Unit = {}
+) {
+
+    var showClearButton by remember { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusRequester = remember { FocusRequester() }
+
+    TopAppBar(
+        title = { Text(text = "") },
+        navigationIcon = {
+            IconButton(onClick = onNavigateBack) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack, contentDescription = "back"
+                )
+            }
+        }, actions = {
+
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 2.dp)
+                    .onFocusChanged { focusState ->
+                        showClearButton = (focusState.isFocused)
+                    }
+                    .focusRequester(focusRequester),
+                value = searchText,
+                onValueChange = onSearchTextChanged,
+                placeholder = {
+                    Text(text = placeholderText)
+                },
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    backgroundColor = Color.Transparent,
+                    cursorColor = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+                ),
+                trailingIcon = {
+                    AnimatedVisibility(
+                        visible = showClearButton,
+                        enter = fadeIn(),
+                        exit = fadeOut()
+                    ) {
+                        IconButton(onClick = { onClearClick() }) {
+                            Icon(
+                                imageVector = Icons.Filled.Close, contentDescription = "clear content"
+                            )
+                        }
+                    }
+                },
+                maxLines = 1,
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = {
+                    keyboardController?.hide()
+                })
+            )
+        })
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
     }
 }
 
 @Composable
 private fun topBar(): @Composable () -> Unit {
     return {
-        TopAppBar(
-            title = { Text(text = stringResource(id = R.string.search_screen_title)) },
+        TopAppBar(title = { Text(text = stringResource(id = R.string.search_screen_title)) },
             backgroundColor = tabBarBackgroundColor,
             contentColor = tabBarTextColor,
             elevation = 0.dp,
             modifier = Modifier.fillMaxWidth(),
             actions = {
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.outline_search_24),
-                        contentDescription = stringResource(id = R.string.search)
-                    )
-                }
-            }
+                SearchMenu()
+            })
+    }
+}
+
+@Composable
+private fun SearchMenu() {
+    IconButton(onClick = { /*TODO*/ }) {
+        Icon(
+            painter = painterResource(id = R.drawable.outline_search_24), contentDescription = stringResource(id = R.string.search)
         )
     }
 }
 
 @Composable
-private fun Content(data: CurrentWeather, modifier: Modifier = Modifier) {
+private fun Content(modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
 
+
+    }
 }
 
 
