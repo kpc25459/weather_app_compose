@@ -5,10 +5,12 @@ package net.dev.weather.ui.search
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -22,6 +24,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -52,7 +55,7 @@ fun SearchScreen(
         topBar = {
             SearchBar(
                 searchText = uiState.query ?: "",
-                onSearchTextChanged = {  viewModel.onSearchTextChanged(it) },
+                onSearchTextChanged = { viewModel.onSearchTextChanged(it) },
                 onNavigateBack = {
                     navController.navigate(NavRoutes.CurrentWeather.route)
                 },
@@ -160,14 +163,18 @@ private fun SearchMenu() {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun Content(matchedCities: List<String>, modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
-
-        matchedCities.forEach { city ->
-            Text(text = city)
+    LazyColumn {
+        items(matchedCities.size) { index ->
+            ListItem(
+                text = { Text(text = matchedCities[index]) },
+                trailing = {
+                    Image(painter = painterResource(R.drawable.round_add_24), contentDescription = stringResource(R.string.place))
+                }
+            )
         }
-
     }
 }
 
