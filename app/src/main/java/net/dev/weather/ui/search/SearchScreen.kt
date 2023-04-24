@@ -2,7 +2,6 @@
 
 package net.dev.weather.ui.search
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -30,29 +29,30 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import net.dev.weather.NavRoutes
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
-import net.dev.weather.data.CurrentWeather
 import net.dev.weather.theme.tabBarBackgroundColor
 import net.dev.weather.theme.tabBarTextColor
 
 @Composable
 fun SearchScreen(
-    navController: NavController, modifier: Modifier = Modifier, viewModel: SearchViewModel = hiltViewModel(), scaffoldState: ScaffoldState = rememberScaffoldState()
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    viewModel: SearchViewModel = hiltViewModel(),
+    scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
 
-    val text = remember {
-        mutableStateOf("")
-    }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         //topBar = topBar(),
         topBar = {
             SearchBar(
-                text.value,
-                onSearchTextChanged = { text.value = it },
+                searchText = uiState.query ?: "",
+                onSearchTextChanged = {  viewModel.onSearchTextChanged(it) },
                 onNavigateBack = {
                     navController.navigate(NavRoutes.CurrentWeather.route)
                 },
@@ -61,11 +61,9 @@ fun SearchScreen(
         bottomBar = bottomNavigationBar(navController = navController), scaffoldState = scaffoldState, modifier = modifier.fillMaxSize()
     ) { paddingValues ->
 
-        //val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-        //uiState.main?.let { main ->
-        Content(modifier = Modifier.padding(paddingValues))
-        //}
+        uiState.matchedCities?.let { matchedCities ->
+            Content(matchedCities, Modifier.padding(paddingValues))
+        }
     }
 }
 
@@ -163,9 +161,12 @@ private fun SearchMenu() {
 }
 
 @Composable
-private fun Content(modifier: Modifier = Modifier) {
+private fun Content(matchedCities: List<String>, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
 
+        matchedCities.forEach { city ->
+            Text(text = city)
+        }
 
     }
 }
