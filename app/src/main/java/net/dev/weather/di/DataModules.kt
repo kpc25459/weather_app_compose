@@ -7,6 +7,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.components.SingletonComponent
 import net.dev.weather.api.WeatherServiceApi
+import net.dev.weather.data.LocationRepository
+import net.dev.weather.data.LocationRepositoryImpl
 import net.dev.weather.data.NetworkRepository
 import net.dev.weather.data.WeatherRepository
 import javax.inject.Singleton
@@ -17,7 +19,11 @@ import javax.inject.Singleton
 abstract class RepositoryModule {
     @Singleton
     @Binds
-    abstract fun bindRepository(repository: NetworkRepository): WeatherRepository
+    abstract fun bindWeatherRepository(repository: NetworkRepository): WeatherRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindLocationRepository(repository: LocationRepositoryImpl): LocationRepository
 }
 
 @Module

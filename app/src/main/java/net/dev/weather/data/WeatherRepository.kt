@@ -8,9 +8,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 interface WeatherRepository {
-
-    val location: Flow<String>
-
     val weather: Flow<Weather>
 
     val airPollutionForecast: Flow<List<AirPollutionForecast>>
@@ -20,14 +17,6 @@ interface WeatherRepository {
 
 @Singleton
 class NetworkRepository @Inject constructor(private val weatherServiceApi: WeatherServiceApi) : WeatherRepository {
-
-    override val location: Flow<String>
-        get() = flow {
-            val reverseLocationResponse = weatherServiceApi.getReverseLocation()
-            val location = reverseLocationResponse.body()?.first()?.name ?: "Unknown"
-            emit(location)
-        }
-
     override val weather: Flow<Weather>
         get() = flow {
             while (true) {

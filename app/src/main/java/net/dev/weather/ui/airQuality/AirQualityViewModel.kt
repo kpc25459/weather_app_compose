@@ -19,13 +19,13 @@ data class AirQualityUiState(
 )
 
 @HiltViewModel
-class AirQualityViewModel @Inject constructor(weatherRepository: WeatherRepository) : ViewModel() {
+class AirQualityViewModel @Inject constructor(weatherRepository: WeatherRepository, locationRepository: LocationRepository) : ViewModel() {
 
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
     private val _airQualityFlow: Flow<Async<AirQuality>> =
         combine(
-            weatherRepository.location,
+            locationRepository.location,
             weatherRepository.airPollutionForecast,
         ) { location, airPollutionForecast ->
             return@combine AirQuality(

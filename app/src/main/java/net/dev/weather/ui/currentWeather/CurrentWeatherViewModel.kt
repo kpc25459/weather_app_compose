@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import net.dev.weather.R
 import net.dev.weather.data.CurrentWeather
+import net.dev.weather.data.LocationRepository
 import net.dev.weather.data.Weather
 import net.dev.weather.data.WeatherRepository
 import net.dev.weather.ui.model.UiWeather
@@ -24,13 +25,13 @@ data class CurrentWeatherUiState(
 )
 
 @HiltViewModel
-class CurrentWeatherViewModel @Inject constructor(weatherRepository: WeatherRepository) : ViewModel() {
+class CurrentWeatherViewModel @Inject constructor(weatherRepository: WeatherRepository, locationRepository: LocationRepository) : ViewModel() {
 
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
     private val _data: Flow<Async<CurrentWeather>> =
         combine(
-            weatherRepository.location,
+            locationRepository.location,
             weatherRepository.weather,
             weatherRepository.airPollutionCurrent
         ) { location, weather, airPollutionCurrent ->
