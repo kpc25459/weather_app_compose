@@ -6,7 +6,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,7 +23,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -165,11 +163,12 @@ private fun SearchMenu() {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun Content(matchedCities: List<String>, modifier: Modifier = Modifier) {
+private fun Content(matchedCities: List<Pair<String, String>>, modifier: Modifier = Modifier) {
     LazyColumn {
         items(matchedCities.size) { index ->
             ListItem(
-                text = { Text(text = matchedCities[index]) },
+                text = { Text(text = matchedCities[index].first) },
+                secondaryText = { Text(text = matchedCities[index].second) },
                 trailing = {
                     Image(painter = painterResource(R.drawable.round_add_24), contentDescription = stringResource(R.string.place))
                 }

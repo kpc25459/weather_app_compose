@@ -6,32 +6,28 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import net.dev.weather.R
-import net.dev.weather.data.WeatherRepository
+import net.dev.weather.data.LocationRepository
 import net.dev.weather.utils.Async
 import javax.inject.Inject
 
 data class SearchUiState(
     val query: String? = null,
-    val matchedCities: List<String>? = null,
+    val matchedCities: List<Pair<String, String>>? = null,
     val isLoading: Boolean = false,
     @StringRes val userMessage: Int? = null
 )
 
 @HiltViewModel
-class SearchViewModel @Inject constructor(weatherRepository: WeatherRepository) : ViewModel() {
-
-    private val _allCities: ArrayList<String> = arrayListOf("Poznań", "Warszawa", "Kraków")
-
+class SearchViewModel @Inject constructor(locationRepository: LocationRepository) : ViewModel() {
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
     private val _searchText: MutableStateFlow<String> = MutableStateFlow("")
 
-    private val _matchedCities: Flow<Async<List<String>>> = flowOf(_allCities)
-        .combine(_searchText) { cities, searchText ->
-            cities.filter { it.contains(searchText, true) }
-        }
+    private val _matchedCities: Flow<Async<List<Pair<String, String>>>> = combine(_searchText) { searchText ->
+        locationRepository.getSuggestions(searchText.last()).last()
+    }
         .map { Async.Success(it) }
-        .catch<Async<List<String>>> { emit(Async.Error(R.string.loading_error, it)) }
+        .catch<Async<List<Pair<String, String>>>> { emit(Async.Error(R.string.loading_error, it)) }
 
     val uiState: StateFlow<SearchUiState> = combine(
         _matchedCities, _searchText, _userMessage

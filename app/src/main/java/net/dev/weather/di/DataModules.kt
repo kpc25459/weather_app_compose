@@ -6,6 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.components.SingletonComponent
+import net.dev.weather.api.LocationServiceApi
 import net.dev.weather.api.WeatherServiceApi
 import net.dev.weather.data.LocationRepository
 import net.dev.weather.data.LocationRepositoryImpl
@@ -45,5 +46,22 @@ object DataSourceModule {
             .addConverterFactory(retrofit2.converter.gson.GsonConverterFactory.create())
             .build()
             .create(WeatherServiceApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideLocationService(): LocationServiceApi {
+        val logger = okhttp3.logging.HttpLoggingInterceptor().apply { level = okhttp3.logging.HttpLoggingInterceptor.Level.BASIC }
+
+        val client = okhttp3.OkHttpClient.Builder()
+            .addInterceptor(logger)
+            .build()
+
+        return retrofit2.Retrofit.Builder()
+            .baseUrl(LocationServiceApi.BASE_URL)
+            .client(client)
+            .addConverterFactory(retrofit2.converter.gson.GsonConverterFactory.create())
+            .build()
+            .create(LocationServiceApi::class.java)
     }
 }
