@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import net.dev.weather.ui.airQuality.AirQualityScreen
 import net.dev.weather.ui.currentWeather.CurrentWeatherScreen
+import net.dev.weather.ui.places.PlacesScreen
 import net.dev.weather.ui.search.SearchScreen
 import net.dev.weather.ui.weatherForecast.WeatherForecastScreen
 
@@ -28,8 +29,8 @@ fun NavGraph(
         composable(NavRoutes.AirQuality.route) {
             AirQualityScreen(navController = navController)
         }
-        composable(NavRoutes.Search.route) {
-            SearchScreen(navController = navController)
+        composable(NavRoutes.Places.route) {
+            PlacesScreen(navController = navController)
         }
     }
 

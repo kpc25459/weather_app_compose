@@ -49,4 +49,5 @@
     <string name="search_screen_title">Search</string>
     <string name="loading_error">Error while loading</string>
     <string name="search">search</string>
+    <string name="places_screen_title">Saved places</string>
 </resources>

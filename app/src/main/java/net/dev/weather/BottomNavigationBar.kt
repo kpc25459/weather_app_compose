@@ -25,7 +25,7 @@ fun bottomNavigationBar(navController: NavController): @Composable () -> Unit {
                 Screen.CurrentWeather,
                 Screen.WeatherForecast,
                 Screen.AirQuality,
-                Screen.Search
+                Screen.Places
             )
 
             items.forEach { screen ->

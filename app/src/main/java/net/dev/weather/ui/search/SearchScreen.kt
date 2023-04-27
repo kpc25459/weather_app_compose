@@ -35,8 +35,6 @@ import androidx.navigation.NavController
 import net.dev.weather.NavRoutes
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
-import net.dev.weather.theme.tabBarBackgroundColor
-import net.dev.weather.theme.tabBarTextColor
 
 @Composable
 fun SearchScreen(
@@ -49,7 +47,6 @@ fun SearchScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
-        //topBar = topBar(),
         topBar = {
             SearchBar(
                 searchText = uiState.query ?: "",
@@ -135,29 +132,6 @@ fun SearchBar(
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
-    }
-}
-
-@Composable
-private fun topBar(): @Composable () -> Unit {
-    return {
-        TopAppBar(title = { Text(text = stringResource(id = R.string.search_screen_title)) },
-            backgroundColor = tabBarBackgroundColor,
-            contentColor = tabBarTextColor,
-            elevation = 0.dp,
-            modifier = Modifier.fillMaxWidth(),
-            actions = {
-                SearchMenu()
-            })
-    }
-}
-
-@Composable
-private fun SearchMenu() {
-    IconButton(onClick = { /*TODO*/ }) {
-        Icon(
-            painter = painterResource(id = R.drawable.outline_search_24), contentDescription = stringResource(id = R.string.search)
-        )
     }
 }
 
