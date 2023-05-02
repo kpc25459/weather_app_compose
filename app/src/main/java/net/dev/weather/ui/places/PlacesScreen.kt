@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -16,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import kotlinx.coroutines.launch
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
 import net.dev.weather.data.Place
@@ -32,6 +34,8 @@ fun PlacesScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val coroutineScope = rememberCoroutineScope()
+
     Scaffold(
         topBar = topBar(),
         bottomBar = bottomNavigationBar(
@@ -42,7 +46,11 @@ fun PlacesScreen(
     ) { paddingValues ->
 
         uiState.places?.let { places ->
-            Content(places, Modifier.padding(paddingValues))
+            Content(places, onButtonClick = {
+                coroutineScope.launch {
+                    viewModel.writePlaces()
+                }
+            }, Modifier.padding(paddingValues))
         }
     }
 }
@@ -72,8 +80,13 @@ private fun SearchMenu() {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun Content(places: List<Place>, modifier: Modifier = Modifier) {
-    LazyColumn(modifier = modifier) {
+private fun Content(places: List<Place>, onButtonClick: () -> Unit, modifier: Modifier = Modifier) {
+
+    Button(onClick = onButtonClick, modifier = Modifier.padding(16.dp)) {
+        Text(text = "Write to datastore")
+    }
+
+    LazyColumn(modifier = modifier.padding(vertical = 60.dp)) {
         items(places.size) { index ->
             ListItem(
                 text = { Text(text = places[index].name) },
