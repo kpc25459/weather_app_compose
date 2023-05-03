@@ -141,14 +141,14 @@ fun SearchBar(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun Content(matchedCities: List<Place>, onItemClick: (Place) -> Unit, modifier: Modifier = Modifier) {
+private fun Content(places: List<Place>, onItemClick: (Place) -> Unit, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
-        items(matchedCities.size) { index ->
+        items(places.size) { index ->
             ListItem(
-                text = { Text(text = matchedCities[index].name) },
-                secondaryText = { Text(text = matchedCities[index].id) },
+                text = { Text(text = places[index].name) },
+                secondaryText = { places[index].description?.let { Text(text = it) } },
                 trailing = {
-                    IconButton(onClick = { onItemClick(matchedCities[index]) }) {
+                    IconButton(onClick = { onItemClick(places[index]) }) {
                         Image(painter = painterResource(R.drawable.round_add_24), contentDescription = stringResource(R.string.place))
                     }
                 }

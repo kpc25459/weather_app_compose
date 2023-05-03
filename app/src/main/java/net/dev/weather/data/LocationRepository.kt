@@ -55,9 +55,10 @@ class LocationRepositoryImpl @Inject constructor(
             val body = suggestionsResponse.body()!!
             val suggestions = body.predictions.map { prediction ->
                 val placeId = prediction.place_id
-                val description = prediction.description
+                val name = prediction.structured_formatting.main_text
+                val description = prediction.structured_formatting.secondary_text
 
-                Place(description, placeId)
+                Place(name, placeId, description)
             }
             emit(suggestions)
         }
