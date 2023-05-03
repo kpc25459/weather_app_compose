@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 
 @Composable
 fun WeatherIcon(icon: String, onClick: () -> Unit = {}) {
@@ -18,7 +18,7 @@ fun WeatherIcon(icon: String, onClick: () -> Unit = {}) {
     val iconUrl = "https://openweathermap.org/img/wn/${icon}.png"
 
     Image(
-        painter = rememberImagePainter(iconUrl),
+        painter = rememberAsyncImagePainter(iconUrl),
         contentDescription = "weather icon",
         contentScale = ContentScale.Fit,
         modifier = Modifier
