@@ -1,11 +1,9 @@
 package net.dev.weather.ui.places
 
-import android.content.Context
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.*
 import net.dev.weather.R
 import net.dev.weather.data.LocationRepository
@@ -20,7 +18,7 @@ data class PlacesUiState(
 )
 
 @HiltViewModel
-class PlacesViewModel @Inject constructor(private val locationRepository: LocationRepository, @ApplicationContext private val context: Context) : ViewModel() {
+class PlacesViewModel @Inject constructor(private val locationRepository: LocationRepository) : ViewModel() {
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
     private val _places: Flow<Async<List<Place>>> = locationRepository.savedPlaces
@@ -40,7 +38,7 @@ class PlacesViewModel @Inject constructor(private val locationRepository: Locati
 
 
     suspend fun writePlaces() {
-        locationRepository.addPlaces()
+        locationRepository.clearPlaces()
     }
 }
 

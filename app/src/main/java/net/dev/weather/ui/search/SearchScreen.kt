@@ -32,7 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import kotlinx.coroutines.launch
 import net.dev.weather.NavRoutes
+import net.dev.weather.data.Place
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
 
@@ -45,6 +47,8 @@ fun SearchScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -60,7 +64,7 @@ fun SearchScreen(
     ) { paddingValues ->
 
         uiState.matchedCities?.let { matchedCities ->
-            Content(matchedCities, Modifier.padding(paddingValues))
+            Content(matchedCities, { place -> coroutineScope.launch { viewModel.toggleFavorite(place) } }, Modifier.padding(paddingValues))
         }
     }
 }
@@ -137,14 +141,16 @@ fun SearchBar(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun Content(matchedCities: List<Pair<String, String>>, modifier: Modifier = Modifier) {
-    LazyColumn {
+private fun Content(matchedCities: List<Place>, onItemClick: (Place) -> Unit, modifier: Modifier = Modifier) {
+    LazyColumn(modifier = modifier) {
         items(matchedCities.size) { index ->
             ListItem(
-                text = { Text(text = matchedCities[index].first) },
-                secondaryText = { Text(text = matchedCities[index].second) },
+                text = { Text(text = matchedCities[index].name) },
+                secondaryText = { Text(text = matchedCities[index].id) },
                 trailing = {
-                    Image(painter = painterResource(R.drawable.round_add_24), contentDescription = stringResource(R.string.place))
+                    IconButton(onClick = { onItemClick(matchedCities[index]) }) {
+                        Image(painter = painterResource(R.drawable.round_add_24), contentDescription = stringResource(R.string.place))
+                    }
                 }
             )
         }

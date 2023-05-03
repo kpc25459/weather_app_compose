@@ -2,7 +2,6 @@ package net.dev.weather.data
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -17,8 +16,11 @@ interface LocationRepository {
 
     val savedPlaces: Flow<List<Place>>
 
-    fun getSuggestions(input: String): Flow<List<Pair<String, String>>>
+    fun getSuggestions(input: String): Flow<List<Place>>
     suspend fun addPlaces()
+    suspend fun toggleFavorite(place: Place)
+    suspend fun clearPlaces()
+
     //fun getLatLongFromGoogle(placeId: String): Flow<CurrentLocation>
 }
 
@@ -47,14 +49,15 @@ class LocationRepositoryImpl @Inject constructor(
             //emit(listOf(Place("London", "London1"), Place("Paris", "Paris1"), Place("New York", "New York1")))
         }
 
-    override fun getSuggestions(input: String): Flow<List<Pair<String, String>>> = flow {
+    override fun getSuggestions(input: String): Flow<List<Place>> = flow {
         val suggestionsResponse = locationServiceApi.getSuggestions(input)
         if (suggestionsResponse.isSuccessful) {
             val body = suggestionsResponse.body()!!
             val suggestions = body.predictions.map { prediction ->
                 val placeId = prediction.place_id
                 val description = prediction.description
-                Pair(description, placeId)
+
+                Place(description, placeId)
             }
             emit(suggestions)
         }
@@ -81,6 +84,26 @@ class LocationRepositoryImpl @Inject constructor(
                     )
                 )
                 .build()
+        }
+    }
+
+    override suspend fun toggleFavorite(place: Place) {
+        context.settingsDataStore.updateData { currentSettings ->
+            val p = currentSettings.placesList.find { it.id == place.id }
+            if (p != null) {
+                currentSettings.toBuilder().clearPlaces().addAllPlaces(currentSettings.placesList.filter { it.id != place.id }).build()
+            } else {
+                currentSettings.toBuilder().addPlaces(net.dev.weather.Place.newBuilder().also {
+                    it.id = place.id
+                    it.name = place.name
+                }.build()).build()
+            }
+        }
+    }
+
+    override suspend fun clearPlaces() {
+        context.settingsDataStore.updateData { currentSettings ->
+            currentSettings.toBuilder().clearPlaces().build()
         }
     }
 

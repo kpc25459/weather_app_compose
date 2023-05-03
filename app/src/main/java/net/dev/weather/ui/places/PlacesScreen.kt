@@ -37,7 +37,9 @@ fun PlacesScreen(
     val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
-        topBar = topBar(),
+        topBar = topBar(onSearchButtonClick = {
+            navController.navigate("search")
+        }),
         bottomBar = bottomNavigationBar(
             navController = navController
         ),
@@ -56,7 +58,7 @@ fun PlacesScreen(
 }
 
 @Composable
-private fun topBar(): @Composable () -> Unit {
+private fun topBar(onSearchButtonClick: () -> Unit): @Composable () -> Unit {
     return {
         TopAppBar(title = { Text(text = stringResource(id = R.string.places_screen_title)) },
             backgroundColor = tabBarBackgroundColor,
@@ -64,14 +66,14 @@ private fun topBar(): @Composable () -> Unit {
             elevation = 0.dp,
             modifier = Modifier.fillMaxWidth(),
             actions = {
-                SearchMenu()
+                SearchMenu(onSearchButtonClick)
             })
     }
 }
 
 @Composable
-private fun SearchMenu() {
-    IconButton(onClick = { /*TODO*/ }) {
+private fun SearchMenu(onSearchButtonClick: () -> Unit) {
+    IconButton(onClick = onSearchButtonClick) {
         Icon(
             painter = painterResource(id = R.drawable.outline_search_24), contentDescription = stringResource(id = R.string.search)
         )

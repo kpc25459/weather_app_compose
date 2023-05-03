@@ -32,6 +32,9 @@ fun NavGraph(
         composable(NavRoutes.Places.route) {
             PlacesScreen(navController = navController)
         }
+        composable(NavRoutes.Search.route) {
+            SearchScreen(navController = navController)
+        }
     }
 
 
