@@ -16,10 +16,11 @@ interface LocationRepository {
 
     val savedPlaces: Flow<List<Place>>
 
-    fun getSuggestions(input: String): Flow<List<Place>>
-    suspend fun addPlaces()
-    suspend fun toggleFavorite(place: Place)
+    fun getSuggestions(input: String): Flow<List<Suggestion>>
+    //suspend fun toggleFavorite(place: Place)
     suspend fun clearPlaces()
+    //suspend fun toggleFavorite(placeId: String)
+    suspend fun toggleFavorite(suggestion: Suggestion)
 
     //fun getLatLongFromGoogle(placeId: String): Flow<CurrentLocation>
 }
@@ -49,7 +50,7 @@ class LocationRepositoryImpl @Inject constructor(
             //emit(listOf(Place("London", "London1"), Place("Paris", "Paris1"), Place("New York", "New York1")))
         }
 
-    override fun getSuggestions(input: String): Flow<List<Place>> = flow {
+    override fun getSuggestions(input: String): Flow<List<Suggestion>> = flow {
         val suggestionsResponse = locationServiceApi.getSuggestions(input)
         if (suggestionsResponse.isSuccessful) {
             val body = suggestionsResponse.body()!!
@@ -58,37 +59,13 @@ class LocationRepositoryImpl @Inject constructor(
                 val name = prediction.structured_formatting.main_text
                 val description = prediction.structured_formatting.secondary_text
 
-                Place(name, placeId, description)
+                Suggestion(name, placeId, description)
             }
             emit(suggestions)
         }
     }
 
-    override suspend fun addPlaces() {
-        context.settingsDataStore.updateData { currentSettings ->
-            currentSettings.toBuilder()
-                //.addAllPlaces( places)
-                .addAllPlaces(
-                    listOf(
-                        net.dev.weather.Place.newBuilder().also {
-                            it.name = "Poznań"
-                            it.id = "1"
-                        }.build(),
-                        net.dev.weather.Place.newBuilder().also {
-                            it.name = "Warszawa"
-                            it.id = "2"
-                        }.build(),
-                        net.dev.weather.Place.newBuilder().also {
-                            it.name = "Wrocław"
-                            it.id = "3"
-                        }.build()
-                    )
-                )
-                .build()
-        }
-    }
-
-    override suspend fun toggleFavorite(place: Place) {
+  /*  override suspend fun toggleFavorite(place: Place) {
         context.settingsDataStore.updateData { currentSettings ->
             val p = currentSettings.placesList.find { it.id == place.id }
             if (p != null) {
@@ -97,6 +74,36 @@ class LocationRepositoryImpl @Inject constructor(
                 currentSettings.toBuilder().addPlaces(net.dev.weather.Place.newBuilder().also {
                     it.id = place.id
                     it.name = place.name
+                }.build()).build()
+            }
+        }
+    }
+
+    override suspend fun toggleFavorite(placeId: String) {
+        context.settingsDataStore.updateData { currentSettings ->
+            val p = currentSettings.placesList.find { it.id == placeId }
+            if (p != null) {
+                currentSettings.toBuilder().clearPlaces().addAllPlaces(currentSettings.placesList.filter { it.id != placeId }).build()
+            } else {
+                currentSettings.toBuilder().addPlaces(net.dev.weather.Place.newBuilder().also {
+                    it.id = place.id
+                    it.name = place.name
+                }.build()).build()
+            }
+        }
+    }
+*/
+    override suspend fun toggleFavorite(suggestion: Suggestion) {
+        context.settingsDataStore.updateData { currentSettings ->
+            val p = currentSettings.placesList.find { it.id == suggestion.id }
+            if (p != null) {
+                currentSettings.toBuilder().clearPlaces().addAllPlaces(currentSettings.placesList.filter { it.id != suggestion.id }).build()
+            } else {
+                currentSettings.toBuilder().addPlaces(net.dev.weather.Place.newBuilder().also {
+                    it.id = suggestion.id
+                    it.name = suggestion.name
+                    //TODO: add description?
+                    //it.description = suggestion.description
                 }.build()).build()
             }
         }

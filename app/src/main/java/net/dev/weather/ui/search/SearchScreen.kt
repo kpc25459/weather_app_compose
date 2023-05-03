@@ -34,9 +34,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import net.dev.weather.NavRoutes
-import net.dev.weather.data.Place
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
+import net.dev.weather.data.Suggestion
 
 @Composable
 fun SearchScreen(
@@ -55,16 +55,17 @@ fun SearchScreen(
             SearchBar(
                 searchText = uiState.query ?: "",
                 onSearchTextChanged = { viewModel.onSearchTextChanged(it) },
+                onClearClick = { viewModel.onClearClick() },
                 onNavigateBack = {
-                    navController.navigate(NavRoutes.CurrentWeather.route)
+                    navController.navigate(NavRoutes.Places.route)
                 },
             )
         },
         bottomBar = bottomNavigationBar(navController = navController), scaffoldState = scaffoldState, modifier = modifier.fillMaxSize()
     ) { paddingValues ->
 
-        uiState.matchedCities?.let { matchedCities ->
-            Content(matchedCities, { place -> coroutineScope.launch { viewModel.toggleFavorite(place) } }, Modifier.padding(paddingValues))
+        uiState.suggestions?.let { suggestions ->
+            Content(suggestions, { suggestion -> coroutineScope.launch { viewModel.toggleFavorite(suggestion) } }, Modifier.padding(paddingValues))
         }
     }
 }
@@ -141,15 +142,18 @@ fun SearchBar(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun Content(places: List<Place>, onItemClick: (Place) -> Unit, modifier: Modifier = Modifier) {
+private fun Content(suggestions: List<Suggestion>, onItemClick: (Suggestion) -> Unit, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
-        items(places.size) { index ->
+        items(suggestions.size) { index ->
             ListItem(
-                text = { Text(text = places[index].name) },
-                secondaryText = { places[index].description?.let { Text(text = it) } },
+                text = { Text(text = suggestions[index].name) },
+                secondaryText = { suggestions[index].description?.let { Text(text = it) } },
                 trailing = {
-                    IconButton(onClick = { onItemClick(places[index]) }) {
-                        Image(painter = painterResource(R.drawable.round_add_24), contentDescription = stringResource(R.string.place))
+                    IconButton(onClick = { onItemClick(suggestions[index]) }) {
+                        Image(
+                            painter = painterResource(if (suggestions[index].isFavorite) R.drawable.outline_check_24 else R.drawable.round_add_24),
+                            contentDescription = stringResource(R.string.place)
+                        )
                     }
                 }
             )
