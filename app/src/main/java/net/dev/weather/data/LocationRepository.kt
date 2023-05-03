@@ -42,12 +42,11 @@ class LocationRepositoryImpl @Inject constructor(
         get() = flow {
             context.settingsDataStore.data.map { settings ->
                 settings.placesList.map { place ->
-                    Place(place.name, place.id)
+                    Place(place.name, place.id, place.description)
                 }
             }.collect { places ->
                 emit(places)
             }
-            //emit(listOf(Place("London", "London1"), Place("Paris", "Paris1"), Place("New York", "New York1")))
         }
 
     override fun getSuggestions(input: String): Flow<List<Suggestion>> = flow {
@@ -102,8 +101,7 @@ class LocationRepositoryImpl @Inject constructor(
                 currentSettings.toBuilder().addPlaces(net.dev.weather.Place.newBuilder().also {
                     it.id = suggestion.id
                     it.name = suggestion.name
-                    //TODO: add description?
-                    //it.description = suggestion.description
+                    it.description = suggestion.description
                 }.build()).build()
             }
         }

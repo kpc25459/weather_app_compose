@@ -10,4 +10,5 @@ message Settings {
 message Place {
   string name = 1;
   string id = 2;
+  string description = 3;
 }

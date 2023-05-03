@@ -35,10 +35,5 @@ class PlacesViewModel @Inject constructor(private val locationRepository: Locati
         }
     }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PlacesUiState(isLoading = true))
-
-
-    suspend fun writePlaces() {
-        locationRepository.clearPlaces()
-    }
 }
 
