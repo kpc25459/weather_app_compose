@@ -17,10 +17,13 @@ interface LocationRepository {
     val savedPlaces: Flow<List<Place>>
 
     fun getSuggestions(input: String): Flow<List<Suggestion>>
+
     //suspend fun toggleFavorite(place: Place)
     suspend fun clearPlaces()
+
     //suspend fun toggleFavorite(placeId: String)
     suspend fun toggleFavorite(suggestion: Suggestion)
+    suspend fun removeFromFavorites(placeId: String)
 
     //fun getLatLongFromGoogle(placeId: String): Flow<CurrentLocation>
 }
@@ -64,34 +67,34 @@ class LocationRepositoryImpl @Inject constructor(
         }
     }
 
-  /*  override suspend fun toggleFavorite(place: Place) {
-        context.settingsDataStore.updateData { currentSettings ->
-            val p = currentSettings.placesList.find { it.id == place.id }
-            if (p != null) {
-                currentSettings.toBuilder().clearPlaces().addAllPlaces(currentSettings.placesList.filter { it.id != place.id }).build()
-            } else {
-                currentSettings.toBuilder().addPlaces(net.dev.weather.Place.newBuilder().also {
-                    it.id = place.id
-                    it.name = place.name
-                }.build()).build()
-            }
-        }
-    }
+    /*  override suspend fun toggleFavorite(place: Place) {
+          context.settingsDataStore.updateData { currentSettings ->
+              val p = currentSettings.placesList.find { it.id == place.id }
+              if (p != null) {
+                  currentSettings.toBuilder().clearPlaces().addAllPlaces(currentSettings.placesList.filter { it.id != place.id }).build()
+              } else {
+                  currentSettings.toBuilder().addPlaces(net.dev.weather.Place.newBuilder().also {
+                      it.id = place.id
+                      it.name = place.name
+                  }.build()).build()
+              }
+          }
+      }
 
-    override suspend fun toggleFavorite(placeId: String) {
-        context.settingsDataStore.updateData { currentSettings ->
-            val p = currentSettings.placesList.find { it.id == placeId }
-            if (p != null) {
-                currentSettings.toBuilder().clearPlaces().addAllPlaces(currentSettings.placesList.filter { it.id != placeId }).build()
-            } else {
-                currentSettings.toBuilder().addPlaces(net.dev.weather.Place.newBuilder().also {
-                    it.id = place.id
-                    it.name = place.name
-                }.build()).build()
-            }
-        }
-    }
-*/
+      override suspend fun toggleFavorite(placeId: String) {
+          context.settingsDataStore.updateData { currentSettings ->
+              val p = currentSettings.placesList.find { it.id == placeId }
+              if (p != null) {
+                  currentSettings.toBuilder().clearPlaces().addAllPlaces(currentSettings.placesList.filter { it.id != placeId }).build()
+              } else {
+                  currentSettings.toBuilder().addPlaces(net.dev.weather.Place.newBuilder().also {
+                      it.id = place.id
+                      it.name = place.name
+                  }.build()).build()
+              }
+          }
+      }
+  */
     override suspend fun toggleFavorite(suggestion: Suggestion) {
         context.settingsDataStore.updateData { currentSettings ->
             val p = currentSettings.placesList.find { it.id == suggestion.id }
@@ -105,6 +108,13 @@ class LocationRepositoryImpl @Inject constructor(
                 }.build()).build()
             }
         }
+    }
+
+    override suspend fun removeFromFavorites(placeId: String) {
+        context.settingsDataStore.updateData { currentSettings ->
+            currentSettings.toBuilder().clearPlaces().addAllPlaces(currentSettings.placesList.filter { it.id != placeId }).build()
+        }
+
     }
 
     override suspend fun clearPlaces() {

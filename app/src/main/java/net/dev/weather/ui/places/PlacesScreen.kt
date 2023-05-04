@@ -2,19 +2,30 @@
 
 package net.dev.weather.ui.places
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
@@ -24,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import kotlinx.coroutines.launch
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
 import net.dev.weather.data.Place
@@ -40,6 +52,7 @@ fun PlacesScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = topBar(onSearchButtonClick = {
@@ -53,7 +66,11 @@ fun PlacesScreen(
     ) { paddingValues ->
 
         uiState.places?.let { places ->
-            Content(places, Modifier.padding(paddingValues))
+            Content(places, onItemRemoved = {
+                scope.launch {
+                    viewModel.removePlace(it)
+                }
+            }, modifier = Modifier.padding(paddingValues))
         }
     }
 }
@@ -81,12 +98,74 @@ private fun SearchMenu(onSearchButtonClick: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Content(places: List<Place>, modifier: Modifier = Modifier) {
+private fun Content(places: List<Place>, onItemRemoved: (Place) -> Unit, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
-        items(places.size) { index ->
-            SavedPlace(places[index])
+        items(
+            items = places,
+            key = { place -> place.id },
+            itemContent = { item ->
+
+                val currentItem by rememberUpdatedState(item)
+
+                val dismissState = rememberDismissState(
+                    confirmStateChange = {
+                        if (it == DismissValue.DismissedToStart) {
+                            onItemRemoved(currentItem)
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                )
+
+                SwipeToDismiss(
+                    state = dismissState,
+                    directions = setOf(DismissDirection.EndToStart),
+                    dismissThresholds = { _ ->
+                        FractionalThreshold(0.25f)
+                    },
+                    background = {
+                        SwipeBackground(dismissState)
+                    },
+                    dismissContent = {
+                        SavedPlace(item)
+                    },
+                    modifier = Modifier.padding(1.dp)
+                        .animateItemPlacement()
+                )
+            }
+        )
+    }
+}
+
+@Composable
+fun SwipeBackground(dismissState: DismissState) {
+    val color by animateColorAsState(
+        when (dismissState.targetValue) {
+            DismissValue.Default -> Color.Transparent
+            DismissValue.DismissedToStart -> Color.Red
+            else -> Color.Transparent
         }
+    )
+
+    val scale by animateFloatAsState(
+        if (dismissState.targetValue == DismissValue.Default) 0.8f else 1.2f
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color)
+            .padding(horizontal = 20.dp),
+        contentAlignment = Alignment.CenterEnd
+    ) {
+        Icon(
+            imageVector = Icons.Default.Delete,
+            contentDescription = "Delete",
+            modifier = Modifier.scale(scale)
+        )
     }
 }
 

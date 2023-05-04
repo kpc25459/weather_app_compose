@@ -9,6 +9,7 @@ interface LocationServiceApi {
     @GET("/maps/api/place/autocomplete/json")
     suspend fun getSuggestions(
         @Query("input") input: String,
+        @Query("types") types: String = "geocode",
         @Query("key") apiKey: String = googlePlacesApiKey,
         @Query("sessiontoken") sessiontoken: String = sessionToken,
     ): Response<AutocompleteResult>
