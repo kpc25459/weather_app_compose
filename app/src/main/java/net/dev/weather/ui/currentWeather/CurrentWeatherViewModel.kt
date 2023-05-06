@@ -31,7 +31,7 @@ class CurrentWeatherViewModel @Inject constructor(weatherRepository: WeatherRepo
 
     private val _data: Flow<Async<CurrentWeather>> =
         combine(
-            locationRepository.location,
+            locationRepository.locationName,
             weatherRepository.weather,
             weatherRepository.airPollutionCurrent
         ) { location, weather, airPollutionCurrent ->

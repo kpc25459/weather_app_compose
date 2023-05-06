@@ -12,7 +12,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 interface LocationRepository {
-    val location: Flow<String>
+    val locationName: Flow<String>
 
     val savedPlaces: Flow<List<Place>>
 
@@ -32,11 +32,18 @@ class LocationRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : LocationRepository {
 
-    override val location: Flow<String>
+    override val locationName: Flow<String>
         get() = flow {
-            val reverseLocationResponse = weatherServiceApi.getReverseLocation()
-            val location = reverseLocationResponse.body()?.first()?.name ?: "Unknown"
-            emit(location)
+            context.settingsDataStore.data.map { settings -> settings.currentPlace }.collect { currentPlace ->
+                if (currentPlace != null) {
+                    emit(currentPlace.name)
+                } else {
+                    //TODO: tutaj powinny być współrzędne na podstawie lokalizacji urządzenia
+                    val reverseLocationResponse = weatherServiceApi.getReverseLocation()
+                    val location = reverseLocationResponse.body()?.first()?.name ?: "Unknown"
+                    emit(location)
+                }
+            }
         }
     override val savedPlaces: Flow<List<Place>>
         get() = flow {

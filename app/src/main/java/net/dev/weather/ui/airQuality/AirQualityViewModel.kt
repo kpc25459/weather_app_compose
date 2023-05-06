@@ -25,7 +25,7 @@ class AirQualityViewModel @Inject constructor(weatherRepository: WeatherReposito
 
     private val _airQualityFlow: Flow<Async<AirQuality>> =
         combine(
-            locationRepository.location,
+            locationRepository.locationName,
             weatherRepository.airPollutionForecast,
         ) { location, airPollutionForecast ->
             return@combine AirQuality(

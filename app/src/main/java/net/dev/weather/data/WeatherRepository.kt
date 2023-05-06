@@ -1,9 +1,13 @@
 package net.dev.weather.data
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import net.dev.weather.api.WeatherServiceApi
+import net.dev.weather.settingsDataStore
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,15 +20,18 @@ interface WeatherRepository {
 }
 
 @Singleton
-class NetworkRepository @Inject constructor(private val weatherServiceApi: WeatherServiceApi) : WeatherRepository {
+class NetworkRepository @Inject constructor(private val weatherServiceApi: WeatherServiceApi, @ApplicationContext private val context: Context) : WeatherRepository {
     override val weather: Flow<Weather>
         get() = flow {
             while (true) {
-                val weatherResponse = weatherServiceApi.getWeather()
-                if (weatherResponse.isSuccessful) {
-                    val body = weatherResponse.body()!!
-                    emit(body.toDomainModel())
+                context.settingsDataStore.data.map { settings -> settings.currentPlace }.collect { current ->
+                    val weatherResponse = weatherServiceApi.getWeather(latitude = current.latitude, longitude = current.longitude)
+                    if (weatherResponse.isSuccessful) {
+                        val body = weatherResponse.body()!!
+                        emit(body.toDomainModel())
+                    }
                 }
+
                 delay(refreshIntervalMs)
             }
         }
@@ -32,11 +39,14 @@ class NetworkRepository @Inject constructor(private val weatherServiceApi: Weath
     override val airPollutionForecast: Flow<List<AirPollutionForecast>>
         get() = flow {
             while (true) {
-                val airPollution = weatherServiceApi.getAirPollutionForecast()
+                context.settingsDataStore.data.map { settings -> settings.currentPlace }.collect { current ->
+                    val airPollution = weatherServiceApi.getAirPollutionForecast(latitude = current.latitude, longitude = current.longitude)
 
-                if (airPollution.isSuccessful) {
-                    val body = airPollution.body()!!
-                    emit(body.toDomainModel())
+                    if (airPollution.isSuccessful) {
+                        val body = airPollution.body()!!
+                        emit(body.toDomainModel())
+                    }
+
                 }
                 delay(refreshIntervalMs)
             }
@@ -45,16 +55,18 @@ class NetworkRepository @Inject constructor(private val weatherServiceApi: Weath
     override val airPollutionCurrent: Flow<Int>
         get() = flow {
             while (true) {
-                val airQuality = weatherServiceApi.getAirPollution()
-                if (airQuality.isSuccessful) {
-                    val body = airQuality.body()!!
-                    emit(body.list.first().main.aqi);
+                context.settingsDataStore.data.map { settings -> settings.currentPlace }.collect { current ->
+                    val airQuality = weatherServiceApi.getAirPollution(latitude = current.latitude, longitude = current.longitude)
+                    if (airQuality.isSuccessful) {
+                        val body = airQuality.body()!!
+                        emit(body.list.first().main.aqi)
+                    }
                 }
                 delay(refreshIntervalMs)
             }
         }
 
-    companion object{
+    companion object {
         private const val refreshIntervalMs = 1000 * 60L
     }
 }
