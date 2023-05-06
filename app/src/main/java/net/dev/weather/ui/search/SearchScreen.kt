@@ -6,6 +6,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -32,7 +33,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.dev.weather.NavRoutes
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
@@ -65,7 +68,20 @@ fun SearchScreen(
     ) { paddingValues ->
 
         uiState.suggestions?.let { suggestions ->
-            Content(suggestions, { suggestion -> coroutineScope.launch { viewModel.toggleFavorite(suggestion) } }, Modifier.padding(paddingValues))
+            Content(
+                suggestions = suggestions,
+                onItemClick = { suggestion ->
+                    coroutineScope.launch {
+                        viewModel.setCurrentLocation(suggestion)
+
+                        withContext(Dispatchers.Main){
+                            navController.navigate(NavRoutes.CurrentWeather.route)
+                        }
+                    }
+                },
+                onFavoriteClick = { suggestion -> coroutineScope.launch { viewModel.toggleFavorite(suggestion) } },
+                modifier = Modifier.padding(paddingValues)
+            )
         }
     }
 }
@@ -142,20 +158,21 @@ fun SearchBar(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun Content(suggestions: List<Suggestion>, onItemClick: (Suggestion) -> Unit, modifier: Modifier = Modifier) {
+private fun Content(suggestions: List<Suggestion>, onItemClick: (Suggestion) -> Unit, onFavoriteClick: (Suggestion) -> Unit, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
         items(suggestions.size) { index ->
             ListItem(
                 text = { Text(text = suggestions[index].name) },
                 secondaryText = { suggestions[index].description?.let { Text(text = it) } },
                 trailing = {
-                    IconButton(onClick = { onItemClick(suggestions[index]) }) {
+                    IconButton(onClick = { onFavoriteClick(suggestions[index]) }) {
                         Image(
                             painter = painterResource(if (suggestions[index].isFavorite) R.drawable.outline_check_24 else R.drawable.round_add_24),
                             contentDescription = stringResource(R.string.place)
                         )
                     }
-                }
+                },
+                modifier = Modifier.clickable { onItemClick(suggestions[index]) }
             )
         }
     }

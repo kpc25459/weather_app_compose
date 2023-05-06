@@ -22,6 +22,7 @@ interface LocationRepository {
 
     suspend fun toggleFavorite(suggestion: Suggestion)
     suspend fun removeFromFavorites(placeId: String)
+    suspend fun setCurrentLocation(suggestion: Suggestion)
 }
 
 @Singleton
@@ -69,18 +70,23 @@ class LocationRepositoryImpl @Inject constructor(
             if (p != null) {
                 currentSettings.toBuilder().clearPlaces().addAllPlaces(currentSettings.placesList.filter { it.id != suggestion.id }).build()
             } else {
-
-                val location = getLocationFromGoogle(suggestion.id)
-
-                currentSettings.toBuilder().addPlaces(net.dev.weather.Place.newBuilder().also {
-                    it.id = suggestion.id
-                    it.name = suggestion.name
-                    it.description = suggestion.description
-                    it.latitude = location.first
-                    it.longitude = location.second
-                }.build()).build()
+                currentSettings.toBuilder().addPlaces(buildPlace(suggestion)).build()
             }
         }
+    }
+
+    private suspend fun buildPlace(suggestion: Suggestion): net.dev.weather.Place {
+        val location = getLocationFromGoogle(suggestion.id)
+
+        val place = net.dev.weather.Place.newBuilder().also {
+            it.id = suggestion.id
+            it.name = suggestion.name
+            it.description = suggestion.description
+            it.latitude = location.first
+            it.longitude = location.second
+        }.build()
+
+        return place
     }
 
     private suspend fun getLocationFromGoogle(placeId: String): Pair<Double, Double> {
@@ -95,6 +101,15 @@ class LocationRepositoryImpl @Inject constructor(
     override suspend fun removeFromFavorites(placeId: String) {
         context.settingsDataStore.updateData { currentSettings ->
             currentSettings.toBuilder().clearPlaces().addAllPlaces(currentSettings.placesList.filter { it.id != placeId }).build()
+        }
+    }
+
+    override suspend fun setCurrentLocation(suggestion: Suggestion) {
+
+        val place = buildPlace(suggestion)
+
+        context.settingsDataStore.updateData { currentSettings ->
+            currentSettings.toBuilder().setCurrentPlace(place).build()
         }
     }
 

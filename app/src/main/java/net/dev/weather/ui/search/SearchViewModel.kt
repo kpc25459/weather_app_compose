@@ -53,20 +53,16 @@ class SearchViewModel @Inject constructor(private val locationRepository: Locati
         _searchText.value = newSerachText
     }
 
-    /*suspend fun toggleFavorite(place: Place) {
-        locationRepository.toggleFavorite(place)
-    }
-
-    suspend fun toggleFavorite(placeId: String) {
-        locationRepository.toggleFavorite(placeId)
-    }*/
-
     suspend fun toggleFavorite(suggestion: Suggestion) {
         locationRepository.toggleFavorite(suggestion)
     }
 
     fun onClearClick() {
         _searchText.value = ""
+    }
+
+    suspend fun setCurrentLocation(suggestion: Suggestion) {
+        locationRepository.setCurrentLocation(suggestion)
     }
 }
 

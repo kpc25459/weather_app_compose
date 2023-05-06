@@ -4,7 +4,8 @@ option java_package = "net.dev.weather";
 option java_multiple_files = true;
 
 message Settings {
-  repeated Place places = 1;
+  Place currentPlace = 1;
+  repeated Place places = 2;
 }
 
 message Place {
