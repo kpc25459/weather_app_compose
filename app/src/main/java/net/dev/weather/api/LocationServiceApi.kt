@@ -15,12 +15,12 @@ interface LocationServiceApi {
     ): Response<AutocompleteResult>
 
 
-    /*   @GET("/geocode/json")
-       suspend fun getLatLongFromGoogle(
-           @Query("place_id") placeId: String,
-           @Query("key") apiKey: String = googlePlacesApiKey,
-           @Query("sessiontoken") sessiontoken: String = sessionToken,
-       ): Response<List<CurrentLocation>>*/
+    @GET("/maps/api/geocode/json")
+    suspend fun getLatLongFromGoogle(
+        @Query("place_id") placeId: String,
+        @Query("key") apiKey: String = googlePlacesApiKey,
+        @Query("sessiontoken") sessiontoken: String = sessionToken,
+    ): Response<GetLatLongFromGoogleResult>
 
     companion object {
         const val BASE_URL = "https://maps.googleapis.com/"
@@ -39,3 +39,12 @@ data class Prediction(
 )
 
 data class StructuredFormatting(val main_text: String, val secondary_text: String = "")
+
+
+data class GetLatLongFromGoogleResult(val results: List<GetLatLongFromGoogle>) {
+    data class GetLatLongFromGoogle(val geometry: Geometry) {
+        data class Geometry(val location: Location) {
+            data class Location(val lat: Double, val lng: Double)
+        }
+    }
+}

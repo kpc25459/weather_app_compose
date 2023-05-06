@@ -174,7 +174,7 @@ fun SwipeBackground(dismissState: DismissState) {
 fun SavedPlace(place: Place) {
     ListItem(
         text = { Text(text = place.name) },
-        secondaryText = { Text(text = place.description) },
+        secondaryText = { Text(text = place.description + ", lat: ${place.latitude}, lon: ${place.longitude}") },
         modifier = Modifier
             .padding(5.dp)
             .border(1.dp, shape = RoundedCornerShape(8.dp), color = primaryColor),
@@ -197,7 +197,7 @@ fun SavedPlace(place: Place) {
 @Composable
 @Preview(showBackground = true)
 fun SavedPlacePreview() {
-    SavedPlace(Place("1", "London", "London, UK"))
+    SavedPlace(Place("1", "London", "London, UK", 51.5074, 0.1278))
 }
 
 @Preview(showBackground = true)

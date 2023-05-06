@@ -18,14 +18,10 @@ interface LocationRepository {
 
     fun getSuggestions(input: String): Flow<List<Suggestion>>
 
-    //suspend fun toggleFavorite(place: Place)
     suspend fun clearPlaces()
 
-    //suspend fun toggleFavorite(placeId: String)
     suspend fun toggleFavorite(suggestion: Suggestion)
     suspend fun removeFromFavorites(placeId: String)
-
-    //fun getLatLongFromGoogle(placeId: String): Flow<CurrentLocation>
 }
 
 @Singleton
@@ -45,7 +41,7 @@ class LocationRepositoryImpl @Inject constructor(
         get() = flow {
             context.settingsDataStore.data.map { settings ->
                 settings.placesList.map { place ->
-                    Place(place.name, place.id, place.description)
+                    Place(place.name, place.id, place.description, place.latitude, place.longitude)
                 }
             }.collect { places ->
                 emit(places)
@@ -67,73 +63,45 @@ class LocationRepositoryImpl @Inject constructor(
         }
     }
 
-    /*  override suspend fun toggleFavorite(place: Place) {
-          context.settingsDataStore.updateData { currentSettings ->
-              val p = currentSettings.placesList.find { it.id == place.id }
-              if (p != null) {
-                  currentSettings.toBuilder().clearPlaces().addAllPlaces(currentSettings.placesList.filter { it.id != place.id }).build()
-              } else {
-                  currentSettings.toBuilder().addPlaces(net.dev.weather.Place.newBuilder().also {
-                      it.id = place.id
-                      it.name = place.name
-                  }.build()).build()
-              }
-          }
-      }
-
-      override suspend fun toggleFavorite(placeId: String) {
-          context.settingsDataStore.updateData { currentSettings ->
-              val p = currentSettings.placesList.find { it.id == placeId }
-              if (p != null) {
-                  currentSettings.toBuilder().clearPlaces().addAllPlaces(currentSettings.placesList.filter { it.id != placeId }).build()
-              } else {
-                  currentSettings.toBuilder().addPlaces(net.dev.weather.Place.newBuilder().also {
-                      it.id = place.id
-                      it.name = place.name
-                  }.build()).build()
-              }
-          }
-      }
-  */
     override suspend fun toggleFavorite(suggestion: Suggestion) {
         context.settingsDataStore.updateData { currentSettings ->
             val p = currentSettings.placesList.find { it.id == suggestion.id }
             if (p != null) {
                 currentSettings.toBuilder().clearPlaces().addAllPlaces(currentSettings.placesList.filter { it.id != suggestion.id }).build()
             } else {
+
+                val location = getLocationFromGoogle(suggestion.id)
+
                 currentSettings.toBuilder().addPlaces(net.dev.weather.Place.newBuilder().also {
                     it.id = suggestion.id
                     it.name = suggestion.name
                     it.description = suggestion.description
+                    it.latitude = location.first
+                    it.longitude = location.second
                 }.build()).build()
             }
         }
+    }
+
+    private suspend fun getLocationFromGoogle(placeId: String): Pair<Double, Double> {
+        val latLongResponse = locationServiceApi.getLatLongFromGoogle(placeId)
+        return if (latLongResponse.isSuccessful) {
+            val body = latLongResponse.body()!!
+            body.results.first().geometry.location.lat to body.results.first().geometry.location.lng
+        } else
+            0.0 to 0.0
     }
 
     override suspend fun removeFromFavorites(placeId: String) {
         context.settingsDataStore.updateData { currentSettings ->
             currentSettings.toBuilder().clearPlaces().addAllPlaces(currentSettings.placesList.filter { it.id != placeId }).build()
         }
-
     }
 
     override suspend fun clearPlaces() {
         context.settingsDataStore.updateData { currentSettings ->
             currentSettings.toBuilder().clearPlaces().build()
         }
-    }
-
-    /*   override fun getLatLongFromGoogle(placeId: String): Flow<CurrentLocation> =
-           flow {
-               val latLongResponse = locationServiceApi.getLatLongFromGoogle(placeId)
-               if (latLongResponse.isSuccessful) {
-                   val body = latLongResponse.body()!!
-                   emit(body.first())
-               }
-           }*/
-
-    companion object {
-
     }
 }
 
