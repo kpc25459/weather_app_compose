@@ -40,5 +40,9 @@ class PlacesViewModel @Inject constructor(private val locationRepository: Locati
     suspend fun removePlace(place: Place) {
         locationRepository.removeFromFavorites(place.id)
     }
+
+    suspend fun setCurrentLocation(place: Place) {
+        locationRepository.setCurrentLocation(place)
+    }
 }
 

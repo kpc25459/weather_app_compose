@@ -4,10 +4,7 @@ package net.dev.weather.ui.places
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,7 +32,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import net.dev.weather.NavRoutes
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
 import net.dev.weather.data.Place
@@ -66,11 +66,23 @@ fun PlacesScreen(
     ) { paddingValues ->
 
         uiState.places?.let { places ->
-            Content(places, onItemRemoved = {
-                scope.launch {
-                    viewModel.removePlace(it)
-                }
-            }, modifier = Modifier.padding(paddingValues))
+            Content(
+                places,
+                onItemClick = {
+                    scope.launch {
+                        viewModel.setCurrentLocation(it)
+
+                        withContext(Dispatchers.Main) {
+                            navController.navigate(NavRoutes.CurrentWeather.route)
+                        }
+                    }
+                },
+                onItemRemoved = {
+                    scope.launch {
+                        viewModel.removePlace(it)
+                    }
+                }, modifier = Modifier.padding(paddingValues)
+            )
         }
     }
 }
@@ -100,7 +112,7 @@ private fun SearchMenu(onSearchButtonClick: () -> Unit) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Content(places: List<Place>, onItemRemoved: (Place) -> Unit, modifier: Modifier = Modifier) {
+private fun Content(places: List<Place>, onItemClick: (Place) -> Unit, onItemRemoved: (Place) -> Unit, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
         items(
             items = places,
@@ -130,7 +142,7 @@ private fun Content(places: List<Place>, onItemRemoved: (Place) -> Unit, modifie
                         SwipeBackground(dismissState)
                     },
                     dismissContent = {
-                        SavedPlace(item)
+                        SavedPlace(item, onItemClick = onItemClick)
                     },
                     modifier = Modifier.padding(1.dp)
                         .animateItemPlacement()
@@ -171,13 +183,14 @@ fun SwipeBackground(dismissState: DismissState) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SavedPlace(place: Place) {
+fun SavedPlace(place: Place, onItemClick: (Place) -> Unit = {}) {
     ListItem(
         text = { Text(text = place.name) },
         secondaryText = { Text(text = place.description + ", lat: ${place.latitude}, lon: ${place.longitude}") },
         modifier = Modifier
             .padding(5.dp)
-            .border(1.dp, shape = RoundedCornerShape(8.dp), color = primaryColor),
+            .border(1.dp, shape = RoundedCornerShape(8.dp), color = primaryColor)
+            .clickable { onItemClick(place) },
         icon = {
             Image(painter = painterResource(R.drawable.outline_location_on_24), contentDescription = stringResource(R.string.place))
         },
@@ -189,8 +202,9 @@ fun SavedPlace(place: Place) {
                 modifier = Modifier
                     .background(primaryColor, shape = CircleShape)
             )
-        }
-    )
+        },
+
+        )
 }
 
 

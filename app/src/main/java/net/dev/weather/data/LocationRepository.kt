@@ -23,6 +23,7 @@ interface LocationRepository {
     suspend fun toggleFavorite(suggestion: Suggestion)
     suspend fun removeFromFavorites(placeId: String)
     suspend fun setCurrentLocation(suggestion: Suggestion)
+    suspend fun setCurrentLocation(place: Place)
 }
 
 @Singleton
@@ -82,20 +83,6 @@ class LocationRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun buildPlace(suggestion: Suggestion): net.dev.weather.Place {
-        val location = getLocationFromGoogle(suggestion.id)
-
-        val place = net.dev.weather.Place.newBuilder().also {
-            it.id = suggestion.id
-            it.name = suggestion.name
-            it.description = suggestion.description
-            it.latitude = location.first
-            it.longitude = location.second
-        }.build()
-
-        return place
-    }
-
     private suspend fun getLocationFromGoogle(placeId: String): Pair<Double, Double> {
         val latLongResponse = locationServiceApi.getLatLongFromGoogle(placeId)
         return if (latLongResponse.isSuccessful) {
@@ -120,10 +107,46 @@ class LocationRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun setCurrentLocation(place: Place) {
+        val place2 = buildPlace(place)
+
+        context.settingsDataStore.updateData { currentSettings ->
+            currentSettings.toBuilder().setCurrentPlace(place2).build()
+        }
+    }
+
     override suspend fun clearPlaces() {
         context.settingsDataStore.updateData { currentSettings ->
             currentSettings.toBuilder().clearPlaces().build()
         }
+    }
+
+    private suspend fun buildPlace(suggestion: Suggestion): net.dev.weather.Place {
+        val location = getLocationFromGoogle(suggestion.id)
+
+        val place = net.dev.weather.Place.newBuilder().also {
+            it.id = suggestion.id
+            it.name = suggestion.name
+            it.description = suggestion.description
+            it.latitude = location.first
+            it.longitude = location.second
+        }.build()
+
+        return place
+    }
+
+    private suspend fun buildPlace(place: Place): net.dev.weather.Place {
+        val location = getLocationFromGoogle(place.id)
+
+        val place2 = net.dev.weather.Place.newBuilder().also {
+            it.id = place.id
+            it.name = place.name
+            it.description = place.description
+            it.latitude = location.first
+            it.longitude = location.second
+        }.build()
+
+        return place2
     }
 }
 
