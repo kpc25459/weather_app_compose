@@ -1,5 +1,6 @@
 package net.dev.weather.ui.currentWeather
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,16 +30,18 @@ class CurrentWeatherViewModel @Inject constructor(weatherRepository: WeatherRepo
 
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
-    private val _data: Flow<Async<CurrentWeather>> =
-        combine(
+    private val _currentWeather: Flow<Async<CurrentWeather>> =
+        combine(locationRepository.location,
             locationRepository.locationName,
             weatherRepository.weather,
             weatherRepository.airPollutionCurrent
-        ) { location, weather, airPollutionCurrent ->
+        ) { location, locationName, weather, airPollutionCurrent ->
+
+            Log.i("CurrentWeatherViewModel", "location: $location")
 
             val uiWeather = mapToUiModel(weather)
             return@combine CurrentWeather(
-                location = location,
+                location = locationName,
                 current = uiWeather.current,
                 daily = uiWeather.daily,
                 hourlyForecast = uiWeather.hourly,
@@ -49,7 +52,7 @@ class CurrentWeatherViewModel @Inject constructor(weatherRepository: WeatherRepo
             .catch<Async<CurrentWeather>> { emit(Async.Error(R.string.loading_error, it)) }
 
     val uiState: StateFlow<CurrentWeatherUiState> = combine(
-        _data, _userMessage
+        _currentWeather, _userMessage
     ) { data, userMessage ->
         when (data) {
             is Async.Loading -> CurrentWeatherUiState(isLoading = true)

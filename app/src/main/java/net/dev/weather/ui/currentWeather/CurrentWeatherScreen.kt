@@ -49,7 +49,6 @@ fun CurrentWeatherScreen(
     { paddingValues ->
 
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
         uiState.main?.let { main ->
             Content(main, Modifier.padding(paddingValues))
         }

@@ -12,6 +12,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 interface LocationRepository {
+
+    val location: Flow<LatandLong>
+
     val locationName: Flow<String>
 
     val savedPlaces: Flow<List<Place>>
@@ -33,19 +36,41 @@ class LocationRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : LocationRepository {
 
-    override val locationName: Flow<String>
+    override val location: Flow<LatandLong>
         get() = flow {
-            context.settingsDataStore.data.map { settings -> settings.currentPlace }.collect { currentPlace ->
-                if (currentPlace != null) {
-                    emit(currentPlace.name)
+            context.settingsDataStore.data.map { settings -> settings.currentLocation }.collect { currentLocation ->
+                if (currentLocation != null) {
+                    emit(LatandLong(latitude = currentLocation.latitude, longitude = currentLocation.longitude))
                 } else {
-                    //TODO: tutaj powinny być współrzędne na podstawie lokalizacji urządzenia
-                    val reverseLocationResponse = weatherServiceApi.getReverseLocation()
-                    val location = reverseLocationResponse.body()?.first()?.name ?: "Unknown"
-                    emit(location)
+                    emit(LatandLong(latitude = 0.0, longitude = 0.0))
                 }
             }
         }
+
+    override val locationName: Flow<String>
+        get() = flow {
+
+            location.collect {
+                val reverseLocationResponse = weatherServiceApi.getReverseLocation(it.latitude, it.longitude)
+                val location = reverseLocationResponse.body()?.first()?.name ?: "Unknown"
+                emit(location)
+            }
+
+
+            /*  context.settingsDataStore.data.map { settings -> settings.currentPlace }.collect { currentPlace ->
+                  if (currentPlace != null) {
+                      emit(currentPlace.name)
+                  } else {
+
+
+                      //TODO: tutaj powinny być współrzędne na podstawie lokalizacji urządzenia
+                      val reverseLocationResponse = weatherServiceApi.getReverseLocation()
+                      val location = reverseLocationResponse.body()?.first()?.name ?: "Unknown"
+                      emit(location)
+                  }
+              }*/
+        }
+
     override val savedPlaces: Flow<List<Place>>
         get() = flow {
             context.settingsDataStore.data.map { settings ->
@@ -148,6 +173,10 @@ class LocationRepositoryImpl @Inject constructor(
 
         return place2
     }
+/*
+    companion object {
+        private const val refreshIntervalMs = 1000 * 60L
+    }*/
 }
 
 

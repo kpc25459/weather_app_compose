@@ -101,15 +101,22 @@ dependencies {
     implementation "com.google.protobuf:protobuf-javalite:3.21.2"
     implementation 'com.google.protobuf:protobuf-kotlin-lite:3.21.2'
 
+    // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
+    // OkHttp
     implementation('com.squareup.okhttp3:okhttp:5.0.0-alpha.11')
     implementation('com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11')
 
+    // DateTime
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 
+    // Location
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+
+    // Chart
     implementation("com.himanshoe:charty:1.0.1")
 
     testImplementation 'junit:junit:4.13.2'

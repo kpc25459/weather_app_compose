@@ -186,7 +186,7 @@ fun SwipeBackground(dismissState: DismissState) {
 fun SavedPlace(place: Place, onItemClick: (Place) -> Unit = {}) {
     ListItem(
         text = { Text(text = place.name) },
-        secondaryText = { Text(text = place.description + ", lat: ${place.latitude}, lon: ${place.longitude}") },
+        secondaryText = { Text(text = place.description) },
         modifier = Modifier
             .padding(5.dp)
             .border(1.dp, shape = RoundedCornerShape(8.dp), color = primaryColor)
