@@ -5,6 +5,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import net.dev.weather.Location
 import net.dev.weather.api.LocationServiceApi
 import net.dev.weather.api.WeatherServiceApi
 import net.dev.weather.settingsDataStore
@@ -74,8 +75,8 @@ class LocationRepositoryImpl @Inject constructor(
     override val savedPlaces: Flow<List<Place>>
         get() = flow {
             context.settingsDataStore.data.map { settings ->
-                settings.placesList.map { place ->
-                    Place(place.name, place.id, place.description, place.latitude, place.longitude)
+                settings.favoritesList.map { place ->
+                    Place(place.name, place.id, place.description,/* place.location.latitude, place.location.longitude*/ 0.0, 0.0)
                 }
             }.collect { places ->
                 emit(places)
@@ -99,11 +100,11 @@ class LocationRepositoryImpl @Inject constructor(
 
     override suspend fun toggleFavorite(suggestion: Suggestion) {
         context.settingsDataStore.updateData { currentSettings ->
-            val p = currentSettings.placesList.find { it.id == suggestion.id }
+            val p = currentSettings.favoritesList.find { it.id == suggestion.id }
             if (p != null) {
-                currentSettings.toBuilder().clearPlaces().addAllPlaces(currentSettings.placesList.filter { it.id != suggestion.id }).build()
+                currentSettings.toBuilder().clearFavorites().addAllFavorites(currentSettings.favoritesList.filter { it.id != suggestion.id }).build()
             } else {
-                currentSettings.toBuilder().addPlaces(buildPlace(suggestion)).build()
+                currentSettings.toBuilder().addFavorites(buildPlace(suggestion)).build()
             }
         }
     }
@@ -119,7 +120,7 @@ class LocationRepositoryImpl @Inject constructor(
 
     override suspend fun removeFromFavorites(placeId: String) {
         context.settingsDataStore.updateData { currentSettings ->
-            currentSettings.toBuilder().clearPlaces().addAllPlaces(currentSettings.placesList.filter { it.id != placeId }).build()
+            currentSettings.toBuilder().clearFavorites().addAllFavorites(currentSettings.favoritesList.filter { it.id != placeId }).build()
         }
     }
 
@@ -142,7 +143,7 @@ class LocationRepositoryImpl @Inject constructor(
 
     override suspend fun clearPlaces() {
         context.settingsDataStore.updateData { currentSettings ->
-            currentSettings.toBuilder().clearPlaces().build()
+            currentSettings.toBuilder().clearFavorites().build()
         }
     }
 
@@ -153,8 +154,10 @@ class LocationRepositoryImpl @Inject constructor(
             it.id = suggestion.id
             it.name = suggestion.name
             it.description = suggestion.description
-            it.latitude = location.first
-            it.longitude = location.second
+            it.location = Location.newBuilder().also { builder ->
+                builder.latitude = location.first
+                builder.longitude = location.second
+            }.build()
         }.build()
 
         return place
@@ -167,16 +170,18 @@ class LocationRepositoryImpl @Inject constructor(
             it.id = place.id
             it.name = place.name
             it.description = place.description
-            it.latitude = location.first
-            it.longitude = location.second
+            it.location = Location.newBuilder().also { builder ->
+                builder.latitude = location.first
+                builder.longitude = location.second
+            }.build()
         }.build()
 
         return place2
     }
-/*
-    companion object {
-        private const val refreshIntervalMs = 1000 * 60L
-    }*/
+    /*
+        companion object {
+            private const val refreshIntervalMs = 1000 * 60L
+        }*/
 }
 
 
