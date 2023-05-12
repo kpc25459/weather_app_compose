@@ -70,7 +70,7 @@ fun PlacesScreen(
                 places,
                 onItemClick = {
                     scope.launch {
-                        viewModel.setCurrentLocation(it)
+                        viewModel.setCurrentPlace(it)
 
                         withContext(Dispatchers.Main) {
                             navController.navigate(NavRoutes.CurrentWeather.route)
@@ -195,16 +195,16 @@ fun SavedPlace(place: Place, onItemClick: (Place) -> Unit = {}) {
             Image(painter = painterResource(R.drawable.outline_location_on_24), contentDescription = stringResource(R.string.place))
         },
         trailing = {
-            Image(
-                painter = painterResource(R.drawable.outline_check_24),
-                contentDescription = stringResource(R.string.place),
-                colorFilter = ColorFilter.tint(Color.White),
-                modifier = Modifier
-                    .background(primaryColor, shape = CircleShape)
-            )
-        },
-
-        )
+            if (place.isSelected)
+                Image(
+                    painter = painterResource(R.drawable.outline_check_24),
+                    contentDescription = stringResource(R.string.place),
+                    colorFilter = ColorFilter.tint(Color.White),
+                    modifier = Modifier
+                        .background(primaryColor, shape = CircleShape)
+                )
+        }
+    )
 }
 
 

@@ -76,7 +76,7 @@ class LocationRepositoryImpl @Inject constructor(
         get() = flow {
             context.settingsDataStore.data.map { settings ->
                 settings.favoritesList.map { place ->
-                    Place(place.name, place.id, place.description,/* place.location.latitude, place.location.longitude*/ 0.0, 0.0)
+                    Place(place.name, place.id, place.description, place.location.latitude, place.location.longitude)
                 }
             }.collect { places ->
                 emit(places)

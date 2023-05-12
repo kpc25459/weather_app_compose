@@ -21,9 +21,12 @@ data class PlacesUiState(
 class PlacesViewModel @Inject constructor(private val locationRepository: LocationRepository) : ViewModel() {
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
-    private val _places: Flow<Async<List<Place>>> = locationRepository.savedPlaces
-        .map { Async.Success(it) }
-        .catch<Async<List<Place>>> { emit(Async.Error(R.string.loading_error, it)) }
+    private val currentLocation = Place("Komorniki", "-1", "Bieżąca lokalizacja", 0.0, 0.0)
+
+    private val _places: Flow<Async<List<Place>>> =
+        combine(flowOf(listOf(currentLocation)), locationRepository.savedPlaces) { currentLocation, savedPlaces -> currentLocation + savedPlaces }
+            .map { Async.Success(it) }
+            .catch<Async<List<Place>>> { emit(Async.Error(R.string.loading_error, it)) }
 
     val uiState: StateFlow<PlacesUiState> = combine(
         _places, _userMessage
@@ -41,7 +44,9 @@ class PlacesViewModel @Inject constructor(private val locationRepository: Locati
         locationRepository.removeFromFavorites(place.id)
     }
 
-    suspend fun setCurrentLocation(place: Place) {
+    suspend fun setCurrentPlace(place: Place) {
+
+
         locationRepository.setCurrentLocation(place)
     }
 }
