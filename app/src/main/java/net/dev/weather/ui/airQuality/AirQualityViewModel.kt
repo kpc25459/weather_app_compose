@@ -1,5 +1,6 @@
 package net.dev.weather.ui.airQuality
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,11 +26,14 @@ class AirQualityViewModel @Inject constructor(weatherRepository: WeatherReposito
 
     private val _airQualityFlow: Flow<Async<AirQuality>> =
         combine(
-            locationRepository.locationName,
+            locationRepository.currentPlace,
             weatherRepository.airPollutionForecast,
-        ) { location, airPollutionForecast ->
+        ) { currentPlace, airPollutionForecast ->
+
+            Log.i("AirQualityViewModel", "currentPlace: $currentPlace")
+
             return@combine AirQuality(
-                location = location,
+                place = currentPlace,
                 airPollutionForecast = mapToUiModel(airPollutionForecast),
             )
         }

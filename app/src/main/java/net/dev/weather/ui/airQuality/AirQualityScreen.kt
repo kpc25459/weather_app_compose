@@ -82,7 +82,7 @@ private fun Content(data: AirQuality, modifier: Modifier = Modifier) {
             .padding(5.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Box(data.location, data.airPollutionForecast)
+        Box(data.place.name, data.airPollutionForecast)
         Spacer(modifier = Modifier.height(20.dp))
         HourPollutionForecast(data.airPollutionForecast.take(4))
 

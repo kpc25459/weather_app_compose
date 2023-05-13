@@ -1,5 +1,6 @@
 package net.dev.weather.ui.weatherForecast
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

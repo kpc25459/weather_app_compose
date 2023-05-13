@@ -153,6 +153,7 @@ class LocationRepositoryImpl @Inject constructor(
 
         context.settingsDataStore.updateData { currentSettings ->
             currentSettings.toBuilder().setCurrentPlace(place).build()
+            //currentSettings.toBuilder().setCurrentLocation(place.location).build()
         }
     }
 
@@ -161,6 +162,7 @@ class LocationRepositoryImpl @Inject constructor(
 
         context.settingsDataStore.updateData { currentSettings ->
             currentSettings.toBuilder().setCurrentPlace(place2).build()
+            //currentSettings.toBuilder().setCurrentLocation(place2.location).build()
         }
     }
 
