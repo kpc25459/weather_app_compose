@@ -195,7 +195,7 @@ fun SavedPlace(place: Place, onItemClick: (Place) -> Unit = {}) {
             Image(painter = painterResource(R.drawable.outline_location_on_24), contentDescription = stringResource(R.string.place))
         },
         trailing = {
-            if (place.isSelected)
+            //if (place.isSelected)
                 Image(
                     painter = painterResource(R.drawable.outline_check_24),
                     contentDescription = stringResource(R.string.place),

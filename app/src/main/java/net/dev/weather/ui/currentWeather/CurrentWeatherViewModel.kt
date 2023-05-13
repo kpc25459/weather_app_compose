@@ -31,17 +31,17 @@ class CurrentWeatherViewModel @Inject constructor(weatherRepository: WeatherRepo
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
     private val _currentWeather: Flow<Async<CurrentWeather>> =
-        combine(locationRepository.location,
-            locationRepository.locationName,
+        combine(
+            locationRepository.currentPlace,
             weatherRepository.weather,
             weatherRepository.airPollutionCurrent
-        ) { location, locationName, weather, airPollutionCurrent ->
+        ) { currentPlace, weather, airPollutionCurrent ->
 
-            Log.i("CurrentWeatherViewModel", "location: $location")
+            Log.i("CurrentWeatherViewModel", "currentPlace: $currentPlace")
 
             val uiWeather = mapToUiModel(weather)
             return@combine CurrentWeather(
-                location = locationName,
+                location = currentPlace.name,
                 current = uiWeather.current,
                 daily = uiWeather.daily,
                 hourlyForecast = uiWeather.hourly,

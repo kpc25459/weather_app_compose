@@ -72,7 +72,7 @@ fun SearchScreen(
                 suggestions = suggestions,
                 onItemClick = { suggestion ->
                     coroutineScope.launch {
-                        viewModel.setCurrentLocation(suggestion)
+                        viewModel.setPlaceFromSuggestion(suggestion)
 
                         withContext(Dispatchers.Main){
                             navController.navigate(NavRoutes.CurrentWeather.route)

@@ -1,14 +1,14 @@
 package net.dev.weather.data
 
 import android.content.Context
+import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import net.dev.weather.Location
 import net.dev.weather.api.LocationServiceApi
 import net.dev.weather.api.WeatherServiceApi
 import net.dev.weather.settingsDataStore
+import net.dev.weather.ui.places.currentLocation
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,6 +18,8 @@ interface LocationRepository {
 
     val locationName: Flow<String>
 
+    val currentPlace: Flow<Place>
+
     val savedPlaces: Flow<List<Place>>
 
     fun getSuggestions(input: String): Flow<List<Suggestion>>
@@ -26,8 +28,8 @@ interface LocationRepository {
 
     suspend fun toggleFavorite(suggestion: Suggestion)
     suspend fun removeFromFavorites(placeId: String)
-    suspend fun setCurrentLocation(suggestion: Suggestion)
-    suspend fun setCurrentLocation(place: Place)
+    suspend fun setCurrentPlace(suggestion: Suggestion)
+    suspend fun setCurrentPlace(place: Place)
 }
 
 @Singleton
@@ -41,9 +43,27 @@ class LocationRepositoryImpl @Inject constructor(
         get() = flow {
             context.settingsDataStore.data.map { settings -> settings.currentLocation }.collect { currentLocation ->
                 if (currentLocation != null) {
+                    Log.d("LocationRepository", "emit location: $currentLocation")
                     emit(LatandLong(latitude = currentLocation.latitude, longitude = currentLocation.longitude))
                 } else {
                     emit(LatandLong(latitude = 0.0, longitude = 0.0))
+                }
+            }
+        }
+
+    override val currentPlace: Flow<Place>
+        get() = flow {
+            context.settingsDataStore.data.map { settings -> settings.currentPlace }.collect { currentPlace ->
+                currentPlace?.let {
+                    emit(
+                        Place(
+                            name = currentPlace.name,
+                            id = currentPlace.id,
+                            description = currentPlace.description,
+                            latitude = currentPlace.location.latitude,
+                            longitude = currentPlace.location.longitude
+                        )
+                    )
                 }
             }
         }
@@ -104,18 +124,21 @@ class LocationRepositoryImpl @Inject constructor(
             if (p != null) {
                 currentSettings.toBuilder().clearFavorites().addAllFavorites(currentSettings.favoritesList.filter { it.id != suggestion.id }).build()
             } else {
-                currentSettings.toBuilder().addFavorites(buildPlace(suggestion)).build()
+                currentSettings.toBuilder().addFavorites(buildPlaceFromSuggestion(suggestion)).build()
             }
         }
     }
 
-    private suspend fun getLocationFromGoogle(placeId: String): Pair<Double, Double> {
+    private suspend fun getLocationFromGoogle(placeId: String): LatandLong {
+        if (placeId == currentLocation.id)
+            return LatandLong(0.0, 0.0)
+
         val latLongResponse = locationServiceApi.getLatLongFromGoogle(placeId)
         return if (latLongResponse.isSuccessful) {
             val body = latLongResponse.body()!!
-            body.results.first().geometry.location.lat to body.results.first().geometry.location.lng
+            LatandLong(body.results.first().geometry.location.lat, body.results.first().geometry.location.lng)
         } else
-            0.0 to 0.0
+            LatandLong(0.0, 0.0)
     }
 
     override suspend fun removeFromFavorites(placeId: String) {
@@ -124,21 +147,29 @@ class LocationRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun setCurrentLocation(suggestion: Suggestion) {
+    override suspend fun setCurrentPlace(suggestion: Suggestion) {
 
-        val place = buildPlace(suggestion)
+        val place = buildPlaceFromSuggestion(suggestion)
 
         context.settingsDataStore.updateData { currentSettings ->
             currentSettings.toBuilder().setCurrentPlace(place).build()
         }
     }
 
-    override suspend fun setCurrentLocation(place: Place) {
-        val place2 = buildPlace(place)
+    override suspend fun setCurrentPlace(place: Place) {
+        val place2 = buildPlaceFromSuggestion(if (place.id == currentLocation.id) buildFromCurrentLocation() else place)
 
         context.settingsDataStore.updateData { currentSettings ->
             currentSettings.toBuilder().setCurrentPlace(place2).build()
         }
+    }
+
+    private suspend fun buildFromCurrentLocation(): Place {
+        val lastLocation = context.settingsDataStore.data.map { settings -> settings.currentLocation }.first()
+
+        val reverseLocationResponse = weatherServiceApi.getReverseLocation(lastLocation.latitude, lastLocation.longitude)
+        val name = reverseLocationResponse.body()?.first()?.name ?: "Unknown"
+        return Place(name, currentLocation.id, currentLocation.description, lastLocation.latitude, lastLocation.longitude)
     }
 
     override suspend fun clearPlaces() {
@@ -147,7 +178,7 @@ class LocationRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun buildPlace(suggestion: Suggestion): net.dev.weather.Place {
+    private suspend fun buildPlaceFromSuggestion(suggestion: Suggestion): net.dev.weather.Place {
         val location = getLocationFromGoogle(suggestion.id)
 
         val place = net.dev.weather.Place.newBuilder().also {
@@ -155,15 +186,15 @@ class LocationRepositoryImpl @Inject constructor(
             it.name = suggestion.name
             it.description = suggestion.description
             it.location = Location.newBuilder().also { builder ->
-                builder.latitude = location.first
-                builder.longitude = location.second
+                builder.latitude = location.latitude
+                builder.longitude = location.longitude
             }.build()
         }.build()
 
         return place
     }
 
-    private suspend fun buildPlace(place: Place): net.dev.weather.Place {
+    private suspend fun buildPlaceFromSuggestion(place: Place): net.dev.weather.Place {
         val location = getLocationFromGoogle(place.id)
 
         val place2 = net.dev.weather.Place.newBuilder().also {
@@ -171,8 +202,8 @@ class LocationRepositoryImpl @Inject constructor(
             it.name = place.name
             it.description = place.description
             it.location = Location.newBuilder().also { builder ->
-                builder.latitude = location.first
-                builder.longitude = location.second
+                builder.latitude = location.latitude
+                builder.longitude = location.longitude
             }.build()
         }.build()
 

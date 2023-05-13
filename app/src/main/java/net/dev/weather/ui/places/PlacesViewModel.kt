@@ -21,10 +21,8 @@ data class PlacesUiState(
 class PlacesViewModel @Inject constructor(private val locationRepository: LocationRepository) : ViewModel() {
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
-    private val currentLocation = Place("Komorniki", "-1", "Bieżąca lokalizacja", 0.0, 0.0)
-
     private val _places: Flow<Async<List<Place>>> =
-        combine(flowOf(listOf(currentLocation)), locationRepository.savedPlaces) { currentLocation, savedPlaces -> currentLocation + savedPlaces }
+        combine(flowOf(listOf(currentLocation)), locationRepository.savedPlaces) { currentPlace, savedPlaces -> currentPlace + savedPlaces }
             .map { Async.Success(it) }
             .catch<Async<List<Place>>> { emit(Async.Error(R.string.loading_error, it)) }
 
@@ -45,9 +43,8 @@ class PlacesViewModel @Inject constructor(private val locationRepository: Locati
     }
 
     suspend fun setCurrentPlace(place: Place) {
-
-
-        locationRepository.setCurrentLocation(place)
+        locationRepository.setCurrentPlace(place)
     }
 }
 
+val currentLocation = Place("Bieżąca lokalizacja", "-1", "", 0.0, 0.0)

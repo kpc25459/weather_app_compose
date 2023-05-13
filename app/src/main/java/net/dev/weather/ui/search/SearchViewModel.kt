@@ -61,8 +61,8 @@ class SearchViewModel @Inject constructor(private val locationRepository: Locati
         _searchText.value = ""
     }
 
-    suspend fun setCurrentLocation(suggestion: Suggestion) {
-        locationRepository.setCurrentLocation(suggestion)
+    suspend fun setPlaceFromSuggestion(suggestion: Suggestion) {
+        locationRepository.setCurrentPlace(suggestion)
     }
 }
 
