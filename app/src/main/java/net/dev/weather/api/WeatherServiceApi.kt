@@ -41,7 +41,5 @@ interface WeatherServiceApi {
     companion object {
         const val BASE_URL = "http://api.openweathermap.org/"
         private const val appid = "8c27af4c68a4a3cc4c9d8d009ece6201"
-/*        private const val lat = 52.335833
-        private const val lon = 16.807778*/
     }
 }

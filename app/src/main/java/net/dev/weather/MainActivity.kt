@@ -48,11 +48,13 @@ class MainActivity : ComponentActivity() {
                             // Update UI with location data
                             currentLocation = LatandLong(lo.latitude, lo.longitude)
 
-                            //Log.i("MainActivity", "onLocationResult: ${lo.latitude}, ${lo.longitude}")
+                            Log.i("MainActivity", "onLocationResult: ${lo.latitude}, ${lo.longitude}")
 
                             coroutineScope.launch {
                                 context.settingsDataStore.updateData { currentSettings ->
                                     val location: Location = Location.newBuilder().setLatitude(lo.latitude).setLongitude(lo.longitude).build()
+
+                                    Log.i("MainActivity", "setCurrentLocation: ${location.latitude}, ${location.longitude}")
 
                                     currentSettings.toBuilder().setCurrentLocation(location).build()
                                 }
@@ -79,6 +81,7 @@ class MainActivity : ComponentActivity() {
                 if (permissions.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }) {
                     startLocationUpdates()
                 } else {
+                    //TODO: wyjątek launcher has been not initialized gdy brak uprawnień
                     launcherMultiplePermissions.launch(permissions)
                 }
 

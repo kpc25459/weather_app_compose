@@ -1,6 +1,5 @@
 package net.dev.weather.ui.weatherForecast
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import net.dev.weather.R
 import net.dev.weather.data.*
+import net.dev.weather.repositories.WeatherRepository
 import net.dev.weather.ui.model.*
 import net.dev.weather.utils.Async
 import javax.inject.Inject

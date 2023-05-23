@@ -28,9 +28,7 @@ import com.himanshoe.charty.line.config.LineConfig
 import com.himanshoe.charty.line.model.LineData
 import net.dev.weather.*
 import net.dev.weather.R
-import net.dev.weather.api.WeatherServiceApi
 import net.dev.weather.data.AirQuality
-import net.dev.weather.data.NetworkRepository
 import net.dev.weather.theme.iconColor
 import net.dev.weather.theme.tabBarBackgroundColor
 import net.dev.weather.theme.tabBarTextColor

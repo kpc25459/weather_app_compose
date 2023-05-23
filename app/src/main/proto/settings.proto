@@ -4,6 +4,7 @@ option java_package = "net.dev.weather";
 option java_multiple_files = true;
 
 message Settings {
+  //TODO: zmienić na currentDeviceLocation
   Location currentLocation = 1;
   Place currentPlace = 2;
   repeated Place favorites = 3;

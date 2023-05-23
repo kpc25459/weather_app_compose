@@ -6,9 +6,10 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import net.dev.weather.R
-import net.dev.weather.data.LocationRepository
 import net.dev.weather.data.Place
 import net.dev.weather.data.Suggestion
+import net.dev.weather.repositories.LocationRepository
+import net.dev.weather.repositories.SettingsRepository
 import net.dev.weather.utils.Async
 import javax.inject.Inject
 
@@ -20,16 +21,19 @@ data class SearchUiState(
 )
 
 @HiltViewModel
-class SearchViewModel @Inject constructor(private val locationRepository: LocationRepository) : ViewModel() {
+class SearchViewModel @Inject constructor(
+    private val locationRepository: LocationRepository,
+    private val settingsRepository: SettingsRepository,
+) : ViewModel() {
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
     private val _searchText: MutableStateFlow<String> = MutableStateFlow("")
 
-    private val _savedPlaces: Flow<List<Place>> = locationRepository.savedPlaces
+    private val _favorites: Flow<List<Place>> = settingsRepository.favorites
 
     private val _matchedCities: Flow<Async<List<Suggestion>>> = combine(_searchText) { searchText ->
         locationRepository.getSuggestions(searchText.last()).last()
-    }.combine(_savedPlaces) { suggestions, savedPlaces ->
+    }.combine(_favorites) { suggestions, savedPlaces ->
         suggestions.map { suggestion ->
             suggestion.copy(isFavorite = savedPlaces.any { it.id == suggestion.id })
         }
@@ -53,16 +57,30 @@ class SearchViewModel @Inject constructor(private val locationRepository: Locati
         _searchText.value = newSerachText
     }
 
-    suspend fun toggleFavorite(suggestion: Suggestion) {
-        locationRepository.toggleFavorite(suggestion)
-    }
-
     fun onClearClick() {
         _searchText.value = ""
     }
 
-    suspend fun setPlaceFromSuggestion(suggestion: Suggestion) {
-        locationRepository.setCurrentPlace(suggestion)
+    suspend fun toggleFavorite(suggestion: Suggestion) {
+        settingsRepository.toggleFavorite(suggestion.toPlace())
+    }
+
+    suspend fun setCurrentPlace(suggestion: Suggestion) {
+        settingsRepository.setCurrentPlace(suggestion.toPlace())
+    }
+
+    private suspend fun Suggestion.toPlace(): Place {
+        val location = locationRepository.getLocationFromGoogle(this.id)
+
+        return Place(
+            name = name,
+            id = id,
+            description = description ?: "",
+            latitude = location.latitude,
+            longitude = location.longitude
+        )
     }
 }
+
+
 

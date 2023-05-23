@@ -7,8 +7,11 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import net.dev.weather.R
-import net.dev.weather.data.*
-import net.dev.weather.ui.model.*
+import net.dev.weather.data.AirPollutionForecast
+import net.dev.weather.data.AirQuality
+import net.dev.weather.repositories.SettingsRepository
+import net.dev.weather.repositories.WeatherRepository
+import net.dev.weather.ui.model.UiAirPollutionForecast
 import net.dev.weather.utils.Async
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -20,13 +23,13 @@ data class AirQualityUiState(
 )
 
 @HiltViewModel
-class AirQualityViewModel @Inject constructor(weatherRepository: WeatherRepository, locationRepository: LocationRepository) : ViewModel() {
+class AirQualityViewModel @Inject constructor(weatherRepository: WeatherRepository, settingsRepository: SettingsRepository) : ViewModel() {
 
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
     private val _airQualityFlow: Flow<Async<AirQuality>> =
         combine(
-            locationRepository.currentPlace,
+            settingsRepository.currentPlace,
             weatherRepository.airPollutionForecast,
         ) { currentPlace, airPollutionForecast ->
 

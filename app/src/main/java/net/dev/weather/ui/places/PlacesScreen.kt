@@ -79,7 +79,7 @@ fun PlacesScreen(
                 },
                 onItemRemoved = {
                     scope.launch {
-                        viewModel.removePlace(it)
+                        viewModel.removeFromFavorites(it)
                     }
                 }, modifier = Modifier.padding(paddingValues)
             )

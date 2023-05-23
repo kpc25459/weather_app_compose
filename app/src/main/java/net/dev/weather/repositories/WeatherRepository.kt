@@ -1,4 +1,4 @@
-package net.dev.weather.data
+package net.dev.weather.repositories
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -6,6 +6,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import net.dev.weather.api.WeatherServiceApi
+import net.dev.weather.data.AirPollutionForecast
+import net.dev.weather.data.Weather
+import net.dev.weather.data.toDomainModel
 import net.dev.weather.settingsDataStore
 import javax.inject.Inject
 import javax.inject.Singleton
