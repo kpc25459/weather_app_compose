@@ -1,17 +1,25 @@
 package net.dev.weather.repositories
 
+import android.util.Log
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import net.dev.weather.api.LocationServiceApi
 import net.dev.weather.api.WeatherServiceApi
 import net.dev.weather.data.LatandLong
+import net.dev.weather.data.Place
+import net.dev.weather.data.PlaceMode
 import net.dev.weather.data.Suggestion
 import net.dev.weather.ui.places.currentLocation
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.log
 
 interface LocationRepository {
-    val currentDeviceLocationName: Flow<String>
+    val currentPlace: Flow<Place>
+
+    val currentDevicePlace: Flow<Place>
 
     fun getSuggestions(input: String): Flow<List<Suggestion>>
 
@@ -25,15 +33,29 @@ class LocationRepositoryImpl @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) : LocationRepository {
 
+    override val currentPlace: Flow<Place>
+        get() = flow {
+            settingsRepository.currentMode.collect {
+                when (it) {
+                    PlaceMode.DEVICE_LOCATION -> emit(currentDevicePlace.first())
+                    PlaceMode.SEARCH -> emit(settingsRepository.currentPlace.first())
+                    PlaceMode.FAVORITES -> emit(settingsRepository.currentPlace.first())
+                }
+            }
+        }
 
-    override val currentDeviceLocationName: Flow<String>
+    override val currentDevicePlace: Flow<Place>
         get() = flow {
             settingsRepository.currentDeviceLocation.collect {
                 it ?: return@collect
 
                 val reverseLocationResponse = weatherServiceApi.getReverseLocation(it.latitude, it.longitude)
-                val location = reverseLocationResponse.body()?.first()?.name ?: "Unknown"
-                emit(location)
+                val name = reverseLocationResponse.body()?.first()?.name ?: "Unknown"
+                val value = Place(name, currentLocation.id, currentLocation.description, it.latitude, it.longitude)
+
+                Log.d("LocationRepository", "currentDevicePlace: $value")
+
+                emit(value)
             }
         }
 

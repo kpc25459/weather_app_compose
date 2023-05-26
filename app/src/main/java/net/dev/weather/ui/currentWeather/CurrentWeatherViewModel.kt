@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.*
 import net.dev.weather.R
 import net.dev.weather.data.CurrentWeather
 import net.dev.weather.data.Weather
-import net.dev.weather.repositories.SettingsRepository
+import net.dev.weather.repositories.LocationRepository
 import net.dev.weather.repositories.WeatherRepository
 import net.dev.weather.ui.model.UiWeather
 import net.dev.weather.ui.model.UiWeatherCurrent
@@ -26,18 +26,17 @@ data class CurrentWeatherUiState(
 )
 
 @HiltViewModel
-class CurrentWeatherViewModel @Inject constructor(weatherRepository: WeatherRepository, settingsRepository: SettingsRepository) : ViewModel() {
+class CurrentWeatherViewModel @Inject constructor(locationRepository: LocationRepository, weatherRepository: WeatherRepository) : ViewModel() {
 
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
     private val _currentWeather: Flow<Async<CurrentWeather>> =
         combine(
-            settingsRepository.currentPlace,
+            locationRepository.currentPlace,
             weatherRepository.weather,
             weatherRepository.airPollutionCurrent
         ) { currentPlace, weather, airPollutionCurrent ->
 
-            //TODO: jutro: nei działa usawianie lokalizacji dla obecnej lokalizacji
             Log.i("CurrentWeatherViewModel", "currentPlace: $currentPlace")
 
             val uiWeather = mapToUiModel(weather)

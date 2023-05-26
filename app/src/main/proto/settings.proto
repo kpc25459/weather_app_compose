@@ -4,10 +4,10 @@ option java_package = "net.dev.weather";
 option java_multiple_files = true;
 
 message Settings {
-  //TODO: zmienić na currentDeviceLocation
-  Location currentLocation = 1;
-  Place currentPlace = 2;
-  repeated Place favorites = 3;
+  Location currentDeviceLocation = 1;
+  PlaceMode currentMode = 2;
+  Place currentPlace = 3;
+  repeated Place favorites = 4;
 }
 
 message Place {
@@ -20,4 +20,10 @@ message Place {
 message Location {
   double latitude = 1;
   double longitude = 2;
+}
+
+enum PlaceMode {
+  CURRENT_LOCATION = 0;
+  SEARCH = 1;
+  FAVORITES = 2;
 }

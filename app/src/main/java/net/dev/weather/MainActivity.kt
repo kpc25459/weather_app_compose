@@ -48,15 +48,13 @@ class MainActivity : ComponentActivity() {
                             // Update UI with location data
                             currentLocation = LatandLong(lo.latitude, lo.longitude)
 
-                            Log.i("MainActivity", "onLocationResult: ${lo.latitude}, ${lo.longitude}")
-
                             coroutineScope.launch {
                                 context.settingsDataStore.updateData { currentSettings ->
                                     val location: Location = Location.newBuilder().setLatitude(lo.latitude).setLongitude(lo.longitude).build()
 
                                     Log.i("MainActivity", "setCurrentLocation: ${location.latitude}, ${location.longitude}")
 
-                                    currentSettings.toBuilder().setCurrentLocation(location).build()
+                                    currentSettings.toBuilder().setCurrentDeviceLocation(location).build()
                                 }
                             }
                         }

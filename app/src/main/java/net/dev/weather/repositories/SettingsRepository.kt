@@ -9,17 +9,22 @@ import kotlinx.coroutines.flow.map
 import net.dev.weather.Location
 import net.dev.weather.data.LatandLong
 import net.dev.weather.data.Place
+import net.dev.weather.data.PlaceMode
 import net.dev.weather.settingsDataStore
 import javax.inject.Inject
 import javax.inject.Singleton
 
 interface SettingsRepository {
 
+    val currentMode: Flow<PlaceMode>
+
     val currentDeviceLocation: Flow<LatandLong?>
 
     val currentPlace: Flow<Place>
 
     val favorites: Flow<List<Place>>
+
+    suspend fun setCurrentMode(mode: PlaceMode)
 
     suspend fun clearFavorites()
 
@@ -34,11 +39,23 @@ class SettingsRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : SettingsRepository {
 
+    override val currentMode: Flow<PlaceMode>
+        get() = flow {
+            context.settingsDataStore.data.map { settings -> settings.currentMode }.collect { currentMode ->
+
+                when (currentMode) {
+                    net.dev.weather.PlaceMode.CURRENT_LOCATION -> emit(PlaceMode.DEVICE_LOCATION)
+                    net.dev.weather.PlaceMode.SEARCH -> emit(PlaceMode.SEARCH);
+                    net.dev.weather.PlaceMode.FAVORITES -> emit(PlaceMode.FAVORITES);
+                    else -> emit(PlaceMode.DEVICE_LOCATION)
+                }
+            }
+        }
+
     override val currentDeviceLocation: Flow<LatandLong?>
         get() = flow {
-            context.settingsDataStore.data.map { settings -> settings.currentLocation }.collect { currentLocation ->
+            context.settingsDataStore.data.map { settings -> settings.currentDeviceLocation }.collect { currentLocation ->
                 if (currentLocation != null) {
-                    Log.d("LocationRepository", "emit location: $currentLocation")
                     emit(LatandLong(latitude = currentLocation.latitude, longitude = currentLocation.longitude))
                 } else {
                     emit(null)
@@ -50,15 +67,7 @@ class SettingsRepositoryImpl @Inject constructor(
         get() = flow {
             context.settingsDataStore.data.map { settings -> settings.currentPlace }.collect { currentPlace ->
                 currentPlace?.let {
-                    emit(
-                        Place(
-                            name = currentPlace.name,
-                            id = currentPlace.id,
-                            description = currentPlace.description,
-                            latitude = currentPlace.location.latitude,
-                            longitude = currentPlace.location.longitude
-                        )
-                    )
+                    emit(Place(currentPlace.name, currentPlace.id, currentPlace.description, currentPlace.location.latitude, currentPlace.location.longitude))
                 }
             }
         }
@@ -73,6 +82,12 @@ class SettingsRepositoryImpl @Inject constructor(
                 emit(places)
             }
         }
+
+    override suspend fun setCurrentMode(mode: PlaceMode) {
+        context.settingsDataStore.updateData { currentSettings ->
+            currentSettings.toBuilder().setCurrentMode(mode.toProto()).build()
+        }
+    }
 
     override suspend fun clearFavorites() {
         context.settingsDataStore.updateData { currentSettings ->
@@ -100,6 +115,9 @@ class SettingsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setCurrentPlace(place: Place) {
+
+        Log.d("SettingsRepository", "setCurrentPlace: $place")
+
         context.settingsDataStore.updateData { currentSettings ->
             currentSettings.toBuilder().setCurrentPlace(place.toProto()).build()
         }
@@ -115,6 +133,14 @@ class SettingsRepositoryImpl @Inject constructor(
                 builder.longitude = longitude
             }.build()
         }.build()
+    }
+
+    private fun PlaceMode.toProto(): net.dev.weather.PlaceMode {
+        return when (this) {
+            PlaceMode.DEVICE_LOCATION -> net.dev.weather.PlaceMode.CURRENT_LOCATION
+            PlaceMode.SEARCH -> net.dev.weather.PlaceMode.SEARCH
+            PlaceMode.FAVORITES -> net.dev.weather.PlaceMode.FAVORITES
+        }
     }
 }
 

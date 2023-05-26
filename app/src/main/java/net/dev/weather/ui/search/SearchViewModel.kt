@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import net.dev.weather.R
 import net.dev.weather.data.Place
+import net.dev.weather.data.PlaceMode
 import net.dev.weather.data.Suggestion
 import net.dev.weather.repositories.LocationRepository
 import net.dev.weather.repositories.SettingsRepository
@@ -66,6 +67,7 @@ class SearchViewModel @Inject constructor(
     }
 
     suspend fun setCurrentPlace(suggestion: Suggestion) {
+        settingsRepository.setCurrentMode(PlaceMode.FAVORITES)
         settingsRepository.setCurrentPlace(suggestion.toPlace())
     }
 

@@ -7,6 +7,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import net.dev.weather.R
 import net.dev.weather.data.Place
+import net.dev.weather.data.PlaceMode
+import net.dev.weather.repositories.LocationRepository
 import net.dev.weather.repositories.SettingsRepository
 import net.dev.weather.utils.Async
 import javax.inject.Inject
@@ -18,7 +20,7 @@ data class PlacesUiState(
 )
 
 @HiltViewModel
-class PlacesViewModel @Inject constructor(private val settingsRepository: SettingsRepository) : ViewModel() {
+class PlacesViewModel @Inject constructor(private val settingsRepository: SettingsRepository, private val locationRepository: LocationRepository) : ViewModel() {
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
     private val _places: Flow<Async<List<Place>>> =
@@ -43,24 +45,13 @@ class PlacesViewModel @Inject constructor(private val settingsRepository: Settin
     }
 
     suspend fun setCurrentPlace(place: Place) {
-        //TODO: place z bieżącej lokalizacji
-        /*val place2 = if (place.id == currentLocation.id) {
-            buildProtoPlaceFromPlace(buildFromCurrentLocation())
+        if (place.id == currentLocation.id) {
+            settingsRepository.setCurrentMode(PlaceMode.DEVICE_LOCATION)
         } else {
-            buildProtoPlaceFromPlace(place)
-        }*/
-
-        settingsRepository.setCurrentPlace(place)
+            settingsRepository.setCurrentMode(PlaceMode.FAVORITES)
+            settingsRepository.setCurrentPlace(place)
+        }
     }
-
-    /*private suspend fun buildFromCurrentLocation(): Place {
-        val lastLocation = context.settingsDataStore.data.map { settings -> settings.currentLocation }.first()
-        Log.d("LocationRepository", "buildFromCurrentLocation: $lastLocation")
-
-        val reverseLocationResponse = weatherServiceApi.getReverseLocation(lastLocation.latitude, lastLocation.longitude)
-        val name = reverseLocationResponse.body()?.first()?.name ?: "Unknown"
-        return Place(name, currentLocation.id, currentLocation.description, lastLocation.latitude, lastLocation.longitude)
-    }*/
 }
 
 val currentLocation = Place("Bieżąca lokalizacja", "-1", "", 0.0, 0.0)
