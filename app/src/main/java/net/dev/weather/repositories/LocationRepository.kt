@@ -2,19 +2,13 @@ package net.dev.weather.repositories
 
 import android.util.Log
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import net.dev.weather.api.LocationServiceApi
 import net.dev.weather.api.WeatherServiceApi
-import net.dev.weather.data.LatandLong
-import net.dev.weather.data.Place
-import net.dev.weather.data.PlaceMode
-import net.dev.weather.data.Suggestion
-import net.dev.weather.ui.places.currentLocation
+import net.dev.weather.data.*
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.math.log
 
 interface LocationRepository {
     val currentPlace: Flow<Place>

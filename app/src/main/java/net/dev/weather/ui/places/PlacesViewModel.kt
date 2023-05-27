@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.*
 import net.dev.weather.R
 import net.dev.weather.data.Place
 import net.dev.weather.data.PlaceMode
-import net.dev.weather.repositories.LocationRepository
+import net.dev.weather.data.currentLocation
 import net.dev.weather.repositories.SettingsRepository
 import net.dev.weather.utils.Async
 import javax.inject.Inject
@@ -20,7 +20,7 @@ data class PlacesUiState(
 )
 
 @HiltViewModel
-class PlacesViewModel @Inject constructor(private val settingsRepository: SettingsRepository, private val locationRepository: LocationRepository) : ViewModel() {
+class PlacesViewModel @Inject constructor(private val settingsRepository: SettingsRepository) : ViewModel() {
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
     private val _places: Flow<Async<List<Place>>> =
@@ -54,4 +54,4 @@ class PlacesViewModel @Inject constructor(private val settingsRepository: Settin
     }
 }
 
-val currentLocation = Place("Bieżąca lokalizacja", "-1", "", 0.0, 0.0)
+
