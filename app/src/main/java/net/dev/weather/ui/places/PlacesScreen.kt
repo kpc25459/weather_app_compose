@@ -39,6 +39,7 @@ import net.dev.weather.NavRoutes
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
 import net.dev.weather.data.Place
+import net.dev.weather.data.currentLocation
 import net.dev.weather.theme.primaryColor
 import net.dev.weather.theme.tabBarBackgroundColor
 import net.dev.weather.theme.tabBarTextColor
@@ -124,6 +125,10 @@ private fun Content(places: List<Place>, currentPlaceId: String?, onItemClick: (
 
                 val dismissState = rememberDismissState(
                     confirmStateChange = {
+                        if(currentItem.id == currentLocation.id) {
+                            return@rememberDismissState false
+                        }
+
                         if (it == DismissValue.DismissedToStart) {
                             onItemRemoved(currentItem)
                             true
