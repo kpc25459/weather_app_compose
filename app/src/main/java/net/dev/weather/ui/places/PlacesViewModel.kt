@@ -15,6 +15,7 @@ import javax.inject.Inject
 
 data class PlacesUiState(
     val places: List<Place>? = null,
+    val currentPlaceId : String? = null,
     val isLoading: Boolean = false,
     @StringRes val userMessage: Int? = null
 )
@@ -28,13 +29,15 @@ class PlacesViewModel @Inject constructor(private val settingsRepository: Settin
             .map { Async.Success(it) }
             .catch<Async<List<Place>>> { emit(Async.Error(R.string.loading_error, it)) }
 
+    private val _currentPlace = settingsRepository.currentPlace
+
     val uiState: StateFlow<PlacesUiState> = combine(
-        _places, _userMessage
-    ) { matchedCities, userMessage ->
+        _places, _currentPlace, _userMessage
+    ) { matchedCities, currentPlace, userMessage ->
         when (matchedCities) {
             is Async.Loading -> PlacesUiState(isLoading = true)
             is Async.Error -> PlacesUiState(userMessage = -1)
-            is Async.Success -> PlacesUiState(places = matchedCities.data, userMessage = userMessage)
+            is Async.Success -> PlacesUiState(places = matchedCities.data, currentPlaceId = currentPlace.id, userMessage = userMessage)
         }
     }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PlacesUiState(isLoading = true))

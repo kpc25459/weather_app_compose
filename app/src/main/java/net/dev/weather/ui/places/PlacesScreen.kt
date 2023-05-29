@@ -68,6 +68,7 @@ fun PlacesScreen(
         uiState.places?.let { places ->
             Content(
                 places,
+                uiState.currentPlaceId,
                 onItemClick = {
                     scope.launch {
                         viewModel.setCurrentPlace(it)
@@ -112,7 +113,7 @@ private fun SearchMenu(onSearchButtonClick: () -> Unit) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Content(places: List<Place>, onItemClick: (Place) -> Unit, onItemRemoved: (Place) -> Unit, modifier: Modifier = Modifier) {
+private fun Content(places: List<Place>, currentPlaceId: String?, onItemClick: (Place) -> Unit, onItemRemoved: (Place) -> Unit, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
         items(
             items = places,
@@ -142,9 +143,10 @@ private fun Content(places: List<Place>, onItemClick: (Place) -> Unit, onItemRem
                         SwipeBackground(dismissState)
                     },
                     dismissContent = {
-                        SavedPlace(item, onItemClick = onItemClick)
+                        SavedPlace(item, currentPlaceId == item.id, onItemClick = onItemClick)
                     },
-                    modifier = Modifier.padding(1.dp)
+                    modifier = Modifier
+                        .padding(1.dp)
                         .animateItemPlacement()
                 )
             }
@@ -183,7 +185,7 @@ fun SwipeBackground(dismissState: DismissState) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SavedPlace(place: Place, onItemClick: (Place) -> Unit = {}) {
+fun SavedPlace(place: Place, isSelected: Boolean, onItemClick: (Place) -> Unit = {}) {
     ListItem(
         text = { Text(text = place.name) },
         secondaryText = { Text(text = place.description) },
@@ -195,7 +197,7 @@ fun SavedPlace(place: Place, onItemClick: (Place) -> Unit = {}) {
             Image(painter = painterResource(R.drawable.outline_location_on_24), contentDescription = stringResource(R.string.place))
         },
         trailing = {
-            //if (place.isSelected)
+            if (isSelected)
                 Image(
                     painter = painterResource(R.drawable.outline_check_24),
                     contentDescription = stringResource(R.string.place),
@@ -211,7 +213,7 @@ fun SavedPlace(place: Place, onItemClick: (Place) -> Unit = {}) {
 @Composable
 @Preview(showBackground = true)
 fun SavedPlacePreview() {
-    SavedPlace(Place("1", "London", "London, UK", 51.5074, 0.1278))
+    SavedPlace(Place("1", "London", "London, UK", 51.5074, 0.1278), true)
 }
 
 @Preview(showBackground = true)
