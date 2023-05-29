@@ -165,7 +165,7 @@ fun SwipeBackground(dismissState: DismissState) {
     )
 
     val scale by animateFloatAsState(
-        if (dismissState.targetValue == DismissValue.Default) 0.8f else 1.2f
+        if (dismissState.targetValue == DismissValue.Default) 0.8f else 1.5f
     )
 
     Box(
@@ -175,11 +175,12 @@ fun SwipeBackground(dismissState: DismissState) {
             .padding(horizontal = 20.dp),
         contentAlignment = Alignment.CenterEnd
     ) {
-        Icon(
-            imageVector = Icons.Default.Delete,
-            contentDescription = "Delete",
-            modifier = Modifier.scale(scale)
-        )
+        if (dismissState.targetValue == DismissValue.DismissedToStart)
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = "Delete",
+                modifier = Modifier.scale(scale),
+            )
     }
 }
 
