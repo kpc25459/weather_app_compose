@@ -61,26 +61,22 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                val launcherMultiplePermissions = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionsMap ->
-                    val areGranted = permissionsMap.values.reduce { acc, next -> acc && next }
-                    if (areGranted) {
-                        locationRequired = true
-                        startLocationUpdates()
-                        Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                val permissions = arrayOf(
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
                 if (permissions.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }) {
                     startLocationUpdates()
                 } else {
-                    //TODO: wyjątek launcher has been not initialized gdy brak uprawnień
-                    launcherMultiplePermissions.launch(permissions)
+                    val permissionsLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionsMap ->
+                        val areGranted = permissionsMap.values.reduce { acc, next -> acc && next }
+                        if (areGranted) {
+                            locationRequired = true
+                            startLocationUpdates()
+                        } else {
+                            Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    SideEffect {
+                        permissionsLauncher.launch(permissions)
+                    }
                 }
 
                 WeatherApp()
@@ -106,5 +102,12 @@ class MainActivity : ComponentActivity() {
     override fun onPause() {
         super.onPause()
         locationCallback?.let { fusedLocationClient?.removeLocationUpdates(it) }
+    }
+
+    companion object {
+        val permissions = arrayOf(
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
     }
 }

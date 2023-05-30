@@ -55,7 +55,7 @@ class SettingsRepositoryImpl @Inject constructor(
     override val currentDeviceLocation: Flow<LatandLong?>
         get() = flow {
             context.settingsDataStore.data.map { settings -> settings.currentDeviceLocation }.collect { currentLocation ->
-                if (currentLocation != null) {
+                if (currentLocation != null && currentLocation.latitude != 0.0 && currentLocation.longitude != 0.0) {
                     emit(LatandLong(latitude = currentLocation.latitude, longitude = currentLocation.longitude))
                 } else {
                     emit(null)
@@ -94,8 +94,6 @@ class SettingsRepositoryImpl @Inject constructor(
             currentSettings.toBuilder().clearFavorites().build()
         }
     }
-
-    //TODO: add favorites?
 
     override suspend fun removeFromFavorites(placeId: String) {
         context.settingsDataStore.updateData { currentSettings ->
