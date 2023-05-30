@@ -1,14 +1,21 @@
 package net.dev.weather.ui.places
 
+import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
+import androidx.compose.runtime.SideEffect
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import net.dev.weather.MainActivity
 import net.dev.weather.R
 import net.dev.weather.data.Place
 import net.dev.weather.data.PlaceMode
-import net.dev.weather.data.currentLocation
+import net.dev.weather.data.deviceCurrentLocation
 import net.dev.weather.repositories.SettingsRepository
 import net.dev.weather.utils.Async
 import javax.inject.Inject
@@ -25,7 +32,7 @@ class PlacesViewModel @Inject constructor(private val settingsRepository: Settin
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
     private val _places: Flow<Async<List<Place>>> =
-        combine(flowOf(listOf(currentLocation)), settingsRepository.favorites) { currentPlace, places -> currentPlace + places }
+        combine(flowOf(listOf(deviceCurrentLocation)), settingsRepository.favorites) { currentPlace, places -> currentPlace + places }
             .map { Async.Success(it) }
             .catch<Async<List<Place>>> { emit(Async.Error(R.string.loading_error, it)) }
 
@@ -40,7 +47,7 @@ class PlacesViewModel @Inject constructor(private val settingsRepository: Settin
             is Async.Error -> PlacesUiState(userMessage = -1)
             is Async.Success -> PlacesUiState(
                 places = matchedCities.data,
-                currentPlaceId = if (currentMode == PlaceMode.DEVICE_LOCATION) currentLocation.id else currentPlace.id,
+                currentPlaceId = if (currentMode == PlaceMode.DEVICE_LOCATION) deviceCurrentLocation.id else currentPlace.id,
                 userMessage = userMessage
             )
         }
@@ -53,7 +60,7 @@ class PlacesViewModel @Inject constructor(private val settingsRepository: Settin
     }
 
     suspend fun setCurrentPlace(place: Place) {
-        if (place.id == currentLocation.id) {
+        if (place.id == deviceCurrentLocation.id) {
             settingsRepository.setCurrentMode(PlaceMode.DEVICE_LOCATION)
         } else {
             settingsRepository.setCurrentMode(PlaceMode.FAVORITES)

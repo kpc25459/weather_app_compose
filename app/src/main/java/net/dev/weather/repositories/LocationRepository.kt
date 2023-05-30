@@ -45,7 +45,7 @@ class LocationRepositoryImpl @Inject constructor(
 
                 val reverseLocationResponse = weatherServiceApi.getReverseLocation(it.latitude, it.longitude)
                 val name = reverseLocationResponse.body()?.first()?.name ?: "Unknown"
-                val value = Place(name, currentLocation.id, currentLocation.description, it.latitude, it.longitude)
+                val value = Place(name, deviceCurrentLocation.id, deviceCurrentLocation.description, it.latitude, it.longitude)
 
                 Log.d("LocationRepository", "currentDevicePlace: $value")
 
@@ -69,7 +69,7 @@ class LocationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getLocationFromGoogle(placeId: String): LatandLong {
-        if (placeId == currentLocation.id)
+        if (placeId == deviceCurrentLocation.id)
             return LatandLong(0.0, 0.0)
 
         val latLongResponse = locationServiceApi.getLatLongFromGoogle(placeId)
