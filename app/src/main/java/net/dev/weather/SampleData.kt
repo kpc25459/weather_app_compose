@@ -1,50 +1,11 @@
 package net.dev.weather
 
-import kotlinx.datetime.LocalDateTime
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import net.dev.weather.data.CurrentWeather
-import net.dev.weather.ui.model.UiAirPollutionForecast
-import net.dev.weather.ui.model.UiWeatherCurrent
 
-/*
-val sampleMain = CurrentWeather(
-    location = "Warsaw",
-    current = UiWeatherCurrent(
-        dt = LocalDateTime(2021, 5, 1, 10, 0),
-        sunrise = "10:00",
-        sunset = "22:00",
-        temp = 2,
-        feels_like = "1",
-        pressure = "1000",
-        uvi = "1",
-        wind = "1",
-        rain = "1",
-        backgroundImage = R.drawable.ic_launcher_background,
-        humidity = "1"
-    ),
-    daily = listOf(),
-    hourlyForecast = listOf(),
-    airPollutionCurrent = 0,
-    airPollutionForecast = listOf(
-        UiAirPollutionForecast(
-            dt = "10:00",
-            no2 = "23.31",
-            o3 = "0.08",
-            pm2_5 = 40.52,
-            pm2_5String = "40.52",
-            pm10 = 49.45,
-            pm10String = "49.45",
-            aqi = 4
-        ),
-        UiAirPollutionForecast(
-            dt = "11:00",
-            no2 = "23.99",
-            o3 = "0.13",
-            pm2_5 = 39.76,
-            pm2_5String = "39.76",
-            pm10 = 47.98,
-            pm10String = "47.98",
-            aqi = 2
-        )
-    )
-)
-*/
+
+val jsonString =
+    "{\"location\":\"Komorniki\",\"current\":{\"dt\":\"2023-05-29T21:06:40\",\"sunrise\":\"04:40\",\"sunset\":\"21:00\",\"temp\":17,\"feels_like\":\"16 °\",\"pressure\":\"1020 hPa\",\"humidity\":\"51 %\",\"uvi\":\"0\",\"wind\":\"9 km/h N\",\"rain\":\"0 mm/24h\",\"backgroundImage\":2131165189},\"daily\":[{\"dt\":\"2023-05-29T12:00\",\"description\":\"zachmurzenie małe\",\"sunrise\":\"04:40\",\"sunset\":\"21:00\",\"temp\":\"19°C / 15°C\",\"pressure\":\"1020 hPa\",\"humidity\":\"53 %\",\"wind\":\"17 km/h \",\"rain\":\"0 mm/24h\",\"uvi\":\"6\",\"icon\":\"03d\"},{\"dt\":\"2023-05-30T12:00\",\"description\":\"bezchmurnie\",\"sunrise\":\"04:39\",\"sunset\":\"21:01\",\"temp\":\"18°C / 12°C\",\"pressure\":\"1023 hPa\",\"humidity\":\"44 %\",\"wind\":\"16 km/h NE\",\"rain\":\"0 mm/24h\",\"uvi\":\"6\",\"icon\":\"01d\"},{\"dt\":\"2023-05-31T12:00\",\"description\":\"bezchmurnie\",\"sunrise\":\"04:38\",\"sunset\":\"21:02\",\"temp\":\"19°C / 14°C\",\"pressure\":\"1025 hPa\",\"humidity\":\"44 %\",\"wind\":\"12 km/h NE\",\"rain\":\"0 mm/24h\",\"uvi\":\"6\",\"icon\":\"01d\"},{\"dt\":\"2023-06-01T12:00\",\"description\":\"bezchmurnie\",\"sunrise\":\"04:37\",\"sunset\":\"21:03\",\"temp\":\"22°C / 14°C\",\"pressure\":\"1017 hPa\",\"humidity\":\"49 %\",\"wind\":\"18 km/h W\",\"rain\":\"0 mm/24h\",\"uvi\":\"6\",\"icon\":\"01d\"},{\"dt\":\"2023-06-02T12:00\",\"description\":\"zachmurzenie umiarkowane\",\"sunrise\":\"04:36\",\"sunset\":\"21:05\",\"temp\":\"18°C / 10°C\",\"pressure\":\"1018 hPa\",\"humidity\":\"61 %\",\"wind\":\"22 km/h NE\",\"rain\":\"0 mm/24h\",\"uvi\":\"5\",\"icon\":\"04d\"},{\"dt\":\"2023-06-03T12:00\",\"description\":\"bezchmurnie\",\"sunrise\":\"04:35\",\"sunset\":\"21:06\",\"temp\":\"15°C / 11°C\",\"pressure\":\"1024 hPa\",\"humidity\":\"49 %\",\"wind\":\"14 km/h NE\",\"rain\":\"0 mm/24h\",\"uvi\":\"6\",\"icon\":\"01d\"},{\"dt\":\"2023-06-04T12:00\",\"description\":\"zachmurzenie małe\",\"sunrise\":\"04:35\",\"sunset\":\"21:07\",\"temp\":\"18°C / 13°C\",\"pressure\":\"1021 hPa\",\"humidity\":\"49 %\",\"wind\":\"9 km/h E\",\"rain\":\"0 mm/24h\",\"uvi\":\"7\",\"icon\":\"03d\"},{\"dt\":\"2023-06-05T12:00\",\"description\":\"słabe opady deszczu\",\"sunrise\":\"04:34\",\"sunset\":\"21:08\",\"temp\":\"20°C / 12°C\",\"pressure\":\"1019 hPa\",\"humidity\":\"52 %\",\"wind\":\"21 km/h \",\"rain\":\"0 mm/24h\",\"uvi\":\"7\",\"icon\":\"10d\"}],\"hourlyForecast\":[{\"dt\":\"2023-05-29T21:00\",\"temp\":17.0,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-29T22:00\",\"temp\":16.5,\"weatherIcon\":\"02n\"},{\"dt\":\"2023-05-29T23:00\",\"temp\":15.22,\"weatherIcon\":\"03n\"},{\"dt\":\"2023-05-30T00:00\",\"temp\":13.63,\"weatherIcon\":\"04n\"},{\"dt\":\"2023-05-30T01:00\",\"temp\":12.21,\"weatherIcon\":\"04n\"},{\"dt\":\"2023-05-30T02:00\",\"temp\":11.0,\"weatherIcon\":\"04n\"},{\"dt\":\"2023-05-30T03:00\",\"temp\":10.59,\"weatherIcon\":\"04n\"},{\"dt\":\"2023-05-30T04:00\",\"temp\":9.25,\"weatherIcon\":\"04n\"},{\"dt\":\"2023-05-30T05:00\",\"temp\":8.03,\"weatherIcon\":\"04d\"},{\"dt\":\"2023-05-30T06:00\",\"temp\":8.52,\"weatherIcon\":\"04d\"},{\"dt\":\"2023-05-30T07:00\",\"temp\":10.55,\"weatherIcon\":\"04d\"},{\"dt\":\"2023-05-30T08:00\",\"temp\":12.46,\"weatherIcon\":\"04d\"},{\"dt\":\"2023-05-30T09:00\",\"temp\":14.1,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-30T10:00\",\"temp\":15.41,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-30T11:00\",\"temp\":16.62,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-30T12:00\",\"temp\":17.66,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-30T13:00\",\"temp\":18.52,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-30T14:00\",\"temp\":19.11,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-30T15:00\",\"temp\":19.6,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-30T16:00\",\"temp\":19.66,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-30T17:00\",\"temp\":19.55,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-30T18:00\",\"temp\":19.41,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-30T19:00\",\"temp\":18.45,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-30T20:00\",\"temp\":16.18,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-30T21:00\",\"temp\":13.86,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-30T22:00\",\"temp\":12.7,\"weatherIcon\":\"01n\"},{\"dt\":\"2023-05-30T23:00\",\"temp\":11.6,\"weatherIcon\":\"01n\"},{\"dt\":\"2023-05-31T00:00\",\"temp\":10.69,\"weatherIcon\":\"01n\"},{\"dt\":\"2023-05-31T01:00\",\"temp\":9.84,\"weatherIcon\":\"01n\"},{\"dt\":\"2023-05-31T02:00\",\"temp\":9.06,\"weatherIcon\":\"01n\"},{\"dt\":\"2023-05-31T03:00\",\"temp\":8.42,\"weatherIcon\":\"01n\"},{\"dt\":\"2023-05-31T04:00\",\"temp\":7.94,\"weatherIcon\":\"01n\"},{\"dt\":\"2023-05-31T05:00\",\"temp\":7.64,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-31T06:00\",\"temp\":8.88,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-31T07:00\",\"temp\":11.07,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-31T08:00\",\"temp\":13.14,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-31T09:00\",\"temp\":14.88,\"weatherIcon\":\"02d\"},{\"dt\":\"2023-05-31T10:00\",\"temp\":16.6,\"weatherIcon\":\"02d\"},{\"dt\":\"2023-05-31T11:00\",\"temp\":18.15,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-31T12:00\",\"temp\":19.23,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-31T13:00\",\"temp\":20.17,\"weatherIcon\":\"01d\"},{\"dt\":\"2023-05-31T14:00\",\"temp\":20.75,\"weatherIcon\":\"02d\"},{\"dt\":\"2023-05-31T15:00\",\"temp\":21.09,\"weatherIcon\":\"04d\"},{\"dt\":\"2023-05-31T16:00\",\"temp\":21.22,\"weatherIcon\":\"04d\"},{\"dt\":\"2023-05-31T17:00\",\"temp\":21.08,\"weatherIcon\":\"04d\"},{\"dt\":\"2023-05-31T18:00\",\"temp\":20.75,\"weatherIcon\":\"04d\"},{\"dt\":\"2023-05-31T19:00\",\"temp\":19.58,\"weatherIcon\":\"04d\"},{\"dt\":\"2023-05-31T20:00\",\"temp\":17.3,\"weatherIcon\":\"04d\"}],\"airPollutionCurrent\":2}"
+
+val sampleData = Json.decodeFromString<CurrentWeather>(jsonString)

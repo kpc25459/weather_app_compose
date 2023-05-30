@@ -1,7 +1,9 @@
 package net.dev.weather.ui.model
 
 import kotlinx.datetime.LocalDateTime
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class UiWeatherDaily(
     val dt: LocalDateTime,
     val description: String,
