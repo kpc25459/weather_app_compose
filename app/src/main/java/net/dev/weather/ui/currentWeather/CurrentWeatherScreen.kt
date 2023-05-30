@@ -1,12 +1,30 @@
 package net.dev.weather.ui.currentWeather
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.Text
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -26,6 +44,7 @@ import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
 import net.dev.weather.components.WeatherIcon
 import net.dev.weather.data.CurrentWeather
+import net.dev.weather.sampleData
 import net.dev.weather.theme.iconColor
 import net.dev.weather.ui.model.UiWeatherCurrent
 import net.dev.weather.ui.model.UiWeatherHourly
@@ -215,13 +234,18 @@ fun DetailsItem(name: String, value: String, @DrawableRes icon: Int) {
 
 @Preview(showBackground = true)
 @Composable
+fun ContentPreview() {
+    Content(data = sampleData)
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BoxPreview() {
+    Box(location = sampleData.location, data = sampleData.current, airQuality = sampleData.airPollutionCurrent)
+}
+
+@Preview(showBackground = true)
+@Composable
 fun DetailsItemPreview() {
     DetailsItem(name = stringResource(R.string.sunrise), value = "06:00", icon = R.drawable.outline_wb_twilight_24)
 }
-
-/*
-@Preview(showBackground = true)
-@Composable
-fun CurrentWeatherScreenPreview() {
-    CurrentWeatherScreen(data = sampleMain)
-}*/

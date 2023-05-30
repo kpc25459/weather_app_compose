@@ -1,5 +1,8 @@
 package net.dev.weather.ui.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class UiAirPollutionForecast(
     val dt: String,
     val aqi: Int,

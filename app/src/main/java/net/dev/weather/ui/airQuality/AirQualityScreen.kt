@@ -1,10 +1,22 @@
 package net.dev.weather.ui.airQuality
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -15,6 +27,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -26,9 +39,10 @@ import com.himanshoe.charty.line.LineChart
 import com.himanshoe.charty.line.config.CurveLineConfig
 import com.himanshoe.charty.line.config.LineConfig
 import com.himanshoe.charty.line.model.LineData
-import net.dev.weather.*
 import net.dev.weather.R
+import net.dev.weather.bottomNavigationBar
 import net.dev.weather.data.AirQuality
+import net.dev.weather.sampleAirQuality
 import net.dev.weather.theme.iconColor
 import net.dev.weather.theme.tabBarBackgroundColor
 import net.dev.weather.theme.tabBarTextColor
@@ -57,7 +71,6 @@ fun AirQualityScreen(
         }
     }
 }
-
 
 @Composable
 private fun topBar(): @Composable () -> Unit {
@@ -217,16 +230,22 @@ private fun CurveLineChart(data: List<UiAirPollutionForecast>, transform: (UiAir
         )
     )
 }
-/*
+
+@Composable
+@Preview()
+fun ContentPreview() {
+    Content(data = sampleAirQuality)
+}
+
+@Composable
+@Preview()
+fun BoxPreview() {
+    Box(data = sampleAirQuality.airPollutionForecast, location = sampleAirQuality.place.name)
+}
+
+
 @Composable
 @Preview()
 fun ChartPreview() {
-    Chart(title = "Prognoza dla PM 2.5", data = sampleMain.airPollutionForecast.take(24 * 5), transform = { it.pm2_5 })
-}*/
-
-/*@Preview(showBackground = true)
-@Composable
-fun AirQualityScreenPreview() {
-    AirQualityScreen(data = sampleMain)
-}*/
-
+    Chart(title = "Prognoza dla PM 2.5", data = sampleAirQuality.airPollutionForecast.take(24 * 5), transform = { it.pm2_5 })
+}

@@ -14,9 +14,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlinx.datetime.LocalDateTime
 import net.dev.weather.R
 import net.dev.weather.components.WeatherIcon
+import net.dev.weather.sampleData
 import net.dev.weather.ui.model.UiWeatherDaily
 import net.dev.weather.utils.localDate
 
@@ -85,23 +85,8 @@ fun ListItemRow(description: String, value: String) {
     }
 }
 
-
-val exampleCard = UiWeatherDaily(
-    dt = LocalDateTime(2021, 5, 1, 0, 0),
-    humidity = "84 %",
-    pressure = "1014 hPa",
-    sunrise = "08:02",
-    sunset = "15:48",
-    temp = "14°C / 7°C",
-    uvi = "1",
-    rain = "0 mm",
-    description = "słabe opady deszczu",
-    wind = "32 km/h SW",
-    icon = "10d"
-)
-
 @Composable
 @Preview()
 fun DayForecastItemPreview() {
-    DayForecastItem(exampleCard)
+    DayForecastItem(sampleData.daily.first())
 }
