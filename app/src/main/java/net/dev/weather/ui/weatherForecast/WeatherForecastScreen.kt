@@ -56,7 +56,9 @@ private fun topBar(): @Composable () -> Unit {
 
 @Composable
 private fun Content(data: WeatherForecast, modifier: Modifier) {
-    LazyColumn {
+    LazyColumn(
+        contentPadding = PaddingValues(bottom = 50.dp)
+    ) {
         itemsIndexed(data.daily.drop(1)) { idx, weatherDaily ->
             DayForecastItem(weatherDaily, initiallyExpanded = idx == 0, modifier = modifier)
             Spacer(modifier = Modifier.height(5.dp))
