@@ -40,6 +40,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
 import net.dev.weather.components.WeatherIcon
@@ -76,6 +79,8 @@ fun CurrentWeatherScreen(
 
 @Composable
 private fun Content(data: CurrentWeather, modifier: Modifier = Modifier) {
+    val now = Clock.System.todayIn(TimeZone.currentSystemDefault())
+
     Column(
         modifier = modifier
             .padding(5.dp)
@@ -83,7 +88,7 @@ private fun Content(data: CurrentWeather, modifier: Modifier = Modifier) {
     ) {
         Box(data.location, data.current, data.airPollutionCurrent)
         Spacer(modifier = Modifier.height(20.dp))
-        HourForecast(data.hourlyForecast.take(24))
+        HourForecast(data.hourlyForecast.takeWhile { it.dt.date == now })
         Spacer(modifier = Modifier.height(20.dp))
         CurrentWeatherDetails(data.current)
     }
