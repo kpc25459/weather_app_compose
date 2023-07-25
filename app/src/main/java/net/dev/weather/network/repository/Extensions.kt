@@ -1,14 +1,19 @@
-package net.dev.weather.data
+package net.dev.weather.network.repository
 
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toLocalDateTime
-import net.dev.weather.api.AirPollutionResponse
-import net.dev.weather.api.OneCallResponse
-import net.dev.weather.utils.backgroundImageFromWeather
+import net.dev.weather.network.model.AirPollutionResponse
+import net.dev.weather.network.model.OneCallResponse
+import net.dev.weather.network.model.WeatherHourlyResponse
+import net.dev.weather.data.model.AirPollutionForecast
+import net.dev.weather.data.model.Weather
+import net.dev.weather.data.model.WeatherCurrent
+import net.dev.weather.data.model.WeatherDaily
+import net.dev.weather.data.model.WeatherHourly
 import net.dev.weather.utils.defaultTimeZone
 import net.dev.weather.utils.toHumanFromDegrees
 
-fun AirPollutionResponse.toDomainModel(): List<AirPollutionForecast> {
+fun AirPollutionResponse.mapToAirPollutionForecast(): List<AirPollutionForecast> {
     return this.list.map {
         AirPollutionForecast(
             dt = Instant.fromEpochSeconds(it.dt.toLong()).toLocalDateTime(defaultTimeZone),
@@ -21,8 +26,8 @@ fun AirPollutionResponse.toDomainModel(): List<AirPollutionForecast> {
     }
 }
 
-fun OneCallResponse.toDomainModel(): Weather {
-    val current1 = this.current
+fun OneCallResponse.mapToWeather(): Weather {
+    val current1: WeatherHourlyResponse = this.current
 
     val current = WeatherCurrent(
         dt = Instant.fromEpochSeconds(current1.dt.toLong()).toLocalDateTime(defaultTimeZone),
@@ -36,7 +41,7 @@ fun OneCallResponse.toDomainModel(): Weather {
         wind = (current1.wind_speed * 3.6 * 100) / 100,
         windDirection = toHumanFromDegrees(current1.wind_deg),
         rain = this.daily.first().rain,
-        backgroundImage = backgroundImageFromWeather(current1.weather.first().main)
+        weatherCondition = current1.weather.first().main,
     )
 
     val weatherDaily = this.daily.map {

@@ -14,7 +14,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
-import net.dev.weather.data.WeatherForecast
+import net.dev.weather.data.model.WeatherForecast
 import net.dev.weather.theme.tabBarBackgroundColor
 import net.dev.weather.theme.tabBarTextColor
 

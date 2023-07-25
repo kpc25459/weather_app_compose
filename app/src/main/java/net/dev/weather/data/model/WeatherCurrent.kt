@@ -1,4 +1,4 @@
-package net.dev.weather.data
+package net.dev.weather.data.model
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -21,5 +21,6 @@ data class WeatherCurrent(
      * Rain mm / 24h
      */
     val rain: Double,
-    val backgroundImage: Int
+
+    val weatherCondition: String
 )

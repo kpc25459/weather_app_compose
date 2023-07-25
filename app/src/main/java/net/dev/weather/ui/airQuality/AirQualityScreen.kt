@@ -41,12 +41,12 @@ import com.himanshoe.charty.line.config.LineConfig
 import com.himanshoe.charty.line.model.LineData
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
-import net.dev.weather.data.AirQuality
+import net.dev.weather.data.model.AirPollutionForecast
+import net.dev.weather.ui.model.PlaceWithAirPollutionForecast
 import net.dev.weather.sampleAirQuality
 import net.dev.weather.theme.iconColor
 import net.dev.weather.theme.tabBarBackgroundColor
 import net.dev.weather.theme.tabBarTextColor
-import net.dev.weather.ui.model.UiAirPollutionForecast
 import net.dev.weather.utils.fromAqiIndex
 import net.dev.weather.utils.imageFromAqi
 
@@ -87,7 +87,7 @@ private fun topBar(): @Composable () -> Unit {
 
 
 @Composable
-private fun Content(data: AirQuality, modifier: Modifier = Modifier) {
+private fun Content(data: PlaceWithAirPollutionForecast, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .padding(5.dp)
@@ -99,15 +99,15 @@ private fun Content(data: AirQuality, modifier: Modifier = Modifier) {
 
         val forecast5days = data.airPollutionForecast.take(24 * 5)
         Spacer(modifier = Modifier.height(20.dp))
-        Chart(title = "Prognoza dla PM 2.5", data = forecast5days, transform = UiAirPollutionForecast::pm2_5)
+        Chart(title = "Prognoza dla PM 2.5", data = forecast5days, transform = AirPollutionForecast::pm2_5)
 
         Spacer(modifier = Modifier.height(20.dp))
-        Chart(title = "Prognoza dla PM 10", data = forecast5days, transform = UiAirPollutionForecast::pm10)
+        Chart(title = "Prognoza dla PM 10", data = forecast5days, transform = AirPollutionForecast::pm10)
     }
 }
 
 @Composable
-fun Box(location: String, data: List<UiAirPollutionForecast>) {
+fun Box(location: String, data: List<AirPollutionForecast>) {
     val currentWeather = data.first()
 
     Card(
@@ -156,7 +156,7 @@ fun Box(location: String, data: List<UiAirPollutionForecast>) {
 }
 
 @Composable
-fun Chart(title: String, data: List<UiAirPollutionForecast>, transform: (UiAirPollutionForecast) -> Double) {
+fun Chart(title: String, data: List<AirPollutionForecast>, transform: (AirPollutionForecast) -> Double) {
     Column(modifier = Modifier.padding(10.dp)) {
         Text(text = title)
 
@@ -172,7 +172,7 @@ fun Chart(title: String, data: List<UiAirPollutionForecast>, transform: (UiAirPo
  *  Nie ma tła pod linią, ale nie wyświetla zerowych wartości na początku i końcu
  */
 @Composable
-private fun LineChart(data: List<UiAirPollutionForecast>, transform: (UiAirPollutionForecast) -> Double) {
+private fun LineChart(data: List<AirPollutionForecast>, transform: (AirPollutionForecast) -> Double) {
     LineChart(
         modifier = Modifier
             .fillMaxWidth()
@@ -204,7 +204,7 @@ private fun LineChart(data: List<UiAirPollutionForecast>, transform: (UiAirPollu
  * Jest tło pod linią, ale zerowe wartości są wyświetlane na początku i końcu
  */
 @Composable
-private fun CurveLineChart(data: List<UiAirPollutionForecast>, transform: (UiAirPollutionForecast) -> Double) {
+private fun CurveLineChart(data: List<AirPollutionForecast>, transform: (AirPollutionForecast) -> Double) {
     CurveLineChart(
         modifier = Modifier
             .fillMaxWidth()

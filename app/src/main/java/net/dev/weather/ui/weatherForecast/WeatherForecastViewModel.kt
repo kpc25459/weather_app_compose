@@ -6,8 +6,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import net.dev.weather.R
-import net.dev.weather.data.*
-import net.dev.weather.repositories.WeatherRepository
+import net.dev.weather.data.model.Weather
+import net.dev.weather.data.model.WeatherForecast
+import net.dev.weather.data.repository.WeatherRepository
 import net.dev.weather.ui.model.*
 import net.dev.weather.utils.Async
 import javax.inject.Inject
@@ -27,7 +28,7 @@ class WeatherForecastViewModel @Inject constructor(weatherRepository: WeatherRep
     private val _weatherForecastFlow: Flow<Async<WeatherForecast>> =
         weatherRepository.weather.map { weather ->
             WeatherForecast(
-                daily = mapToUiModel(weather)
+                daily = weather.daily
             )
         }
             .map { Async.Success(it) }
@@ -44,21 +45,5 @@ class WeatherForecastViewModel @Inject constructor(weatherRepository: WeatherRep
         }
     }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), WeatherForecastUiState(isLoading = true))
-
-    private fun mapToUiModel(weather: Weather): List<UiWeatherDaily> = weather.daily.map {
-        UiWeatherDaily(
-            dt = it.dt,
-            description = it.description,
-            sunrise = it.sunrise.toString().substringBeforeLast(":"),
-            sunset = it.sunset.toString().substringBeforeLast(":"),
-            temp = "${it.tempDay.roundToInt()}°C / ${it.tempNight.roundToInt()}°C",
-            pressure = "${it.pressure} hPa",
-            humidity = "${it.humidity} %",
-            wind = "${it.wind.roundToInt()} km/h ${it.windDirection}",
-            rain = "${it.rain.roundToInt()} mm/24h",
-            uvi = it.uvi.roundToInt().toString(),
-            icon = it.icon
-        )
-    }
 }
 

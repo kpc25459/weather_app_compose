@@ -46,11 +46,12 @@ import kotlinx.datetime.todayIn
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
 import net.dev.weather.components.WeatherIcon
-import net.dev.weather.data.CurrentWeather
+import net.dev.weather.data.model.WeatherCurrent
+import net.dev.weather.data.model.WeatherHourly
 import net.dev.weather.sampleData
 import net.dev.weather.theme.iconColor
-import net.dev.weather.ui.model.UiWeatherCurrent
-import net.dev.weather.ui.model.UiWeatherHourly
+import net.dev.weather.ui.model.PlaceWithCurrentWeather
+import net.dev.weather.utils.backgroundImageFromWeather
 import net.dev.weather.utils.dayOfWeek
 import net.dev.weather.utils.fromAqiIndex
 import kotlin.math.roundToInt
@@ -71,14 +72,14 @@ fun CurrentWeatherScreen(
     { paddingValues ->
 
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-        uiState.main?.let { main ->
-            Content(main, Modifier.padding(paddingValues))
+        uiState.placeWithCurrentWeather?.let { weather ->
+            Content(weather, Modifier.padding(paddingValues))
         }
     }
 }
 
 @Composable
-private fun Content(data: CurrentWeather, modifier: Modifier = Modifier) {
+private fun Content(data: PlaceWithCurrentWeather, modifier: Modifier = Modifier) {
     val now = Clock.System.todayIn(TimeZone.currentSystemDefault())
 
     Column(
@@ -86,16 +87,16 @@ private fun Content(data: CurrentWeather, modifier: Modifier = Modifier) {
             .padding(5.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Box(data.location, data.current, data.airPollutionCurrent)
+        Box(data.place, data.weather.current, data.airPollutionCurrent)
         Spacer(modifier = Modifier.height(20.dp))
-        HourForecast(data.hourlyForecast.takeWhile { it.dt.date == now })
+        HourForecast(data.weather.hourly/*.takeWhile { it.dt.date == now }*/)
         Spacer(modifier = Modifier.height(20.dp))
-        CurrentWeatherDetails(data.current)
+        CurrentWeatherDetails(data.weather.current)
     }
 }
 
 @Composable
-fun Box(location: String, data: UiWeatherCurrent, airQuality: Int) {
+fun Box(location: String, data: WeatherCurrent, airQuality: Int) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -103,7 +104,7 @@ fun Box(location: String, data: UiWeatherCurrent, airQuality: Int) {
         elevation = 8.dp,
     ) {
         Image(
-            painterResource(id = data.backgroundImage),
+            painterResource(id = backgroundImageFromWeather(data.weatherCondition)),
             contentDescription = stringResource(R.string.weather_condition),
             contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.5f), blendMode = BlendMode.SrcOver),
@@ -136,7 +137,7 @@ fun Box(location: String, data: UiWeatherCurrent, airQuality: Int) {
 }
 
 @Composable
-fun HourForecast(forecast: List<UiWeatherHourly>) {
+fun HourForecast(forecast: List<WeatherHourly>) {
     LazyRow(/*modifier = Modifier.horizontalScroll(rememberScrollState())*/) {
         items(forecast) { item ->
             HourForecastItem(item)
@@ -145,7 +146,7 @@ fun HourForecast(forecast: List<UiWeatherHourly>) {
 }
 
 @Composable
-fun HourForecastItem(item: UiWeatherHourly) {
+fun HourForecastItem(item: WeatherHourly) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -162,7 +163,7 @@ fun HourForecastItem(item: UiWeatherHourly) {
 }
 
 @Composable
-fun CurrentWeatherDetails(weather: UiWeatherCurrent) {
+fun CurrentWeatherDetails(current: WeatherCurrent) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -171,22 +172,22 @@ fun CurrentWeatherDetails(weather: UiWeatherCurrent) {
         Column {
             DetailsItem(
                 name = stringResource(R.string.sunrise),
-                value = weather.sunrise,
+                value = current.sunrise.toString().substringBeforeLast(":"),
                 icon = R.drawable.outline_wb_twilight_24
             )
             DetailsItem(
                 name = stringResource(R.string.pressure),
-                value = weather.pressure,
+                value = "${current.pressure} hPa",
                 icon = R.drawable.outline_tune_24
             )
             DetailsItem(
                 name = stringResource(R.string.uv_Index),
-                value = weather.uvi,
+                value = current.uvi.roundToInt().toString(),
                 icon = R.drawable.eyeglasses_24px,
             )
             DetailsItem(
                 name = stringResource(R.string.rain),
-                value = weather.rain,
+                value = "${current.rain.roundToInt()} mm/24h",
                 icon = R.drawable.rainy_24px,
             )
         }
@@ -194,22 +195,22 @@ fun CurrentWeatherDetails(weather: UiWeatherCurrent) {
         Column {
             DetailsItem(
                 name = stringResource(R.string.sunset),
-                value = weather.sunset,
+                value = current.sunset.toString().substringBeforeLast(":"),
                 icon = R.drawable.outline_nightlight_24
             )
             DetailsItem(
                 name = stringResource(R.string.humidity),
-                value = weather.humidity,
+                value = "${current.humidity} %",
                 icon = R.drawable.humidity_percentage_24px
             )
             DetailsItem(
                 name = stringResource(R.string.wind),
-                value = weather.wind,
+                value = "${current.wind.roundToInt()} km/h ${current.windDirection}",
                 icon = R.drawable.outline_air_24
             )
             DetailsItem(
                 name = stringResource(R.string.feels_like),
-                value = weather.feels_like,
+                value = "${current.feels_like.roundToInt()} °",
                 icon = R.drawable.thermostat_24px,
             )
         }
@@ -246,7 +247,7 @@ fun ContentPreview() {
 @Preview(showBackground = true)
 @Composable
 fun BoxPreview() {
-    Box(location = sampleData.location, data = sampleData.current, airQuality = sampleData.airPollutionCurrent)
+    Box(location = sampleData.place, data = sampleData.weather.current, airQuality = sampleData.airPollutionCurrent)
 }
 
 @Preview(showBackground = true)

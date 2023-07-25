@@ -1,4 +1,4 @@
-package net.dev.weather.data
+package net.dev.weather.data.model
 
 enum class PlaceMode {
     DEVICE_LOCATION,

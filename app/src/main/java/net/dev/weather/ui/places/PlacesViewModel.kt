@@ -1,22 +1,15 @@
 package net.dev.weather.ui.places
 
-import android.content.pm.PackageManager
-import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
-import androidx.compose.runtime.SideEffect
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
-import net.dev.weather.MainActivity
 import net.dev.weather.R
-import net.dev.weather.data.Place
-import net.dev.weather.data.PlaceMode
-import net.dev.weather.data.deviceCurrentLocation
-import net.dev.weather.repositories.SettingsRepository
+import net.dev.weather.data.model.Place
+import net.dev.weather.data.model.PlaceMode
+import net.dev.weather.data.model.deviceCurrentLocation
+import net.dev.weather.data.repository.SettingsRepository
 import net.dev.weather.utils.Async
 import javax.inject.Inject
 

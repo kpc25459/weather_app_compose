@@ -16,13 +16,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.dev.weather.R
 import net.dev.weather.components.WeatherIcon
+import net.dev.weather.data.model.WeatherDaily
 import net.dev.weather.sampleData
-import net.dev.weather.ui.model.UiWeatherDaily
 import net.dev.weather.utils.localDate
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DayForecastItem(weatherDaily: UiWeatherDaily, initiallyExpanded: Boolean = false, modifier: Modifier = Modifier) {
+fun DayForecastItem(weatherDaily: WeatherDaily, initiallyExpanded: Boolean = false, modifier: Modifier = Modifier) {
 
     var expanded by rememberSaveable { mutableStateOf(initiallyExpanded) }
 
@@ -39,14 +40,14 @@ fun DayForecastItem(weatherDaily: UiWeatherDaily, initiallyExpanded: Boolean = f
                 if (expanded) {
                     Spacer(modifier = Modifier.height(5.dp))
 
-                    ListItemRow(description = stringResource(R.string.temperature), value = weatherDaily.temp)
-                    ListItemRow(description = stringResource(R.string.sunrise), value = weatherDaily.sunrise)
-                    ListItemRow(description = stringResource(R.string.sunset), value = weatherDaily.sunset)
-                    ListItemRow(description = stringResource(R.string.pressure), value = weatherDaily.pressure)
-                    ListItemRow(description = stringResource(R.string.humidity), value = weatherDaily.humidity)
-                    ListItemRow(description = stringResource(R.string.wind), value = weatherDaily.wind)
-                    ListItemRow(description = stringResource(R.string.rain), value = weatherDaily.rain)
-                    ListItemRow(description = stringResource(R.string.uv_Index), value = weatherDaily.uvi)
+                    ListItemRow(description = stringResource(R.string.temperature), value = "${weatherDaily.tempDay.roundToInt()}°C / ${weatherDaily.tempNight.roundToInt()}°C")
+                    ListItemRow(description = stringResource(R.string.sunrise), value = weatherDaily.sunrise.toString().substringBeforeLast(":"))
+                    ListItemRow(description = stringResource(R.string.sunset), value = weatherDaily.sunset.toString().substringBeforeLast(":"))
+                    ListItemRow(description = stringResource(R.string.pressure), value = "${weatherDaily.pressure} hPa")
+                    ListItemRow(description = stringResource(R.string.humidity), value = "${weatherDaily.humidity} %")
+                    ListItemRow(description = stringResource(R.string.wind), value = "${weatherDaily.wind.roundToInt()} km/h ${weatherDaily.windDirection}")
+                    ListItemRow(description = stringResource(R.string.rain), value = "${weatherDaily.rain.roundToInt()} mm/24h")
+                    ListItemRow(description = stringResource(R.string.uv_Index), value = weatherDaily.uvi.roundToInt().toString())
                 }
             }
         },
@@ -88,5 +89,5 @@ fun ListItemRow(description: String, value: String) {
 @Composable
 @Preview()
 fun DayForecastItemPreview() {
-    DayForecastItem(sampleData.daily.first())
+    DayForecastItem(sampleData.weather.daily.first())
 }

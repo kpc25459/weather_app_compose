@@ -6,11 +6,11 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import net.dev.weather.R
-import net.dev.weather.data.Place
-import net.dev.weather.data.PlaceMode
-import net.dev.weather.data.Suggestion
-import net.dev.weather.repositories.LocationRepository
-import net.dev.weather.repositories.SettingsRepository
+import net.dev.weather.data.model.Place
+import net.dev.weather.data.model.PlaceMode
+import net.dev.weather.data.model.Suggestion
+import net.dev.weather.data.repository.LocationRepository
+import net.dev.weather.data.repository.SettingsRepository
 import net.dev.weather.utils.Async
 import javax.inject.Inject
 

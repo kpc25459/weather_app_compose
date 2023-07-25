@@ -39,7 +39,7 @@ import kotlinx.coroutines.withContext
 import net.dev.weather.NavRoutes
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
-import net.dev.weather.data.Suggestion
+import net.dev.weather.data.model.Suggestion
 
 @Composable
 fun SearchScreen(

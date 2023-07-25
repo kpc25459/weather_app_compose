@@ -5,19 +5,23 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import net.dev.weather.R
-import net.dev.weather.data.AirPollutionForecast
-import net.dev.weather.data.AirQuality
-import net.dev.weather.repositories.LocationRepository
-import net.dev.weather.repositories.WeatherRepository
-import net.dev.weather.ui.model.UiAirPollutionForecast
+import net.dev.weather.data.repository.LocationRepository
+import net.dev.weather.data.repository.WeatherRepository
+import net.dev.weather.ui.model.PlaceWithAirPollutionForecast
 import net.dev.weather.utils.Async
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 data class AirQualityUiState(
-    val airQuality: AirQuality? = null,
+    val airQuality: PlaceWithAirPollutionForecast? = null,
     val isLoading: Boolean = false,
     @StringRes val userMessage: Int? = null
 )
@@ -27,7 +31,7 @@ class AirQualityViewModel @Inject constructor(weatherRepository: WeatherReposito
 
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
-    private val _airQualityFlow: Flow<Async<AirQuality>> =
+    private val _airQualityFlow: Flow<Async<PlaceWithAirPollutionForecast>> =
         combine(
             locationRepository.currentPlace,
             weatherRepository.airPollutionForecast,
@@ -35,13 +39,13 @@ class AirQualityViewModel @Inject constructor(weatherRepository: WeatherReposito
 
             Log.i("AirQualityViewModel", "currentPlace: $currentPlace")
 
-            return@combine AirQuality(
+            return@combine PlaceWithAirPollutionForecast(
                 place = currentPlace,
-                airPollutionForecast = mapToUiModel(airPollutionForecast),
+                airPollutionForecast = airPollutionForecast,
             )
         }
             .map { Async.Success(it) }
-            .catch<Async<AirQuality>> { emit(Async.Error(R.string.loading_error, it)) }
+            .catch<Async<PlaceWithAirPollutionForecast>> { emit(Async.Error(R.string.loading_error, it)) }
 
     val uiState: StateFlow<AirQualityUiState> = combine(
         _airQualityFlow, _userMessage
@@ -53,20 +57,5 @@ class AirQualityViewModel @Inject constructor(weatherRepository: WeatherReposito
         }
     }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AirQualityUiState(isLoading = true))
-
-    private fun mapToUiModel(weather: List<AirPollutionForecast>): List<UiAirPollutionForecast> {
-        return weather.map {
-            UiAirPollutionForecast(
-                dt = it.dt.time.toString(),
-                aqi = it.aqi,
-                no2 = it.no2.roundToInt().toString(),
-                o3 = it.o3.roundToInt().toString(),
-                pm2_5 = it.pm2_5,
-                pm2_5String = "${it.pm2_5.roundToInt()} μg/m3",
-                pm10 = it.pm10,
-                pm10String = "${it.pm10.roundToInt()} μg/m3",
-            )
-        }
-    }
 }
 

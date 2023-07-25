@@ -1,4 +1,4 @@
-package net.dev.weather.data
+package net.dev.weather.data.model
 
 data class Weather(
     val current: WeatherCurrent,

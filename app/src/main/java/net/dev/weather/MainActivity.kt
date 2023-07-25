@@ -17,7 +17,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import net.dev.weather.data.LatandLong
+import net.dev.weather.data.model.LatandLong
 import net.dev.weather.theme.WeatherTheme
 
 @AndroidEntryPoint

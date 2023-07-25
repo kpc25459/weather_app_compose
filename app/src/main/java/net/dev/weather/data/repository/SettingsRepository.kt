@@ -1,4 +1,4 @@
-package net.dev.weather.repositories
+package net.dev.weather.data.repository
 
 import android.content.Context
 import android.util.Log
@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import net.dev.weather.Location
-import net.dev.weather.data.LatandLong
-import net.dev.weather.data.Place
-import net.dev.weather.data.PlaceMode
+import net.dev.weather.data.model.LatandLong
+import net.dev.weather.data.model.Place
+import net.dev.weather.data.model.PlaceMode
 import net.dev.weather.settingsDataStore
 import javax.inject.Inject
 import javax.inject.Singleton

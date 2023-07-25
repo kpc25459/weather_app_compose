@@ -1,5 +1,6 @@
 package net.dev.weather.utils
 
+import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import kotlinx.datetime.DayOfWeek
@@ -72,9 +73,6 @@ fun toHumanFromDegrees(deg: Int): String {
         return "";
     }
 }
-
-
-
 
 fun backgroundImageFromWeather(input: String): Int {
     return when (weatherCondition(input)) {
