@@ -29,18 +29,17 @@ class PlacesViewModel @Inject constructor(private val settingsRepository: Settin
             .map { Async.Success(it) }
             .catch<Async<List<Place>>> { emit(Async.Error(R.string.loading_error, it)) }
 
-    private val _currentPlace = settingsRepository.currentPlace
-    private val _currentMode = settingsRepository.currentMode
+    private val _userData = settingsRepository.userData
 
     val uiState: StateFlow<PlacesUiState> = combine(
-        _places, _currentPlace, _currentMode, _userMessage
-    ) { matchedCities, currentPlace, currentMode, userMessage ->
+        _places, _userData, _userMessage
+    ) { matchedCities, userData, userMessage ->
         when (matchedCities) {
             is Async.Loading -> PlacesUiState(isLoading = true)
             is Async.Error -> PlacesUiState(userMessage = -1)
             is Async.Success -> PlacesUiState(
                 places = matchedCities.data,
-                currentPlaceId = if (currentMode == PlaceMode.DEVICE_LOCATION) deviceCurrentLocation.id else currentPlace.id,
+                currentPlaceId = if (userData.currentMode == PlaceMode.DEVICE_LOCATION) deviceCurrentLocation.id else userData.currentPlace.id,
                 userMessage = userMessage
             )
         }
@@ -61,5 +60,3 @@ class PlacesViewModel @Inject constructor(private val settingsRepository: Settin
         }
     }
 }
-
-

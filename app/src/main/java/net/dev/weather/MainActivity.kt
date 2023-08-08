@@ -16,7 +16,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import net.dev.weather.data.model.LatandLong
 import net.dev.weather.theme.WeatherTheme
 
@@ -48,15 +47,18 @@ class MainActivity : ComponentActivity() {
                             // Update UI with location data
                             currentLocation = LatandLong(lo.latitude, lo.longitude)
 
-                            coroutineScope.launch {
-                                context.settingsDataStore.updateData { currentSettings ->
-                                    val location: Location = Location.newBuilder().setLatitude(lo.latitude).setLongitude(lo.longitude).build()
+                            //TODO: update settings
+                            Log.i("MainActivity", "setCurrentLocation: ${lo.latitude}, ${lo.longitude}")
 
-                                    Log.i("MainActivity", "setCurrentLocation: ${location.latitude}, ${location.longitude}")
+                            /*  coroutineScope.launch {
+                                  context.settingsDataStore.updateData { currentSettings ->
+                                      val location: Location = Location.newBuilder().setLatitude(lo.latitude).setLongitude(lo.longitude).build()
 
-                                    currentSettings.toBuilder().setCurrentDeviceLocation(location).build()
-                                }
-                            }
+                                      Log.i("MainActivity", "setCurrentLocation: ${location.latitude}, ${location.longitude}")
+
+                                      currentSettings.toBuilder().setCurrentDeviceLocation(location).build()
+                                  }
+                              }*/
                         }
                     }
                 }
