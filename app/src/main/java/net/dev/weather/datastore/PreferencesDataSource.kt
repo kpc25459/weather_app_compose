@@ -28,7 +28,7 @@ class PreferencesDataSource @Inject constructor(
                 },
                 currentDeviceLocation = LatandLong(it.currentDeviceLocation.latitude, it.currentDeviceLocation.longitude),
                 currentPlace = Place(it.currentPlace.name, it.currentPlace.id, it.currentPlace.description, it.currentPlace.location.latitude, it.currentPlace.location.longitude),
-                favorites = it.favoritesList.map { place ->
+                favorites = it.favoritesMap.values.map { place ->
                     Place(place.name, place.id, place.description, place.location.latitude, place.location.longitude)
                 }
             )
@@ -70,12 +70,27 @@ class PreferencesDataSource @Inject constructor(
         }
     }
 
-    suspend fun setFavorites() {
+    suspend fun toggleFavoritePlaceId(place: Place, favorite: Boolean) {
         try {
-
+            userPreferences.updateData {
+                it.copy {
+                    if (favorite) favorites.put(
+                        place.id,
+                        place {
+                            this.id = place.id
+                            name = place.name
+                            description = place.description
+                            location = location {
+                                latitude = place.latitude
+                                longitude = place.longitude
+                            }
+                        }) else {
+                        favorites.remove(place.id)
+                    }
+                }
+            }
         } catch (e: IOException) {
             Log.e("Preferences", "Error updating settings", e)
         }
     }
-
 }

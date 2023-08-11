@@ -7,7 +7,7 @@ message UserPreferences {
   Location currentDeviceLocation = 1;
   PlaceMode currentMode = 2;
   Place currentPlace = 3;
-  repeated Place favorites = 4;
+  map <string, Place> favorites = 4;
 }
 
 message Place {

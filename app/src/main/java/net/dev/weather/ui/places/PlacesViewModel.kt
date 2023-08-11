@@ -14,7 +14,7 @@ import net.dev.weather.utils.Async
 import javax.inject.Inject
 
 data class PlacesUiState(
-    val places: List<Place>? = null,
+    val favorites: List<Place>? = null,
     val currentPlaceId: String? = null,
     val isLoading: Boolean = false,
     @StringRes val userMessage: Int? = null
@@ -24,22 +24,27 @@ data class PlacesUiState(
 class PlacesViewModel @Inject constructor(private val settingsRepository: SettingsRepository) : ViewModel() {
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
-    private val _places: Flow<Async<List<Place>>> =
-        combine(flowOf(listOf(deviceCurrentLocation)), settingsRepository.favorites) { currentPlace, places -> currentPlace + places }
-            .map { Async.Success(it) }
-            .catch<Async<List<Place>>> { emit(Async.Error(R.string.loading_error, it)) }
+    //TODO: dodać pozycję Obecna lokalizacja
+    /*  private val _places: Flow<Async<List<Place>>> =
+          combine(flowOf(listOf(deviceCurrentLocation)), settingsRepository.favorites) { currentPlace, places -> currentPlace + places }
+              .map { Async.Success(it) }
+              .catch<Async<List<Place>>> { emit(Async.Error(R.string.loading_error, it)) }*/
+
 
     private val _userData = settingsRepository.userData
 
+    private val _favorites = settingsRepository.userData.map { Async.Success(it.favorites) }
+        .catch<Async<List<Place>>> { emit(Async.Error(R.string.loading_error, it)) }
+
     val uiState: StateFlow<PlacesUiState> = combine(
-        _places, _userData, _userMessage
-    ) { matchedCities, userData, userMessage ->
-        when (matchedCities) {
+        _favorites, _userData, _userMessage
+    ) { favorites, userData, userMessage ->
+        when (favorites) {
             is Async.Loading -> PlacesUiState(isLoading = true)
             is Async.Error -> PlacesUiState(userMessage = -1)
             is Async.Success -> PlacesUiState(
-                places = matchedCities.data,
-                currentPlaceId = if (userData.currentMode == PlaceMode.DEVICE_LOCATION) deviceCurrentLocation.id else userData.currentPlace.id,
+                favorites = favorites.data,
+                currentPlaceId = if (userData.currentMode == PlaceMode.DEVICE_LOCATION) deviceCurrentLocation.id else userData.currentPlace?.id,
                 userMessage = userMessage
             )
         }
@@ -48,7 +53,7 @@ class PlacesViewModel @Inject constructor(private val settingsRepository: Settin
 
 
     suspend fun removeFromFavorites(place: Place) {
-        settingsRepository.removeFromFavorites(place.id)
+        settingsRepository.toggleFavorite(place, false)
     }
 
     suspend fun setCurrentPlace(place: Place) {

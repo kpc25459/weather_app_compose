@@ -66,7 +66,7 @@ fun PlacesScreen(
         modifier = modifier.fillMaxSize()
     ) { paddingValues ->
 
-        uiState.places?.let { places ->
+        uiState.favorites?.let { places ->
             Content(
                 places,
                 uiState.currentPlaceId,

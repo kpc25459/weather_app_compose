@@ -30,13 +30,13 @@ class SearchViewModel @Inject constructor(
 
     private val _searchText: MutableStateFlow<String> = MutableStateFlow("")
 
-    private val _favorites: Flow<List<Place>> = settingsRepository.favorites
+    private val _favorites = settingsRepository.userData.map { it.favorites }
 
     private val _matchedCities: Flow<Async<List<Suggestion>>> = combine(_searchText) { searchText ->
         locationRepository.getSuggestions(searchText.last()).last()
-    }.combine(_favorites) { suggestions, savedPlaces ->
+    }.combine(_favorites) { suggestions, favorites ->
         suggestions.map { suggestion ->
-            suggestion.copy(isFavorite = savedPlaces.any { it.id == suggestion.id })
+            suggestion.copy(isFavorite = favorites.any { it.id == suggestion.id })
         }
     }
         .map { Async.Success(it) }
@@ -63,7 +63,7 @@ class SearchViewModel @Inject constructor(
     }
 
     suspend fun toggleFavorite(suggestion: Suggestion) {
-        settingsRepository.toggleFavorite(suggestion.toPlace())
+        settingsRepository.toggleFavorite(suggestion.toPlace(), !suggestion.isFavorite)
     }
 
     suspend fun setCurrentPlace(suggestion: Suggestion) {

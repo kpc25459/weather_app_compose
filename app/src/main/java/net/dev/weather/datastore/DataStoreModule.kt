@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.SupervisorJob
+import net.dev.weather.di.Dispatcher
 import java.io.File
 import javax.inject.Singleton
 
@@ -24,8 +25,7 @@ object DataStoreModule {
     @Singleton
     fun providesUserPreferencesDataStore(
         @ApplicationContext context: Context,
-        //TODO: co z dispatcherem?
-        /*@Dispatcher(IO) */ioDispatcher: CoroutineDispatcher,
+        @Dispatcher(net.dev.weather.di.Dispatchers.IO) ioDispatcher: CoroutineDispatcher,
         userPreferencesSerializer: UserPreferencesSerializer
     ): DataStore<UserPreferences> =
         DataStoreFactory.create(
