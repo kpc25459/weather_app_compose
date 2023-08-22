@@ -7,6 +7,7 @@ import net.dev.weather.data.model.LatandLong
 import net.dev.weather.data.model.Place
 import net.dev.weather.data.model.PlaceMode
 import net.dev.weather.data.model.UserData
+import net.dev.weather.data.model.DarkThemeConfig
 import java.io.IOException
 
 import javax.inject.Inject
@@ -30,6 +31,18 @@ class PreferencesDataSource @Inject constructor(
                 currentPlace = Place(it.currentPlace.name, it.currentPlace.id, it.currentPlace.description, it.currentPlace.location.latitude, it.currentPlace.location.longitude),
                 favorites = it.favoritesMap.values.map { place ->
                     Place(place.name, place.id, place.description, place.location.latitude, place.location.longitude)
+                },
+                darkThemeConfig = when (it.darkThemeConfig) {
+                    null,
+                    DarkThemeConfigProto.DARK_THEME_CONFIG_UNSPECIFIED,
+                    DarkThemeConfigProto.UNRECOGNIZED,
+                    DarkThemeConfigProto.DARK_THEME_CONFIG_FOLLOW_SYSTEM ->
+                        DarkThemeConfig.FOLLOW_SYSTEM
+
+                    DarkThemeConfigProto.DARK_THEME_CONFIG_LIGHT ->
+                        DarkThemeConfig.LIGHT
+
+                    DarkThemeConfigProto.DARK_THEME_CONFIG_DARK -> DarkThemeConfig.DARK
                 }
             )
         }

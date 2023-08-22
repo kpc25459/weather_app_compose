@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option java_package = "net.dev.weather.datastore";
+option java_multiple_files = true;
+
+enum PlaceMode {
+  CURRENT_LOCATION = 0;
+  SEARCH = 1;
+  FAVORITES = 2;
+}

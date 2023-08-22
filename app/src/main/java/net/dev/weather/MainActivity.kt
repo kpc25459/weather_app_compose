@@ -12,6 +12,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
@@ -24,6 +25,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import net.dev.weather.MainActivityUiState.Loading
+import net.dev.weather.data.model.DarkThemeConfig
 import net.dev.weather.data.model.LatandLong
 import net.dev.weather.data.model.PlaceMode
 import net.dev.weather.theme.WeatherTheme
@@ -53,12 +55,19 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            WeatherTheme {
+
+            //val systemUiController = rememberSystemUiController()
+            val darkTheme = shouldUseDarkTheme(uiState)
+
+            //TODO: update system bars theme
+
+            WeatherTheme(darkTheme = darkTheme) {
 
                 when (uiState) {
                     Loading -> {
                         //TODO: dodać splash screen/kręciołek
                     }
+
                     is MainActivityUiState.Success -> {
                         if ((uiState as MainActivityUiState.Success).userData.currentMode == PlaceMode.DEVICE_LOCATION) {
                             StartLocationUpdate()
@@ -144,6 +153,16 @@ class MainActivity : ComponentActivity() {
     override fun onPause() {
         super.onPause()
         stopLocationUpdates()
+    }
+
+    @Composable
+    private fun shouldUseDarkTheme(uiState: MainActivityUiState): Boolean = when (uiState) {
+        Loading -> isSystemInDarkTheme()
+        is MainActivityUiState.Success -> when (uiState.userData.darkThemeConfig) {
+            DarkThemeConfig.FOLLOW_SYSTEM -> isSystemInDarkTheme()
+            DarkThemeConfig.LIGHT -> false
+            DarkThemeConfig.DARK -> true
+        }
     }
 
     companion object {

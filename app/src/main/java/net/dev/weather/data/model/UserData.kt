@@ -4,5 +4,9 @@ data class UserData(
     val currentMode: PlaceMode,
     val currentDeviceLocation: LatandLong?,
     val currentPlace: Place?,
-    val favorites: List<Place>
+
+    //TODO: tutaj na Set zmienić?
+    val favorites: List<Place>,
+
+    val darkThemeConfig: DarkThemeConfig,
 )

@@ -1,4 +1,8 @@
 syntax = "proto3";
+import "location.proto";
+import "place_mode.proto";
+import "place.proto";
+import "dark_theme_config.proto";
 
 option java_package = "net.dev.weather.datastore";
 option java_multiple_files = true;
@@ -8,22 +12,6 @@ message UserPreferences {
   PlaceMode currentMode = 2;
   Place currentPlace = 3;
   map <string, Place> favorites = 4;
-}
 
-message Place {
-  string name = 1;
-  string id = 2;
-  string description = 3;
-  Location location = 4;
-}
-
-message Location {
-  double latitude = 1;
-  double longitude = 2;
-}
-
-enum PlaceMode {
-  CURRENT_LOCATION = 0;
-  SEARCH = 1;
-  FAVORITES = 2;
+  DarkThemeConfigProto dark_theme_config = 5;
 }

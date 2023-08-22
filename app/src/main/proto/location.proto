@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option java_package = "net.dev.weather.datastore";
+option java_multiple_files = true;
+
+message Location {
+  double latitude = 1;
+  double longitude = 2;
+}
