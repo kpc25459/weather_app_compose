@@ -1,6 +1,7 @@
 package net.dev.weather.data.repository
 
 import kotlinx.coroutines.flow.Flow
+import net.dev.weather.data.model.LatandLong
 import net.dev.weather.data.model.Place
 import net.dev.weather.data.model.PlaceMode
 import net.dev.weather.data.model.UserData
@@ -16,6 +17,8 @@ interface SettingsRepository {
 
     suspend fun setCurrentPlace(place: Place)
 
+    suspend fun setCurrentDeviceLocation(location: LatandLong)
+
     suspend fun toggleFavorite(place: Place, favorite: Boolean)
 
 }
@@ -29,6 +32,7 @@ class SettingsRepositoryImpl @Inject constructor(private val preferencesDataSour
 
     override suspend fun setCurrentMode(mode: PlaceMode) = preferencesDataSource.setCurrentMode(mode)
     override suspend fun setCurrentPlace(place: Place) = preferencesDataSource.setCurrentPlace(place)
+    override suspend fun setCurrentDeviceLocation(location: LatandLong) = preferencesDataSource.setCurrentDeviceLocation(location)
 
     override suspend fun toggleFavorite(place: Place, favorite: Boolean) = preferencesDataSource.toggleFavoritePlaceId(place, favorite)
 }

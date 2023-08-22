@@ -11,11 +11,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.location.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import net.dev.weather.MainActivityUiState.Loading
 import net.dev.weather.data.model.LatandLong
 import net.dev.weather.theme.WeatherTheme
 
@@ -26,8 +34,24 @@ class MainActivity : ComponentActivity() {
     var fusedLocationClient: FusedLocationProviderClient? = null
     private var locationRequired = false
 
+
+    val viewModel: MainActivityViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        var uiState: MainActivityUiState by mutableStateOf(Loading)
+
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState
+                    .onEach {
+                        uiState = it
+                    }
+                    .collect()
+            }
+        }
+
         setContent {
             WeatherTheme {
 
@@ -44,21 +68,13 @@ class MainActivity : ComponentActivity() {
                 locationCallback = object : LocationCallback() {
                     override fun onLocationResult(p0: LocationResult) {
                         for (lo in p0.locations) {
-                            // Update UI with location data
                             currentLocation = LatandLong(lo.latitude, lo.longitude)
 
-                            //TODO: update settings
-                            Log.i("MainActivity", "setCurrentLocation: ${lo.latitude}, ${lo.longitude}")
+                            Log.d("MainActivity", "setCurrentLocation: ${lo.latitude}, ${lo.longitude}")
 
-                            /*  coroutineScope.launch {
-                                  context.settingsDataStore.updateData { currentSettings ->
-                                      val location: Location = Location.newBuilder().setLatitude(lo.latitude).setLongitude(lo.longitude).build()
-
-                                      Log.i("MainActivity", "setCurrentLocation: ${location.latitude}, ${location.longitude}")
-
-                                      currentSettings.toBuilder().setCurrentDeviceLocation(location).build()
-                                  }
-                              }*/
+                            coroutineScope.launch {
+                                viewModel.setCurrentLocation(LatandLong(lo.latitude, lo.longitude))
+                            }
                         }
                     }
                 }

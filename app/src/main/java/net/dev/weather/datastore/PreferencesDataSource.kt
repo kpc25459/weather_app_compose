@@ -70,6 +70,21 @@ class PreferencesDataSource @Inject constructor(
         }
     }
 
+    suspend fun setCurrentDeviceLocation(location: LatandLong) {
+        try {
+            userPreferences.updateData {
+                it.copy {
+                    this.currentDeviceLocation = location {
+                        latitude = location.latitude
+                        longitude = location.longitude
+                    }
+                }
+            }
+        } catch (e: IOException) {
+            Log.e("Preferences", "Error updating settings", e)
+        }
+    }
+
     suspend fun toggleFavoritePlaceId(place: Place, favorite: Boolean) {
         try {
             userPreferences.updateData {
