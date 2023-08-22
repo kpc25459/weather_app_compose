@@ -5,11 +5,18 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import net.dev.weather.R
-import net.dev.weather.ui.model.PlaceWithCurrentWeather
-import net.dev.weather.data.repository.LocationRepository
+import net.dev.weather.data.repository.PlaceRepository
 import net.dev.weather.data.repository.WeatherRepository
+import net.dev.weather.ui.model.PlaceWithCurrentWeather
 import net.dev.weather.utils.Async
 import javax.inject.Inject
 
@@ -20,13 +27,13 @@ data class CurrentWeatherUiState(
 )
 
 @HiltViewModel
-class CurrentWeatherViewModel @Inject constructor(locationRepository: LocationRepository, weatherRepository: WeatherRepository) : ViewModel() {
+class CurrentWeatherViewModel @Inject constructor(placeRepository: PlaceRepository, weatherRepository: WeatherRepository) : ViewModel() {
 
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
     private val _currentWeather: Flow<Async<PlaceWithCurrentWeather>> =
         combine(
-            locationRepository.currentPlace,
+            placeRepository.currentPlace,
             weatherRepository.weather,
             weatherRepository.airPollutionCurrent
         ) { currentPlace, weather, airPollutionCurrent ->

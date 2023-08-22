@@ -9,6 +9,8 @@ import net.dev.weather.api.LocationServiceApi
 import net.dev.weather.network.api.WeatherServiceApi
 import net.dev.weather.data.repository.LocationRepository
 import net.dev.weather.data.repository.LocationRepositoryImpl
+import net.dev.weather.data.repository.PlaceRepository
+import net.dev.weather.data.repository.PlaceRepositoryImpl
 import net.dev.weather.network.repository.NetworkWeatherRepository
 import net.dev.weather.data.repository.SettingsRepository
 import net.dev.weather.data.repository.SettingsRepositoryImpl
@@ -27,6 +29,10 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun bindLocationRepository(repository: LocationRepositoryImpl): LocationRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindPlaceRepository(repository: PlaceRepositoryImpl): PlaceRepository
 
     @Singleton
     @Binds

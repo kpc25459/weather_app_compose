@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import net.dev.weather.R
-import net.dev.weather.data.repository.LocationRepository
+import net.dev.weather.data.repository.PlaceRepository
 import net.dev.weather.data.repository.WeatherRepository
 import net.dev.weather.ui.model.PlaceWithAirPollutionForecast
 import net.dev.weather.utils.Async
@@ -27,13 +27,13 @@ data class AirQualityUiState(
 )
 
 @HiltViewModel
-class AirQualityViewModel @Inject constructor(weatherRepository: WeatherRepository, locationRepository: LocationRepository) : ViewModel() {
+class AirQualityViewModel @Inject constructor(weatherRepository: WeatherRepository, placeRepository: PlaceRepository) : ViewModel() {
 
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
     private val _airQualityFlow: Flow<Async<PlaceWithAirPollutionForecast>> =
         combine(
-            locationRepository.currentPlace,
+            placeRepository.currentPlace,
             weatherRepository.airPollutionForecast,
         ) { currentPlace, airPollutionForecast ->
 
