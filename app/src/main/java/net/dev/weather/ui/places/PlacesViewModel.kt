@@ -24,16 +24,9 @@ data class PlacesUiState(
 class PlacesViewModel @Inject constructor(private val settingsRepository: SettingsRepository) : ViewModel() {
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
-    //TODO: dodać pozycję Obecna lokalizacja
-    /*  private val _places: Flow<Async<List<Place>>> =
-          combine(flowOf(listOf(deviceCurrentLocation)), settingsRepository.favorites) { currentPlace, places -> currentPlace + places }
-              .map { Async.Success(it) }
-              .catch<Async<List<Place>>> { emit(Async.Error(R.string.loading_error, it)) }*/
-
-
     private val _userData = settingsRepository.userData
 
-    private val _favorites = settingsRepository.userData.map { Async.Success(it.favorites) }
+    private val _favorites = settingsRepository.userData.map { Async.Success(listOf(deviceCurrentLocation) + it.favorites) }
         .catch<Async<List<Place>>> { emit(Async.Error(R.string.loading_error, it)) }
 
     val uiState: StateFlow<PlacesUiState> = combine(
