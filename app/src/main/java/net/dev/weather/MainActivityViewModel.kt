@@ -29,7 +29,6 @@ class MainActivityViewModel @Inject constructor(
 
     suspend fun setCurrentLocation(latandLong: LatandLong) {
         settingsRepository.setCurrentDeviceLocation(latandLong)
-
     }
 }
 

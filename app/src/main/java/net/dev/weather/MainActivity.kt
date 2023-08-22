@@ -25,15 +25,15 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import net.dev.weather.MainActivityUiState.Loading
 import net.dev.weather.data.model.LatandLong
+import net.dev.weather.data.model.PlaceMode
 import net.dev.weather.theme.WeatherTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private var locationCallback: LocationCallback? = null
-    var fusedLocationClient: FusedLocationProviderClient? = null
+    private var fusedLocationClient: FusedLocationProviderClient? = null
     private var locationRequired = false
-
 
     val viewModel: MainActivityViewModel by viewModels()
 
@@ -55,59 +55,83 @@ class MainActivity : ComponentActivity() {
         setContent {
             WeatherTheme {
 
-                val context = LocalContext.current
-
-                var currentLocation by remember {
-                    mutableStateOf(LatandLong(0.toDouble(), 0.toDouble()))
-                }
-
-                val coroutineScope = rememberCoroutineScope()
-
-                fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-                locationCallback = object : LocationCallback() {
-                    override fun onLocationResult(p0: LocationResult) {
-                        for (lo in p0.locations) {
-                            currentLocation = LatandLong(lo.latitude, lo.longitude)
-
-                            Log.d("MainActivity", "setCurrentLocation: ${lo.latitude}, ${lo.longitude}")
-
-                            coroutineScope.launch {
-                                viewModel.setCurrentLocation(LatandLong(lo.latitude, lo.longitude))
-                            }
+                when (uiState) {
+                    Loading -> {
+                        //TODO: dodać splash screen/kręciołek
+                    }
+                    is MainActivityUiState.Success -> {
+                        if ((uiState as MainActivityUiState.Success).userData.currentMode == PlaceMode.DEVICE_LOCATION) {
+                            StartLocationUpdate()
+                        } else {
+                            stopLocationUpdates()
                         }
+                        WeatherApp()
                     }
                 }
 
-                if (permissions.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }) {
+            }
+        }
+    }
+
+    @Composable
+    private fun StartLocationUpdate() {
+
+        val context = LocalContext.current
+
+        var currentLocation by remember {
+            mutableStateOf(LatandLong(0.toDouble(), 0.toDouble()))
+        }
+
+        val coroutineScope = rememberCoroutineScope()
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(p0: LocationResult) {
+                for (lo in p0.locations) {
+                    currentLocation = LatandLong(lo.latitude, lo.longitude)
+
+                    Log.d("MainActivity", "setCurrentLocation: ${lo.latitude}, ${lo.longitude}")
+
+                    coroutineScope.launch {
+                        viewModel.setCurrentLocation(LatandLong(lo.latitude, lo.longitude))
+                    }
+                }
+            }
+        }
+
+        if (permissions.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }) {
+            startLocationUpdates()
+        } else {
+            val permissionsLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionsMap ->
+                val areGranted = permissionsMap.values.reduce { acc, next -> acc && next }
+                if (areGranted) {
+                    locationRequired = true
                     startLocationUpdates()
                 } else {
-                    val permissionsLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionsMap ->
-                        val areGranted = permissionsMap.values.reduce { acc, next -> acc && next }
-                        if (areGranted) {
-                            locationRequired = true
-                            startLocationUpdates()
-                        } else {
-                            Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-
-                    SideEffect {
-                        permissionsLauncher.launch(permissions)
-                    }
+                    Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
                 }
+            }
 
-                WeatherApp()
+            SideEffect {
+                permissionsLauncher.launch(permissions)
             }
         }
     }
 
     @SuppressLint("MissingPermission")
     private fun startLocationUpdates() {
+        Log.i("MainActivity", "startLocationUpdates")
+
         locationCallback?.let {
             val locationRequest: LocationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).build()
             fusedLocationClient?.requestLocationUpdates(locationRequest, it, Looper.getMainLooper())
         }
+    }
+
+    private fun stopLocationUpdates() {
+        Log.i("MainActivity", "stopLocationUpdates")
+        locationCallback?.let { fusedLocationClient?.removeLocationUpdates(it) }
     }
 
     override fun onResume() {
@@ -119,7 +143,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
-        locationCallback?.let { fusedLocationClient?.removeLocationUpdates(it) }
+        stopLocationUpdates()
     }
 
     companion object {
