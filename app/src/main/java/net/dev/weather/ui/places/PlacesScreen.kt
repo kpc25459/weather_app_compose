@@ -7,7 +7,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,6 +15,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,12 +39,12 @@ import kotlinx.coroutines.withContext
 import net.dev.weather.NavRoutes
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
+import net.dev.weather.components.WeatherTopAppBarWithAction
 import net.dev.weather.data.model.Place
 import net.dev.weather.data.model.deviceCurrentLocation
-import net.dev.weather.theme.primaryColor
-import net.dev.weather.theme.tabBarBackgroundColor
-import net.dev.weather.theme.tabBarTextColor
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlacesScreen(
     navController: NavController,
@@ -56,9 +57,16 @@ fun PlacesScreen(
     val scope = rememberCoroutineScope()
 
     Scaffold(
-        topBar = topBar(onSearchButtonClick = {
-            navController.navigate("search")
-        }),
+        topBar = {
+            WeatherTopAppBarWithAction(
+                titleRes = R.string.places_screen_title,
+                actionIcon = Icons.Default.Search, // lub: R.drawable.outline_search_24
+                actionIconContentDescription = stringResource(id = R.string.search),
+                onActionClick = {
+                    navController.navigate(NavRoutes.Search.route)
+                },
+            )
+        },
         bottomBar = bottomNavigationBar(
             navController = navController
         ),
@@ -89,29 +97,6 @@ fun PlacesScreen(
     }
 }
 
-@Composable
-private fun topBar(onSearchButtonClick: () -> Unit): @Composable () -> Unit {
-    return {
-        TopAppBar(title = { Text(text = stringResource(id = R.string.places_screen_title)) },
-            backgroundColor = tabBarBackgroundColor,
-            contentColor = tabBarTextColor,
-            elevation = 0.dp,
-            modifier = Modifier.fillMaxWidth(),
-            actions = {
-                SearchMenu(onSearchButtonClick)
-            })
-    }
-}
-
-@Composable
-private fun SearchMenu(onSearchButtonClick: () -> Unit) {
-    IconButton(onClick = onSearchButtonClick) {
-        Icon(
-            painter = painterResource(id = R.drawable.outline_search_24), contentDescription = stringResource(id = R.string.search)
-        )
-    }
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Content(places: List<Place>, currentPlaceId: String?, onItemClick: (Place) -> Unit, onItemRemoved: (Place) -> Unit, modifier: Modifier = Modifier) {
@@ -125,7 +110,7 @@ private fun Content(places: List<Place>, currentPlaceId: String?, onItemClick: (
 
                 val dismissState = rememberDismissState(
                     confirmStateChange = {
-                        if(currentItem.id == deviceCurrentLocation.id) {
+                        if (currentItem.id == deviceCurrentLocation.id) {
                             return@rememberDismissState false
                         }
 
@@ -197,7 +182,7 @@ fun SavedPlace(place: Place, isSelected: Boolean, onItemClick: (Place) -> Unit =
         secondaryText = { Text(text = place.description) },
         modifier = Modifier
             .padding(5.dp)
-            .border(1.dp, shape = RoundedCornerShape(8.dp), color = primaryColor)
+            .border(1.dp, shape = RoundedCornerShape(8.dp), color = MaterialTheme.colors.primary)
             .clickable { onItemClick(place) },
         icon = {
             Image(painter = painterResource(R.drawable.outline_location_on_24), contentDescription = stringResource(R.string.place))
@@ -209,7 +194,7 @@ fun SavedPlace(place: Place, isSelected: Boolean, onItemClick: (Place) -> Unit =
                     contentDescription = stringResource(R.string.place),
                     colorFilter = ColorFilter.tint(Color.White),
                     modifier = Modifier
-                        .background(primaryColor, shape = CircleShape)
+                        .background(MaterialTheme.colors.primary, shape = CircleShape)
                 )
         }
     )

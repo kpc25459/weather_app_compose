@@ -17,6 +17,7 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -41,15 +42,14 @@ import com.himanshoe.charty.line.config.LineConfig
 import com.himanshoe.charty.line.model.LineData
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
+import net.dev.weather.components.WeatherTopAppBar
 import net.dev.weather.data.model.AirPollutionForecast
 import net.dev.weather.ui.model.PlaceWithAirPollutionForecast
 import net.dev.weather.sampleAirQuality
-import net.dev.weather.theme.iconColor
-import net.dev.weather.theme.tabBarBackgroundColor
-import net.dev.weather.theme.tabBarTextColor
 import net.dev.weather.utils.fromAqiIndex
 import net.dev.weather.utils.imageFromAqi
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AirQualityScreen(
     navController: NavController,
@@ -58,7 +58,7 @@ fun AirQualityScreen(
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
     Scaffold(
-        topBar = topBar(),
+        topBar = { WeatherTopAppBar(R.string.air_quality_screen_title) },
         bottomBar = bottomNavigationBar(navController = navController),
         scaffoldState = scaffoldState,
         modifier = modifier.fillMaxSize()
@@ -71,20 +71,6 @@ fun AirQualityScreen(
         }
     }
 }
-
-@Composable
-private fun topBar(): @Composable () -> Unit {
-    return {
-        TopAppBar(
-            title = { Text(text = stringResource(id = R.string.air_quality_screen_title)) },
-            backgroundColor = tabBarBackgroundColor,
-            contentColor = tabBarTextColor,
-            elevation = 0.dp,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-}
-
 
 @Composable
 private fun Content(data: PlaceWithAirPollutionForecast, modifier: Modifier = Modifier) {
@@ -178,7 +164,7 @@ private fun LineChart(data: List<AirPollutionForecast>, transform: (AirPollution
             .fillMaxWidth()
             .padding(20.dp)
             .height(100.dp),
-        color = iconColor,
+        color = /*iconColor*/Color.Black,
         lineConfig = LineConfig(
             hasSmoothCurve = true,
             hasDotMarker = false,
@@ -210,8 +196,8 @@ private fun CurveLineChart(data: List<AirPollutionForecast>, transform: (AirPoll
             .fillMaxWidth()
             .padding(20.dp)
             .height(100.dp),
-        chartColor = tabBarBackgroundColor,
-        lineColor = iconColor,
+        chartColor = /*tabBarBackgroundColor*/Color.Yellow,
+        lineColor = /*iconColor*/ Color.Black,
         curveLineConfig = CurveLineConfig(
             hasDotMarker = false,
         ),

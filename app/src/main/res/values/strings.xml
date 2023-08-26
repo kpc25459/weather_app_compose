@@ -50,4 +50,6 @@
     <string name="loading_error">Error while loading</string>
     <string name="search">search</string>
     <string name="places_screen_title">Saved places</string>
+    <string name="back">back</string>
+    <string name="empty" translatable="false" />
 </resources>

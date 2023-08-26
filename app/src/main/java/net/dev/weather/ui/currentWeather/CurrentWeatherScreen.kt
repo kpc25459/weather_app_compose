@@ -49,7 +49,7 @@ import net.dev.weather.components.WeatherIcon
 import net.dev.weather.data.model.WeatherCurrent
 import net.dev.weather.data.model.WeatherHourly
 import net.dev.weather.sampleData
-import net.dev.weather.theme.iconColor
+//import net.dev.weather.theme.iconColor
 import net.dev.weather.ui.model.PlaceWithCurrentWeather
 import net.dev.weather.utils.backgroundImageFromWeather
 import net.dev.weather.utils.dayOfWeek
@@ -227,7 +227,7 @@ fun DetailsItem(name: String, value: String, @DrawableRes icon: Int) {
             .background(color = Color(0xFFE0EAFF), shape = RoundedCornerShape(10.dp))
     ) {
         Icon(
-            painter = painterResource(icon), tint = iconColor, contentDescription = name, modifier = Modifier
+            painter = painterResource(icon), /*tint = iconColor,*/ contentDescription = name, modifier = Modifier
                 .padding(10.dp)
                 .background(color = Color.White, shape = RoundedCornerShape(100))
         )

@@ -12,7 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-import net.dev.weather.theme.iconColor
+//import net.dev.weather.theme.iconColor
 
 @Composable
 fun bottomNavigationBar(navController: NavController): @Composable () -> Unit {
@@ -34,7 +34,7 @@ fun bottomNavigationBar(navController: NavController): @Composable () -> Unit {
                     icon = {
                         Icon(
                             painter = painterResource(screen.iconResourceId), contentDescription = stringResource(screen.titleResourceId),
-                            tint = if (currentDestination?.route == screen.route) iconColor else Color.Black
+                            tint = if (currentDestination?.route == screen.route) /*iconColor*/ Color.White else Color.Black
                         )
                     },
                     selected = currentDestination?.route == screen.route,

@@ -3,10 +3,13 @@ package net.dev.weather.ui.weatherForecast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -21,9 +24,8 @@ import net.dev.weather.sampleData
 import net.dev.weather.utils.localDate
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DayForecastItem(weatherDaily: WeatherDaily, initiallyExpanded: Boolean = false, modifier: Modifier = Modifier) {
+fun DayForecastItem(weatherDaily: WeatherDaily, initiallyExpanded: Boolean = true, modifier: Modifier = Modifier) {
 
     var expanded by rememberSaveable { mutableStateOf(initiallyExpanded) }
 
@@ -32,10 +34,11 @@ fun DayForecastItem(weatherDaily: WeatherDaily, initiallyExpanded: Boolean = fal
     val interactionSource = remember { MutableInteractionSource() }
 
     ListItem(
-        text = { Text(text = localDate(weatherDaily.dt), Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() }) },
-        secondaryText = {
+        headlineContent = { Text(text = localDate(weatherDaily.dt), Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() }) },
+
+        supportingContent = {
             Column {
-                Text(text = weatherDaily.description, Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() })
+                Text(text = weatherDaily.description, modifier = Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() })
 
                 if (expanded) {
                     Spacer(modifier = Modifier.height(5.dp))
@@ -51,10 +54,10 @@ fun DayForecastItem(weatherDaily: WeatherDaily, initiallyExpanded: Boolean = fal
                 }
             }
         },
-        icon = {
+        leadingContent = {
             WeatherIcon(weatherDaily.icon, onClick = onClick)
         },
-        trailing = {
+        trailingContent = {
             ListItemArrow(expanded = expanded, onClick = { onClick() })
         }
     )

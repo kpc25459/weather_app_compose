@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.gms.location.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -56,12 +57,16 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
-            //val systemUiController = rememberSystemUiController()
+            val systemUiController = rememberSystemUiController()
             val darkTheme = shouldUseDarkTheme(uiState)
 
-            //TODO: update system bars theme
+            DisposableEffect(systemUiController, darkTheme) {
+                systemUiController.systemBarsDarkContentEnabled = !darkTheme
+                onDispose {  }
+            }
 
-            WeatherTheme(darkTheme = darkTheme) {
+
+            WeatherTheme(useDarkTheme = darkTheme) {
 
                 when (uiState) {
                     Loading -> {

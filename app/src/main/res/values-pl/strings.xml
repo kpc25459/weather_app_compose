@@ -40,4 +40,5 @@
     <string name="loading_error">Nie udało się wczytać danych</string>
     <string name="search">Wyszukaj</string>
     <string name="places_screen_title">Zapisane miejsca</string>
+    <string name="back">wstecz</string>
 </resources>

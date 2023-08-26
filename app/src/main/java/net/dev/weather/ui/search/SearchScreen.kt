@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalComposeUiApi::class)
-
 package net.dev.weather.ui.search
 
 import androidx.compose.animation.AnimatedVisibility
@@ -86,7 +84,6 @@ fun SearchScreen(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchBar(
     searchText: String,
