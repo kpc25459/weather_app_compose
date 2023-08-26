@@ -18,13 +18,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -49,7 +47,6 @@ import net.dev.weather.components.WeatherIcon
 import net.dev.weather.data.model.WeatherCurrent
 import net.dev.weather.data.model.WeatherHourly
 import net.dev.weather.sampleData
-//import net.dev.weather.theme.iconColor
 import net.dev.weather.ui.model.PlaceWithCurrentWeather
 import net.dev.weather.utils.backgroundImageFromWeather
 import net.dev.weather.utils.dayOfWeek
@@ -61,12 +58,10 @@ fun CurrentWeatherScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     viewModel: CurrentWeatherViewModel = hiltViewModel(),
-    scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
 
     Scaffold(
         bottomBar = bottomNavigationBar(navController = navController),
-        scaffoldState = scaffoldState,
         modifier = modifier.fillMaxSize()
     )
     { paddingValues ->
@@ -101,7 +96,7 @@ fun Box(location: String, data: WeatherCurrent, airQuality: Int) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp),
-        elevation = 8.dp,
+        //elevation = 8.dp,
     ) {
         Image(
             painterResource(id = backgroundImageFromWeather(data.weatherCondition)),
@@ -114,23 +109,23 @@ fun Box(location: String, data: WeatherCurrent, airQuality: Int) {
 
         Column(modifier = Modifier.padding(10.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(text = stringResource(R.string.forecast_updated_on, data.dt.date), style = MaterialTheme.typography.caption, color = Color.White)
+                Text(text = stringResource(R.string.forecast_updated_on, data.dt.date), style = MaterialTheme.typography.bodySmall, color = Color.White)
                 Text(
                     text = stringResource(R.string.forecast_updated_on_time, data.dt.time.toString().substringBeforeLast(":")),
-                    style = MaterialTheme.typography.caption,
+                    style = MaterialTheme.typography.bodySmall,
                     color = Color.White
                 )
             }
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(painter = painterResource(R.drawable.outline_location_on_24), contentDescription = stringResource(R.string.place), colorFilter = ColorFilter.tint(Color.White))
-                    Text(text = location, style = MaterialTheme.typography.subtitle2, color = Color.White)
+                    Text(text = location, style = MaterialTheme.typography.titleSmall, color = Color.White)
                 }
-                Text(text = stringResource(R.string.temperatureC, data.temp), style = MaterialTheme.typography.h1, color = Color.White)
+                Text(text = stringResource(R.string.temperatureC, data.temp), style = MaterialTheme.typography.displayLarge, color = Color.White)
             }
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = stringResource(R.string.air_quality), style = MaterialTheme.typography.subtitle2, color = Color.White)
-                Text(text = fromAqiIndex(airQuality), style = MaterialTheme.typography.subtitle1, color = Color.White)
+                Text(text = stringResource(R.string.air_quality), style = MaterialTheme.typography.titleSmall, color = Color.White)
+                Text(text = fromAqiIndex(airQuality), style = MaterialTheme.typography.titleMedium, color = Color.White)
             }
         }
     }
@@ -154,9 +149,9 @@ fun HourForecastItem(item: WeatherHourly) {
             .border(1.dp, shape = RoundedCornerShape(8.dp), color = Color(0xFFE0EAFF))
             .width(70.dp)
     ) {
-        Text(text = dayOfWeek(item.dt.dayOfWeek), style = MaterialTheme.typography.caption)
+        Text(text = dayOfWeek(item.dt.dayOfWeek), style = MaterialTheme.typography.bodySmall)
         WeatherIcon(item.weatherIcon)
-        Text(text = item.dt.time.toString(), style = MaterialTheme.typography.caption)
+        Text(text = item.dt.time.toString(), style = MaterialTheme.typography.bodySmall)
         Text(text = "${item.temp.roundToInt()}°", modifier = Modifier.padding(bottom = 5.dp))
     }
 
@@ -232,7 +227,7 @@ fun DetailsItem(name: String, value: String, @DrawableRes icon: Int) {
                 .background(color = Color.White, shape = RoundedCornerShape(100))
         )
         Column(modifier = Modifier.padding(10.dp)) {
-            Text(text = name, style = MaterialTheme.typography.caption)
+            Text(text = name, style = MaterialTheme.typography.bodySmall)
             Text(text = value)
         }
     }

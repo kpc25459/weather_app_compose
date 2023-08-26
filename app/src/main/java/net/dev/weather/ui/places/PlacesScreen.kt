@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterialApi::class)
+@file:OptIn(ExperimentalMaterial3Api::class)
 
 package net.dev.weather.ui.places
 
@@ -12,11 +12,20 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.DismissDirection
+import androidx.compose.material3.DismissState
+import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SwipeToDismiss
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,8 +58,7 @@ import net.dev.weather.data.model.deviceCurrentLocation
 fun PlacesScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    viewModel: PlacesViewModel = hiltViewModel(),
-    scaffoldState: ScaffoldState = rememberScaffoldState()
+    viewModel: PlacesViewModel = hiltViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -70,7 +78,7 @@ fun PlacesScreen(
         bottomBar = bottomNavigationBar(
             navController = navController
         ),
-        scaffoldState = scaffoldState,
+
         modifier = modifier.fillMaxSize()
     ) { paddingValues ->
 
@@ -97,7 +105,7 @@ fun PlacesScreen(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun Content(places: List<Place>, currentPlaceId: String?, onItemClick: (Place) -> Unit, onItemRemoved: (Place) -> Unit, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
@@ -109,7 +117,7 @@ private fun Content(places: List<Place>, currentPlaceId: String?, onItemClick: (
                 val currentItem by rememberUpdatedState(item)
 
                 val dismissState = rememberDismissState(
-                    confirmStateChange = {
+                    confirmValueChange = {
                         if (currentItem.id == deviceCurrentLocation.id) {
                             return@rememberDismissState false
                         }
@@ -126,9 +134,10 @@ private fun Content(places: List<Place>, currentPlaceId: String?, onItemClick: (
                 SwipeToDismiss(
                     state = dismissState,
                     directions = setOf(DismissDirection.EndToStart),
-                    dismissThresholds = { _ ->
+
+              /*      dismissThresholds = { _ ->
                         FractionalThreshold(0.25f)
-                    },
+                    },*/
                     background = {
                         SwipeBackground(dismissState)
                     },
@@ -144,6 +153,7 @@ private fun Content(places: List<Place>, currentPlaceId: String?, onItemClick: (
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwipeBackground(dismissState: DismissState) {
     val color by animateColorAsState(
@@ -174,27 +184,27 @@ fun SwipeBackground(dismissState: DismissState) {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SavedPlace(place: Place, isSelected: Boolean, onItemClick: (Place) -> Unit = {}) {
     ListItem(
-        text = { Text(text = place.name) },
-        secondaryText = { Text(text = place.description) },
+
+        headlineContent = { Text(text = place.name) },
+        supportingContent = { Text(text = place.description) },
         modifier = Modifier
             .padding(5.dp)
-            .border(1.dp, shape = RoundedCornerShape(8.dp), color = MaterialTheme.colors.primary)
+            .border(1.dp, shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.primary)
             .clickable { onItemClick(place) },
-        icon = {
+        leadingContent =  {
             Image(painter = painterResource(R.drawable.outline_location_on_24), contentDescription = stringResource(R.string.place))
         },
-        trailing = {
+        trailingContent = {
             if (isSelected)
                 Image(
                     painter = painterResource(R.drawable.outline_check_24),
                     contentDescription = stringResource(R.string.place),
                     colorFilter = ColorFilter.tint(Color.White),
                     modifier = Modifier
-                        .background(MaterialTheme.colors.primary, shape = CircleShape)
+                        .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
                 )
         }
     )

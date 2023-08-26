@@ -11,13 +11,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -44,8 +41,8 @@ import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
 import net.dev.weather.components.WeatherTopAppBar
 import net.dev.weather.data.model.AirPollutionForecast
-import net.dev.weather.ui.model.PlaceWithAirPollutionForecast
 import net.dev.weather.sampleAirQuality
+import net.dev.weather.ui.model.PlaceWithAirPollutionForecast
 import net.dev.weather.utils.fromAqiIndex
 import net.dev.weather.utils.imageFromAqi
 
@@ -55,12 +52,10 @@ fun AirQualityScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     viewModel: AirQualityViewModel = hiltViewModel(),
-    scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
     Scaffold(
         topBar = { WeatherTopAppBar(R.string.air_quality_screen_title) },
         bottomBar = bottomNavigationBar(navController = navController),
-        scaffoldState = scaffoldState,
         modifier = modifier.fillMaxSize()
     ) { paddingValues ->
 
@@ -101,7 +96,7 @@ fun Box(location: String, data: List<AirPollutionForecast>) {
             .fillMaxWidth()
             .height(200.dp)
             .padding(horizontal = 8.dp),
-        elevation = 8.dp
+        //elevation = 8.dp
     ) {
         Image(
             painterResource(id = imageFromAqi(currentWeather.aqi)),
