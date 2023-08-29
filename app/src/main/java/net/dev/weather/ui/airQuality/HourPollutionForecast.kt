@@ -6,9 +6,13 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -34,7 +38,6 @@ fun HourPollutionForecast(forecast: List<AirPollutionForecast>) {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HourForecastItem(item: AirPollutionForecast, modifier: Modifier = Modifier) {
 
@@ -45,12 +48,17 @@ fun HourForecastItem(item: AirPollutionForecast, modifier: Modifier = Modifier) 
     val interactionSource = remember { MutableInteractionSource() }
 
     ListItem(
-        text = { Text(text = item.dt.time.toString(), style = MaterialTheme.typography.body1, modifier = Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() }) },
-        secondaryText = {
+        headlineContent = {
+            Text(
+                text = item.dt.time.toString(),
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() })
+        },
+        supportingContent = {
             Column {
                 Text(
                     text = stringResource(R.string.air_quality_with_value, fromAqiIndex(item.aqi)),
-                    style = MaterialTheme.typography.body2,
+                    style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() })
 
                 if (expanded) {
@@ -63,7 +71,7 @@ fun HourForecastItem(item: AirPollutionForecast, modifier: Modifier = Modifier) 
                 }
             }
         },
-        icon = {
+        leadingContent = {
             Image(painter = painterResource(R.drawable.circle_24px),
                 contentDescription = stringResource(R.string.air_quality_icon),
                 colorFilter = ColorFilter.tint(visualIndex(item.aqi)/*.copy(alpha = 0.5f)*/),
@@ -71,7 +79,7 @@ fun HourForecastItem(item: AirPollutionForecast, modifier: Modifier = Modifier) 
                     .size(10.dp)
                     .clickable(indication = null, interactionSource = interactionSource) { onClick() })
         },
-        trailing = {
+        trailingContent = {
             ListItemArrow(expanded = expanded, onClick = { onClick() })
         }
     )
@@ -109,8 +117,8 @@ fun ListItemRow(description: String, value: String) {
             .fillMaxWidth()
             .padding(vertical = 4.dp)
     ) {
-        Text(text = description, style = MaterialTheme.typography.body2)
-        Text(text = value, style = MaterialTheme.typography.body2, modifier = Modifier.padding(start = 10.dp))
+        Text(text = description, style = MaterialTheme.typography.bodyMedium)
+        Text(text = value, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(start = 10.dp))
     }
 }
 
