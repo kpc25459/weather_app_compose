@@ -1,23 +1,20 @@
 package net.dev.weather
 
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-//import net.dev.weather.theme.iconColor
 
 @Composable
 fun bottomNavigationBar(navController: NavController): @Composable () -> Unit {
     return {
-        BottomNavigation(backgroundColor = MaterialTheme.colors.background) {
+        NavigationBar() {
             val backStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = backStackEntry?.destination
 
@@ -29,12 +26,10 @@ fun bottomNavigationBar(navController: NavController): @Composable () -> Unit {
             )
 
             items.forEach { screen ->
-
-                BottomNavigationItem(
+                NavigationBarItem(
                     icon = {
                         Icon(
-                            painter = painterResource(screen.iconResourceId), contentDescription = stringResource(screen.titleResourceId),
-                            tint = if (currentDestination?.route == screen.route) /*iconColor*/ Color.White else Color.Black
+                            painter = painterResource(screen.iconResourceId), contentDescription = stringResource(screen.titleResourceId)
                         )
                     },
                     selected = currentDestination?.route == screen.route,
