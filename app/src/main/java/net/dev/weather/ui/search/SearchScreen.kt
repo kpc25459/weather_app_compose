@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,12 +12,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -43,8 +51,7 @@ import net.dev.weather.data.model.Suggestion
 fun SearchScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    viewModel: SearchViewModel = hiltViewModel(),
-    scaffoldState: ScaffoldState = rememberScaffoldState()
+    viewModel: SearchViewModel = hiltViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -62,7 +69,7 @@ fun SearchScreen(
                 },
             )
         },
-        bottomBar = bottomNavigationBar(navController = navController), scaffoldState = scaffoldState, modifier = modifier.fillMaxSize()
+        bottomBar = bottomNavigationBar(navController = navController), modifier = modifier.fillMaxSize()
     ) { paddingValues ->
 
         uiState.suggestions?.let { suggestions ->
@@ -72,7 +79,7 @@ fun SearchScreen(
                     coroutineScope.launch {
                         viewModel.setCurrentPlace(suggestion)
 
-                        withContext(Dispatchers.Main){
+                        withContext(Dispatchers.Main) {
                             navController.navigate(NavRoutes.CurrentWeather.route)
                         }
                     }
@@ -84,6 +91,7 @@ fun SearchScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
     searchText: String,
@@ -105,12 +113,12 @@ fun SearchBar(
                     imageVector = Icons.Filled.ArrowBack, contentDescription = "back"
                 )
             }
-        }, actions = {
-
+        },
+        actions = {
             OutlinedTextField(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 2.dp)
+                    .fillMaxWidth(0.9f)
+                    .padding(vertical = 2.dp, horizontal = 10.dp)
                     .onFocusChanged { focusState ->
                         showClearButton = (focusState.isFocused)
                     }
@@ -120,11 +128,8 @@ fun SearchBar(
                 placeholder = {
                     Text(text = placeholderText)
                 },
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    backgroundColor = Color.Transparent,
-                    cursorColor = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.Transparent,
                 ),
                 trailingIcon = {
                     AnimatedVisibility(
@@ -146,22 +151,23 @@ fun SearchBar(
                     keyboardController?.hide()
                 })
             )
-        })
+        },
+        modifier = Modifier.background(Color.Transparent)
+    )
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun Content(suggestions: List<Suggestion>, onItemClick: (Suggestion) -> Unit, onFavoriteClick: (Suggestion) -> Unit, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
         items(suggestions.size) { index ->
             ListItem(
-                text = { Text(text = suggestions[index].name) },
-                secondaryText = { suggestions[index].description?.let { Text(text = it) } },
-                trailing = {
+                headlineContent = { Text(text = suggestions[index].name) },
+                supportingContent = { suggestions[index].description?.let { Text(text = it) } },
+                trailingContent = {
                     IconButton(onClick = { onFavoriteClick(suggestions[index]) }) {
                         Image(
                             painter = painterResource(if (suggestions[index].isFavorite) R.drawable.outline_check_24 else R.drawable.round_add_24),
