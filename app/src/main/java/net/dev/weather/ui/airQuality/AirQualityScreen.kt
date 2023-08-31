@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -191,8 +192,8 @@ private fun CurveLineChart(data: List<AirPollutionForecast>, transform: (AirPoll
             .fillMaxWidth()
             .padding(20.dp)
             .height(100.dp),
-        chartColor = /*tabBarBackgroundColor*/Color.Yellow,
-        lineColor = /*iconColor*/ Color.Black,
+        chartColor = MaterialTheme.colorScheme.primaryContainer,
+        lineColor = MaterialTheme.colorScheme.onPrimaryContainer,
         curveLineConfig = CurveLineConfig(
             hasDotMarker = false,
         ),
@@ -201,13 +202,13 @@ private fun CurveLineChart(data: List<AirPollutionForecast>, transform: (AirPoll
         },
         chartDimens = ChartDimens(4.dp),
         axisConfig = AxisConfig(
-            xAxisColor = Color.LightGray,
+            xAxisColor = MaterialTheme.colorScheme.onPrimaryContainer,
             showAxis = true,
             isAxisDashed = true,
             showUnitLabels = true,
             showXLabels = true,
-            yAxisColor = Color.LightGray,
-            textColor = Color.Black,
+            yAxisColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            textColor = MaterialTheme.colorScheme.onPrimaryContainer,
         )
     )
 }
