@@ -104,30 +104,35 @@ fun CardBox(location: String, data: WeatherCurrent, airQuality: Int) {
                 painterResource(id = backgroundImageFromWeather(data.weatherCondition)),
                 contentDescription = stringResource(R.string.weather_condition),
                 contentScale = ContentScale.Crop,
-                colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.5f), blendMode = BlendMode.SrcOver),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f), blendMode = BlendMode.SrcOver),
                 modifier = Modifier
                     .fillMaxWidth()
             )
 
-            Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 30.dp)) {
+            Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 20.dp)) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(text = stringResource(R.string.forecast_updated_on, data.dt.date), style = MaterialTheme.typography.bodySmall, color = Color.White)
+                    Text(
+                        text = stringResource(R.string.forecast_updated_on, data.dt.date),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSecondary
+                    )
                     Text(
                         text = stringResource(R.string.forecast_updated_on_time, data.dt.time.toString().substringBeforeLast(":")),
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onSecondary
                     )
                 }
+                Spacer(modifier = Modifier.height(20.dp))
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(painter = painterResource(R.drawable.outline_location_on_24), contentDescription = stringResource(R.string.place), colorFilter = ColorFilter.tint(Color.White))
-                        Text(text = location, style = MaterialTheme.typography.titleSmall, color = Color.White)
+                        Image(painter = painterResource(R.drawable.outline_location_on_24), contentDescription = stringResource(R.string.place), colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary))
+                        Text(text = location, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onPrimary)
                     }
-                    Text(text = stringResource(R.string.temperatureC, data.temp), style = MaterialTheme.typography.displayLarge, color = Color.White)
+                    Text(text = stringResource(R.string.temperatureC, data.temp), style = MaterialTheme.typography.displayLarge, color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = stringResource(R.string.air_quality), style = MaterialTheme.typography.titleSmall, color = Color.White)
-                    Text(text = fromAqiIndex(airQuality), style = MaterialTheme.typography.titleMedium, color = Color.White)
+                    Text(text = stringResource(R.string.air_quality), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSecondary)
+                    Text(text = fromAqiIndex(airQuality), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSecondary)
                 }
             }
         }
@@ -149,7 +154,7 @@ fun HourForecastItem(item: WeatherHourly) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(5.dp)
-            .border(1.dp, shape = RoundedCornerShape(8.dp), color = Color(0xFFE0EAFF))
+            .border(1.dp, shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.primaryContainer)
             .width(70.dp)
     ) {
         Text(text = dayOfWeek(item.dt.dayOfWeek), style = MaterialTheme.typography.bodySmall)
@@ -222,12 +227,12 @@ fun DetailsItem(name: String, value: String, @DrawableRes icon: Int) {
             .padding(8.dp)
             //TODO; tutaj pozbyć się stałej szerokości
             .width(180.dp)
-            .background(color = Color(0xFFE0EAFF), shape = RoundedCornerShape(10.dp))
+            .background(color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(10.dp))
     ) {
         Icon(
-            painter = painterResource(icon), /*tint = iconColor,*/ contentDescription = name, modifier = Modifier
+            painter = painterResource(icon), tint = MaterialTheme.colorScheme.primary, contentDescription = name, modifier = Modifier
                 .padding(10.dp)
-                .background(color = Color.White, shape = RoundedCornerShape(100))
+                .background(color = MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(100))
         )
         Column(modifier = Modifier.padding(10.dp)) {
             Text(text = name, style = MaterialTheme.typography.bodySmall)

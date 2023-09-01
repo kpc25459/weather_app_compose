@@ -2,6 +2,7 @@ package net.dev.weather.ui.airQuality
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -75,7 +76,7 @@ private fun Content(data: PlaceWithAirPollutionForecast, modifier: Modifier = Mo
             .padding(5.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Box(data.place.name, data.airPollutionForecast)
+        CardBox(data.place.name, data.airPollutionForecast)
         Spacer(modifier = Modifier.height(20.dp))
         HourPollutionForecast(data.airPollutionForecast.take(4))
 
@@ -89,7 +90,7 @@ private fun Content(data: PlaceWithAirPollutionForecast, modifier: Modifier = Mo
 }
 
 @Composable
-fun Box(location: String, data: List<AirPollutionForecast>) {
+fun CardBox(location: String, data: List<AirPollutionForecast>) {
     val currentWeather = data.first()
 
     Card(
@@ -97,43 +98,48 @@ fun Box(location: String, data: List<AirPollutionForecast>) {
             .fillMaxWidth()
             .height(200.dp)
             .padding(horizontal = 8.dp),
-        //elevation = 8.dp
     ) {
-        Image(
-            painterResource(id = imageFromAqi(currentWeather.aqi)),
-            contentDescription = stringResource(R.string.weather_condition),
-            contentScale = ContentScale.Crop,
-            colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.5f), blendMode = BlendMode.SrcOver),
-            modifier = Modifier
-                .fillMaxWidth()
-        )
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopStart) {
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth()
-        ) {
-            Row {
-                Image(painter = painterResource(R.drawable.outline_location_on_24), contentDescription = stringResource(R.string.place), colorFilter = ColorFilter.tint(Color.White))
-                Text(text = location, color = Color.White)
-            }
-
-            Row {
-                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = fromAqiIndex(currentWeather.aqi), color = Color.White)
-                }
-            }
-
-            Row(
+            Image(
+                painterResource(id = imageFromAqi(currentWeather.aqi)),
+                contentDescription = stringResource(R.string.weather_condition),
+                contentScale = ContentScale.Crop,
+                colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.5f), blendMode = BlendMode.SrcOver),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 10.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
+            )
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
+                    .padding(10.dp)
+                    .padding(top = 30.dp)
+                    .fillMaxWidth()
             ) {
-                Text(text = stringResource(R.string.pm25_extended, currentWeather.pm2_5), color = Color.White)
-                Text(text = stringResource(R.string.pm10_extended, currentWeather.pm10), color = Color.White)
+                Row {
+                    Image(painter = painterResource(R.drawable.outline_location_on_24), contentDescription = stringResource(R.string.place), colorFilter = ColorFilter.tint(Color.White))
+                    Text(text = location, color = Color.White)
+                }
+
+                Row {
+                    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(text = fromAqiIndex(currentWeather.aqi), color = Color.White)
+                    }
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Text(text = stringResource(R.string.pm25_extended, currentWeather.pm2_5), color = Color.White)
+                    Text(text = stringResource(R.string.pm10_extended, currentWeather.pm10), color = Color.White)
+                }
             }
         }
+
+
     }
 }
 
@@ -222,7 +228,7 @@ fun ContentPreview() {
 @Composable
 @Preview()
 fun BoxPreview() {
-    Box(data = sampleAirQuality.airPollutionForecast, location = sampleAirQuality.place.name)
+    CardBox(data = sampleAirQuality.airPollutionForecast, location = sampleAirQuality.place.name)
 }
 
 

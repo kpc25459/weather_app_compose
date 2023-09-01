@@ -135,9 +135,9 @@ private fun Content(places: List<Place>, currentPlaceId: String?, onItemClick: (
                     state = dismissState,
                     directions = setOf(DismissDirection.EndToStart),
 
-              /*      dismissThresholds = { _ ->
-                        FractionalThreshold(0.25f)
-                    },*/
+                    /*      dismissThresholds = { _ ->
+                              FractionalThreshold(0.25f)
+                          },*/
                     background = {
                         SwipeBackground(dismissState)
                     },
@@ -187,24 +187,25 @@ fun SwipeBackground(dismissState: DismissState) {
 @Composable
 fun SavedPlace(place: Place, isSelected: Boolean, onItemClick: (Place) -> Unit = {}) {
     ListItem(
-
         headlineContent = { Text(text = place.name) },
         supportingContent = { Text(text = place.description) },
         modifier = Modifier
             .padding(5.dp)
             .border(1.dp, shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.primary)
             .clickable { onItemClick(place) },
-        leadingContent =  {
-            Image(painter = painterResource(R.drawable.outline_location_on_24), contentDescription = stringResource(R.string.place))
+        leadingContent = {
+            Image(
+                painter = painterResource(R.drawable.outline_location_on_24),
+                contentDescription = stringResource(R.string.place),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+            )
         },
         trailingContent = {
             if (isSelected)
                 Image(
                     painter = painterResource(R.drawable.outline_check_24),
                     contentDescription = stringResource(R.string.place),
-                    colorFilter = ColorFilter.tint(Color.White),
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
                 )
         }
     )
