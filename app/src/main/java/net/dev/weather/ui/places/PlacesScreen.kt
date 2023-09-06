@@ -1,40 +1,31 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package net.dev.weather.ui.places
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissState
-import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,10 +39,10 @@ import kotlinx.coroutines.withContext
 import net.dev.weather.NavRoutes
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
+import net.dev.weather.components.SwipeDismissItem
 import net.dev.weather.components.WeatherTopAppBarWithAction
 import net.dev.weather.data.model.Place
-import net.dev.weather.data.model.deviceCurrentLocation
-
+import kotlin.math.min
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -105,7 +96,7 @@ fun PlacesScreen(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Content(places: List<Place>, currentPlaceId: String?, onItemClick: (Place) -> Unit, onItemRemoved: (Place) -> Unit, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
@@ -113,74 +104,36 @@ private fun Content(places: List<Place>, currentPlaceId: String?, onItemClick: (
             items = places,
             key = { place -> place.id },
             itemContent = { item ->
+                SwipeDismissItem(
+                    background = { progress ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
 
-                val currentItem by rememberUpdatedState(item)
-
-                val dismissState = rememberDismissState(
-                    confirmValueChange = {
-                        if (currentItem.id == deviceCurrentLocation.id) {
-                            return@rememberDismissState false
-                        }
-
-                        if (it == DismissValue.DismissedToStart) {
-                            onItemRemoved(currentItem)
-                            true
-                        } else {
-                            false
+                            if (progress != 1f) {
+                                val iconAlpha: Float by animateFloatAsState(targetValue = progress, label = "icon_alpha_animation")
+                                val iconScale by animateFloatAsState(targetValue = min(progress * 2, 1f), label = "icon_scale_animation")
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = stringResource(R.string.delete),
+                                    tint = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier
+                                        .size(48.dp)
+                                        .align(Alignment.CenterEnd)
+                                        .scale(iconScale)
+                                        .graphicsLayer(alpha = iconAlpha)
+                                )
+                            }
                         }
                     }
-                )
+                ) {
+                    SavedPlace(item, currentPlaceId == item.id, onItemClick = onItemClick)
+                }
 
-                SwipeToDismiss(
-                    state = dismissState,
-                    directions = setOf(DismissDirection.EndToStart),
-
-                    /*      dismissThresholds = { _ ->
-                              FractionalThreshold(0.25f)
-                          },*/
-                    background = {
-                        SwipeBackground(dismissState)
-                    },
-                    dismissContent = {
-                        SavedPlace(item, currentPlaceId == item.id, onItemClick = onItemClick)
-                    },
-                    modifier = Modifier
-                        .padding(1.dp)
-                        .animateItemPlacement()
-                )
             }
         )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SwipeBackground(dismissState: DismissState) {
-    val color by animateColorAsState(
-        when (dismissState.targetValue) {
-            DismissValue.Default -> Color.Transparent
-            DismissValue.DismissedToStart -> Color.Red
-            else -> Color.Transparent
-        }
-    )
-
-    val scale by animateFloatAsState(
-        if (dismissState.targetValue == DismissValue.Default) 0.8f else 1.5f
-    )
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color)
-            .padding(horizontal = 20.dp),
-        contentAlignment = Alignment.CenterEnd
-    ) {
-        if (dismissState.targetValue == DismissValue.DismissedToStart)
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "Delete",
-                modifier = Modifier.scale(scale),
-            )
     }
 }
 

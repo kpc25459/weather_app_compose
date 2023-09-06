@@ -41,4 +41,5 @@
     <string name="search">Wyszukaj</string>
     <string name="places_screen_title">Zapisane miejsca</string>
     <string name="back">wstecz</string>
+    <string name="delete">usuń</string>
 </resources>
