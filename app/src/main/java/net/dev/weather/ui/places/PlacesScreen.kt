@@ -42,6 +42,7 @@ import net.dev.weather.bottomNavigationBar
 import net.dev.weather.components.SwipeDismissItem
 import net.dev.weather.components.WeatherTopAppBarWithAction
 import net.dev.weather.data.model.Place
+import net.dev.weather.data.model.deviceCurrentLocationPlace
 import kotlin.math.min
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -100,6 +101,11 @@ fun PlacesScreen(
 @Composable
 private fun Content(places: List<Place>, currentPlaceId: String?, onItemClick: (Place) -> Unit, onItemRemoved: (Place) -> Unit, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
+
+        item {
+            SavedPlace(deviceCurrentLocationPlace, currentPlaceId == deviceCurrentLocationPlace.id, onItemClick = onItemClick)
+        }
+
         items(
             items = places,
             key = { place -> place.id },

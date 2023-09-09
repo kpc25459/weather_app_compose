@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import net.dev.weather.data.model.Place
 import net.dev.weather.data.model.PlaceMode
-import net.dev.weather.data.model.deviceCurrentLocation
+import net.dev.weather.data.model.deviceCurrentLocationPlace
 import net.dev.weather.network.api.WeatherServiceApi
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -41,7 +41,7 @@ class PlaceRepositoryImpl @Inject constructor(
 
                 val reverseLocationResponse = weatherServiceApi.getReverseLocation(currentDeviceLocation.latitude, currentDeviceLocation.longitude)
                 val name = reverseLocationResponse.body()?.first()?.name ?: "Unknown"
-                val value = Place(name, deviceCurrentLocation.id, deviceCurrentLocation.description, currentDeviceLocation.latitude, currentDeviceLocation.longitude)
+                val value = Place(name, deviceCurrentLocationPlace.id, deviceCurrentLocationPlace.description, currentDeviceLocation.latitude, currentDeviceLocation.longitude)
 
                 Log.d("LocationRepository", "currentDevicePlace: $value")
 

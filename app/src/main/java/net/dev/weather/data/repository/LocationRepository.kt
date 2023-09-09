@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.flow
 import net.dev.weather.api.LocationServiceApi
 import net.dev.weather.data.model.LatandLong
 import net.dev.weather.data.model.Suggestion
-import net.dev.weather.data.model.deviceCurrentLocation
+import net.dev.weather.data.model.deviceCurrentLocationPlace
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,7 +36,7 @@ class LocationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getLocationFromGoogle(placeId: String): LatandLong {
-        if (placeId == deviceCurrentLocation.id)
+        if (placeId == deviceCurrentLocationPlace.id)
             return LatandLong(0.0, 0.0)
 
         val latLongResponse = locationServiceApi.getLatLongFromGoogle(placeId)
