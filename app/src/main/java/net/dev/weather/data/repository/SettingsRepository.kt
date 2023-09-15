@@ -18,9 +18,9 @@ interface SettingsRepository {
     suspend fun setCurrentPlace(place: Place)
 
     suspend fun setCurrentDeviceLocation(location: LatandLong)
+    suspend fun resetCurrentDeviceLocation()
 
     suspend fun toggleFavorite(place: Place, favorite: Boolean)
-
 }
 
 @Singleton
@@ -33,6 +33,7 @@ class SettingsRepositoryImpl @Inject constructor(private val preferencesDataSour
     override suspend fun setCurrentMode(mode: PlaceMode) = preferencesDataSource.setCurrentMode(mode)
     override suspend fun setCurrentPlace(place: Place) = preferencesDataSource.setCurrentPlace(place)
     override suspend fun setCurrentDeviceLocation(location: LatandLong) = preferencesDataSource.setCurrentDeviceLocation(location)
+    override suspend fun resetCurrentDeviceLocation() = preferencesDataSource.resetCurrentDeviceLocation()
 
     override suspend fun toggleFavorite(place: Place, favorite: Boolean) = preferencesDataSource.toggleFavoritePlaceId(place, favorite)
 }

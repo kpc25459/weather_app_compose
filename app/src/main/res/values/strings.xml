@@ -53,4 +53,10 @@
     <string name="back">back</string>
     <string name="empty" translatable="false" />
     <string name="delete" />
+    <string name="grant_permissions">Grant permissions</string>
+    <string name="app_requires_permissions">App requires permission/s</string>
+    <string name="permissions_required_by_the_sample">Permissions required by the sample</string>
+    <string name="the_app_requires_the_following_permissions_to_work">The app requires the following permissions to work:\n %1$s</string>
+    <string name="continues">Continue</string>
+    <string name="dismiss">Dismiss</string>
 </resources>

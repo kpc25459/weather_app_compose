@@ -29,7 +29,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -68,6 +67,8 @@ fun CurrentWeatherScreen(
     { paddingValues ->
 
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+        //TODO: tutaj obsłużyć loading
         uiState.placeWithCurrentWeather?.let { weather ->
             Content(weather, Modifier.padding(paddingValues))
         }

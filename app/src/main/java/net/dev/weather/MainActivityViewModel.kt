@@ -1,5 +1,6 @@
 package net.dev.weather
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,10 @@ class MainActivityViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
+    //TODO: tutaj odczytuje tylko z pamięci telefonu, więc stan Loading będzie trwał milisekundę
+
     val uiState: StateFlow<MainActivityUiState> = settingsRepository.userData.map {
+        Log.i("MainActivityViewModel", "uiState: $it")
         Success(it)
     }.stateIn(
         scope = viewModelScope,

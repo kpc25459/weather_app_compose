@@ -61,6 +61,7 @@ class PlacesViewModel @Inject constructor(private val settingsRepository: Settin
         } else {
             settingsRepository.setCurrentMode(PlaceMode.FAVORITES)
             settingsRepository.setCurrentPlace(place)
+            settingsRepository.resetCurrentDeviceLocation()
         }
     }
 }

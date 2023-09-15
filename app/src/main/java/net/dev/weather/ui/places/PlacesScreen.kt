@@ -1,5 +1,6 @@
 package net.dev.weather.ui.places
 
+import android.Manifest
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Box
@@ -36,14 +37,21 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import net.dev.weather.MainActivityUiState
 import net.dev.weather.NavRoutes
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
 import net.dev.weather.components.SwipeDismissItem
 import net.dev.weather.components.WeatherTopAppBarWithAction
 import net.dev.weather.data.model.Place
+import net.dev.weather.data.model.PlaceMode
 import net.dev.weather.data.model.deviceCurrentLocationPlace
 import kotlin.math.min
+
+val permissions = listOf(
+    Manifest.permission.ACCESS_COARSE_LOCATION,
+    Manifest.permission.ACCESS_FINE_LOCATION,
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,10 +89,9 @@ fun PlacesScreen(
                 onItemClick = {
                     scope.launch {
                         viewModel.setCurrentPlace(it)
-
-                        withContext(Dispatchers.Main) {
-                            navController.navigate(NavRoutes.CurrentWeather.route)
-                        }
+                          withContext(Dispatchers.Main) {
+                              navController.navigate(NavRoutes.CurrentWeather.route)
+                          }
                     }
                 },
                 onItemRemoved = {
@@ -140,6 +147,13 @@ private fun Content(places: List<Place>, currentPlaceId: String?, onItemClick: (
 
             }
         )
+    }
+}
+
+private fun shouldAskForPermissions(uiState: MainActivityUiState): Boolean {
+    return when (uiState) {
+        MainActivityUiState.Loading -> true
+        is MainActivityUiState.Success -> uiState.userData.currentMode == PlaceMode.DEVICE_LOCATION
     }
 }
 

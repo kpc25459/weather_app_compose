@@ -1,44 +1,44 @@
 package net.dev.weather
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Looper
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.Priority
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import net.dev.weather.MainActivityUiState.Loading
+import net.dev.weather.components.LocationUpdatesEffect
+import net.dev.weather.components.PermissionBox
 import net.dev.weather.data.model.DarkThemeConfig
 import net.dev.weather.data.model.LatandLong
 import net.dev.weather.data.model.PlaceMode
 import net.dev.weather.theme.WeatherTheme
+import net.dev.weather.ui.places.permissions
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private var locationCallback: LocationCallback? = null
-    private var fusedLocationClient: FusedLocationProviderClient? = null
-    private var locationRequired = false
-
-    val viewModel: MainActivityViewModel by viewModels()
+    private val viewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,104 +60,64 @@ class MainActivity : ComponentActivity() {
             val systemUiController = rememberSystemUiController()
             val darkTheme = shouldUseDarkTheme(uiState)
 
+            val coroutineScope = rememberCoroutineScope()
+
             DisposableEffect(systemUiController, darkTheme) {
                 systemUiController.systemBarsDarkContentEnabled = !darkTheme
-                onDispose {  }
+                onDispose { }
             }
 
-
-            WeatherTheme(useDarkTheme = darkTheme) {
-
-                when (uiState) {
-                    Loading -> {
-                        //TODO: dodać splash screen/kręciołek
-                    }
-
-                    is MainActivityUiState.Success -> {
-                        if ((uiState as MainActivityUiState.Success).userData.currentMode == PlaceMode.DEVICE_LOCATION) {
-                            StartLocationUpdate()
-                        } else {
-                            stopLocationUpdates()
-                        }
-                        WeatherApp()
-                    }
-                }
-
-            }
-        }
-    }
-
-    @Composable
-    private fun StartLocationUpdate() {
-
-        val context = LocalContext.current
-
-        var currentLocation by remember {
-            mutableStateOf(LatandLong(0.toDouble(), 0.toDouble()))
-        }
-
-        val coroutineScope = rememberCoroutineScope()
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(p0: LocationResult) {
-                for (lo in p0.locations) {
-                    currentLocation = LatandLong(lo.latitude, lo.longitude)
-
-                    Log.d("MainActivity", "setCurrentLocation: ${lo.latitude}, ${lo.longitude}")
-
-                    coroutineScope.launch {
-                        viewModel.setCurrentLocation(LatandLong(lo.latitude, lo.longitude))
-                    }
-                }
-            }
-        }
-
-        if (permissions.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }) {
-            startLocationUpdates()
-        } else {
-            val permissionsLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionsMap ->
-                val areGranted = permissionsMap.values.reduce { acc, next -> acc && next }
-                if (areGranted) {
-                    locationRequired = true
-                    startLocationUpdates()
-                } else {
-                    Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            SideEffect {
-                permissionsLauncher.launch(permissions)
-            }
+            Content(coroutineScope, darkTheme, uiState)
         }
     }
 
     @SuppressLint("MissingPermission")
-    private fun startLocationUpdates() {
-        Log.i("MainActivity", "startLocationUpdates")
-
-        locationCallback?.let {
-            val locationRequest: LocationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).build()
-            fusedLocationClient?.requestLocationUpdates(locationRequest, it, Looper.getMainLooper())
+    @Composable
+    private fun Content(coroutineScope: CoroutineScope, darkTheme: Boolean, uiState: MainActivityUiState) {
+        var locationRequest by remember {
+            mutableStateOf<LocationRequest?>(null)
         }
-    }
 
-    private fun stopLocationUpdates() {
-        Log.i("MainActivity", "stopLocationUpdates")
-        locationCallback?.let { fusedLocationClient?.removeLocationUpdates(it) }
-    }
+        WeatherTheme(useDarkTheme = darkTheme) {
 
-    override fun onResume() {
-        super.onResume()
-        if (locationRequired) {
-            startLocationUpdates()
+            when (uiState) {
+                Loading -> {
+                    Text(
+                        text = "Loading..."
+                    )
+                }
+
+                is MainActivityUiState.Success -> {
+                    if (uiState.userData.currentMode == PlaceMode.DEVICE_LOCATION) {
+                        LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).build().also {
+                            locationRequest = it
+
+                            PermissionBox(
+                                permissions = permissions,
+                                requiredPermissions = listOf(permissions.first())
+                            ) {
+
+                                LocationUpdatesEffect(locationRequest!!) { result ->
+                                    for (currentLocation in result.locations) {
+                                        Log.i("MainActivity", "LocationUpdatesEffect: $currentLocation")
+
+                                        coroutineScope.launch {
+                                            viewModel.setCurrentLocation(LatandLong(currentLocation.latitude, currentLocation.longitude))
+                                        }
+                                    }
+                                }
+
+                                WeatherApp()
+                            }
+                        }
+                    } else {
+                        locationRequest = null
+
+                        WeatherApp()
+                    }
+                }
+            }
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        stopLocationUpdates()
     }
 
     @Composable
@@ -168,12 +128,5 @@ class MainActivity : ComponentActivity() {
             DarkThemeConfig.LIGHT -> false
             DarkThemeConfig.DARK -> true
         }
-    }
-
-    companion object {
-        val permissions = arrayOf(
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
     }
 }

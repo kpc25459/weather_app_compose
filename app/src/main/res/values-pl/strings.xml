@@ -42,4 +42,10 @@
     <string name="places_screen_title">Zapisane miejsca</string>
     <string name="back">wstecz</string>
     <string name="delete">usuń</string>
+    <string name="grant_permissions">Nadaj uprawnienia</string>
+    <string name="app_requires_permissions">Aplikacja wymaga uprawnień</string>
+    <string name="permissions_required_by_the_sample">Uprawnienia wymagane przez aplikację</string>
+    <string name="the_app_requires_the_following_permissions_to_work">Aplikacja wymaga następujących uprawnnień do działania:\n %1$s</string>
+    <string name="continues">Kontynuuj</string>
+    <string name="dismiss">Anuluj</string>
 </resources>
