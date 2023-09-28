@@ -1,8 +1,7 @@
 package net.dev.weather.data.model
 
-data class Weather(
+data class WeatherDays(
     val current: WeatherCurrent,
     val daily: List<WeatherDaily>,
-    val hourly: List<WeatherHourly>,
-    val aqi: Int,
+    val hourly: List<WeatherHourly>
 )
