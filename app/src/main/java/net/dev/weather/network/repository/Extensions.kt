@@ -2,14 +2,14 @@ package net.dev.weather.network.repository
 
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toLocalDateTime
+import net.dev.weather.data.model.AirPollutionForecast
+import net.dev.weather.data.model.WeatherCurrent
+import net.dev.weather.data.model.WeatherDaily
+import net.dev.weather.data.model.WeatherDays
+import net.dev.weather.data.model.WeatherHourly
 import net.dev.weather.network.model.AirPollutionResponse
 import net.dev.weather.network.model.OneCallResponse
 import net.dev.weather.network.model.WeatherHourlyResponse
-import net.dev.weather.data.model.AirPollutionForecast
-import net.dev.weather.data.model.Weather
-import net.dev.weather.data.model.WeatherCurrent
-import net.dev.weather.data.model.WeatherDaily
-import net.dev.weather.data.model.WeatherHourly
 import net.dev.weather.utils.defaultTimeZone
 import net.dev.weather.utils.toHumanFromDegrees
 
@@ -26,7 +26,7 @@ fun AirPollutionResponse.mapToAirPollutionForecast(): List<AirPollutionForecast>
     }
 }
 
-fun OneCallResponse.mapToWeather(): Weather {
+fun OneCallResponse.mapToWeatherDays(): WeatherDays {
     val current1: WeatherHourlyResponse = this.current
 
     val current = WeatherCurrent(
@@ -70,7 +70,7 @@ fun OneCallResponse.mapToWeather(): Weather {
         )
     }
 
-    return Weather(
+    return WeatherDays(
         current = current,
         daily = weatherDaily,
         hourly = weatherHourly

@@ -44,7 +44,8 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.dev.weather.NavRoutes
+import net.dev.weather.CurrentWeather
+import net.dev.weather.Places
 import net.dev.weather.R
 import net.dev.weather.bottomNavigationBar
 import net.dev.weather.data.model.Suggestion
@@ -67,7 +68,7 @@ fun SearchScreen(
                 onSearchTextChanged = { viewModel.onSearchTextChanged(it) },
                 onClearClick = { viewModel.onClearClick() },
                 onNavigateBack = {
-                    navController.navigate(NavRoutes.Places.route)
+                    navController.navigate(Places.route)
                 },
             )
         },
@@ -82,7 +83,7 @@ fun SearchScreen(
                         viewModel.setCurrentPlace(suggestion)
 
                         withContext(Dispatchers.Main) {
-                            navController.navigate(NavRoutes.CurrentWeather.route)
+                            navController.navigate(CurrentWeather.route)
                         }
                     }
                 },

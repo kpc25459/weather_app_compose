@@ -61,6 +61,7 @@ fun CurrentWeatherScreen(
 ) {
 
     Scaffold(
+        //TODO: tutaj tak naprawdę nie powinno być navController, tylko zdarzenia w górę
         bottomBar = bottomNavigationBar(navController = navController),
         modifier = modifier.fillMaxSize()
     )
@@ -84,7 +85,7 @@ private fun Content(data: PlaceWithCurrentWeather, modifier: Modifier = Modifier
             .padding(5.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        CardBox(data.place, data.weather.current, data.airPollutionCurrent)
+        CardBox(data.place, data.weather.current, data.weather.aqi)
         Spacer(modifier = Modifier.height(20.dp))
         HourForecast(data.weather.hourly/*.takeWhile { it.dt.date == now }*/)
         Spacer(modifier = Modifier.height(20.dp))
@@ -251,7 +252,7 @@ fun ContentPreview() {
 @Preview(showBackground = true)
 @Composable
 fun BoxPreview() {
-    CardBox(location = sampleData.place, data = sampleData.weather.current, airQuality = sampleData.airPollutionCurrent)
+    CardBox(location = sampleData.place, data = sampleData.weather.current, airQuality = sampleData.weather.aqi)
 }
 
 @Preview(showBackground = true)

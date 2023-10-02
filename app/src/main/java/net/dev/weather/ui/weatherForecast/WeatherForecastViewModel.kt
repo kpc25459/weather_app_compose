@@ -6,13 +6,10 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import net.dev.weather.R
-import net.dev.weather.data.model.Weather
 import net.dev.weather.data.model.WeatherForecast
 import net.dev.weather.data.repository.WeatherRepository
-import net.dev.weather.ui.model.*
 import net.dev.weather.utils.Async
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 data class WeatherForecastUiState(
     val weatherForecast: WeatherForecast? = null,

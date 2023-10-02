@@ -2,6 +2,7 @@ package net.dev.weather
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,27 +16,45 @@ import net.dev.weather.ui.weatherForecast.WeatherForecastScreen
 @Composable
 fun NavGraph(
     modifier: Modifier = Modifier,
-    startDestination: String = NavRoutes.CurrentWeather.route,
+    //startDestination: String = CurrentWeather.route,
+    startDestination: String = Places.route,
     navController: NavHostController = rememberNavController()
 ) {
 
     NavHost(navController = navController, startDestination = startDestination, modifier = modifier) {
-        composable(NavRoutes.CurrentWeather.route) {
+        composable(
+            route = CurrentWeather.routeWithArgs,
+            arguments = CurrentWeather.arguments,
+            deepLinks = CurrentWeather.deepLinks
+        ) {
             CurrentWeatherScreen(navController = navController)
         }
-        composable(NavRoutes.WeatherForecast.route) {
+
+        composable(WeatherForecast.route) {
             WeatherForecastScreen(navController = navController)
         }
-        composable(NavRoutes.AirQuality.route) {
+        composable(AirQuality.route) {
             AirQualityScreen(navController = navController)
         }
-        composable(NavRoutes.Places.route) {
-            PlacesScreen(navController = navController)
+        composable(Places.route) {
+            PlacesScreen(
+                navController = navController,
+                onPlaceClick = { placeId -> navController.navigateToCurrentWeather(placeId) })
         }
-        composable(NavRoutes.Search.route) {
+        composable(Search.route) {
             SearchScreen(navController = navController)
         }
     }
+}
 
+fun NavHostController.navigateSingleTopTo(route: String) = this.navigate(route) {
+    popUpTo(this@navigateSingleTopTo.graph.findStartDestination().id) {
+        saveState = true
+    }
+    launchSingleTop = true
+    restoreState = true
+}
 
+private fun NavHostController.navigateToCurrentWeather(placeId: String) {
+    this.navigateSingleTopTo("${CurrentWeather.route}/$placeId")
 }

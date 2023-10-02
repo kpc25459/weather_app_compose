@@ -34,12 +34,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import net.dev.weather.MainActivityUiState
-import net.dev.weather.NavRoutes
 import net.dev.weather.R
+import net.dev.weather.Search
 import net.dev.weather.bottomNavigationBar
 import net.dev.weather.components.SwipeDismissItem
 import net.dev.weather.components.WeatherTopAppBarWithAction
@@ -58,7 +56,8 @@ val permissions = listOf(
 fun PlacesScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    viewModel: PlacesViewModel = hiltViewModel()
+    viewModel: PlacesViewModel = hiltViewModel(),
+    onPlaceClick: (placeId: String) -> Unit
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -71,7 +70,7 @@ fun PlacesScreen(
                 actionIcon = Icons.Default.Search, // lub: R.drawable.outline_search_24
                 actionIconContentDescription = stringResource(id = R.string.search),
                 onActionClick = {
-                    navController.navigate(NavRoutes.Search.route)
+                    navController.navigate(Search.route)
                 },
             )
         },
@@ -87,12 +86,14 @@ fun PlacesScreen(
                 places,
                 uiState.currentPlaceId,
                 onItemClick = {
-                    scope.launch {
-                        viewModel.setCurrentPlace(it)
-                          withContext(Dispatchers.Main) {
-                              navController.navigate(NavRoutes.CurrentWeather.route)
-                          }
-                    }
+                    onPlaceClick(it.id)
+
+                    /* scope.launch {
+                         viewModel.setCurrentPlace(it)
+                           withContext(Dispatchers.Main) {
+                               navController.navigate(CurrentWeather.route)
+                           }
+                     }*/
                 },
                 onItemRemoved = {
                     scope.launch {
