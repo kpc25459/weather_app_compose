@@ -40,7 +40,7 @@ import com.himanshoe.charty.line.config.CurveLineConfig
 import com.himanshoe.charty.line.config.LineConfig
 import com.himanshoe.charty.line.model.LineData
 import net.dev.weather.R
-import net.dev.weather.bottomNavigationBar
+import net.dev.weather.ui.bottomNavigationBar
 import net.dev.weather.components.WeatherTopAppBar
 import net.dev.weather.data.model.AirPollutionForecast
 import net.dev.weather.sampleAirQuality

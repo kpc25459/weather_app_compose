@@ -14,10 +14,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import net.dev.weather.R
-import net.dev.weather.bottomNavigationBar
+import net.dev.weather.ui.bottomNavigationBar
 import net.dev.weather.components.WeatherTopAppBar
 import net.dev.weather.data.model.WeatherForecast
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -3,10 +3,9 @@ package net.dev.weather.data.repository
 import kotlinx.coroutines.flow.Flow
 import net.dev.weather.data.model.AirPollutionForecast
 import net.dev.weather.data.model.Weather
-import net.dev.weather.data.model.WeatherDays
 
 interface WeatherRepository {
-    val weather: Flow<WeatherDays>
+    //val weather: Flow<WeatherDays>
 
     suspend fun weatherFor(latitude: Double, longitude: Double): Weather
 

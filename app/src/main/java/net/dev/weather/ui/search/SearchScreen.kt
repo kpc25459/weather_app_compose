@@ -47,7 +47,7 @@ import kotlinx.coroutines.withContext
 import net.dev.weather.CurrentWeather
 import net.dev.weather.Places
 import net.dev.weather.R
-import net.dev.weather.bottomNavigationBar
+import net.dev.weather.ui.bottomNavigationBar
 import net.dev.weather.data.model.Suggestion
 
 @Composable

@@ -14,17 +14,20 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NetworkWeatherRepository @Inject constructor(private val weatherServiceApi: WeatherServiceApi, private val placeRepository: PlaceRepository) : WeatherRepository {
-    override val weather: Flow<WeatherDays>
-        get() = flow {
-            placeRepository.currentPlace.collect { currentPlace ->
-                val weatherResponse = weatherServiceApi.getWeather(latitude = currentPlace.latitude, longitude = currentPlace.longitude)
-                if (weatherResponse.isSuccessful) {
-                    val body = weatherResponse.body()!!
-                    emit(body.mapToWeatherDays())
+class NetworkWeatherRepository @Inject constructor(
+    private val weatherServiceApi: WeatherServiceApi,
+    private val placeRepository: PlaceRepository
+) : WeatherRepository {
+    /*    override val weather: Flow<WeatherDays>
+            get() = flow {
+                placeRepository.currentPlace.collect { currentPlace ->
+                    val weatherResponse = weatherServiceApi.getWeather(latitude = currentPlace.latitude, longitude = currentPlace.longitude)
+                    if (weatherResponse.isSuccessful) {
+                        val body = weatherResponse.body()!!
+                        emit(body.mapToWeatherDays())
+                    }
                 }
-            }
-        }
+            }*/
 
     override suspend fun weatherFor(latitude: Double, longitude: Double): Weather = coroutineScope {
 

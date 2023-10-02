@@ -26,10 +26,23 @@ object CurrentWeather : WeatherDestination {
 
 object WeatherForecast : WeatherDestination {
     override val route = "weather_forecast"
+    const val placeIdArg = "place_id"
+
+    val routeWithArgs = "${route}/{$placeIdArg}"
+    val arguments = listOf(
+        navArgument(placeIdArg) { type = NavType.StringType }
+    )
 }
 
 object AirQuality : WeatherDestination {
     override val route = "air_quality"
+
+    const val placeIdArg = "place_id"
+
+    val routeWithArgs = "${route}/{$placeIdArg}"
+    val arguments = listOf(
+        navArgument(placeIdArg) { type = NavType.StringType }
+    )
 }
 
 object Places : WeatherDestination {

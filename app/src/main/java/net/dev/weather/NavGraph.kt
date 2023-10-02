@@ -30,10 +30,16 @@ fun NavGraph(
             CurrentWeatherScreen(navController = navController)
         }
 
-        composable(WeatherForecast.route) {
+        composable(
+            route = WeatherForecast.routeWithArgs,
+            arguments = WeatherForecast.arguments
+        ) {
             WeatherForecastScreen(navController = navController)
         }
-        composable(AirQuality.route) {
+        composable(
+            route = AirQuality.routeWithArgs,
+            arguments = AirQuality.arguments
+        ) {
             AirQualityScreen(navController = navController)
         }
         composable(Places.route) {
@@ -57,4 +63,12 @@ fun NavHostController.navigateSingleTopTo(route: String) = this.navigate(route) 
 
 private fun NavHostController.navigateToCurrentWeather(placeId: String) {
     this.navigateSingleTopTo("${CurrentWeather.route}/$placeId")
+}
+
+private fun NavHostController.navigateToWeatherForecast(placeId: String) {
+    this.navigateSingleTopTo("${WeatherForecast.route}/$placeId")
+}
+
+private fun NavHostController.navigateToAirQuality(placeId: String) {
+    this.navigateSingleTopTo("${AirQuality.route}/$placeId")
 }

@@ -42,7 +42,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import net.dev.weather.R
-import net.dev.weather.bottomNavigationBar
+import net.dev.weather.ui.bottomNavigationBar
 import net.dev.weather.components.WeatherIcon
 import net.dev.weather.data.model.WeatherCurrent
 import net.dev.weather.data.model.WeatherHourly

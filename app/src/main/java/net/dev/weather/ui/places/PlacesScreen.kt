@@ -38,7 +38,7 @@ import kotlinx.coroutines.launch
 import net.dev.weather.MainActivityUiState
 import net.dev.weather.R
 import net.dev.weather.Search
-import net.dev.weather.bottomNavigationBar
+import net.dev.weather.ui.bottomNavigationBar
 import net.dev.weather.components.SwipeDismissItem
 import net.dev.weather.components.WeatherTopAppBarWithAction
 import net.dev.weather.data.model.Place
@@ -87,13 +87,6 @@ fun PlacesScreen(
                 uiState.currentPlaceId,
                 onItemClick = {
                     onPlaceClick(it.id)
-
-                    /* scope.launch {
-                         viewModel.setCurrentPlace(it)
-                           withContext(Dispatchers.Main) {
-                               navController.navigate(CurrentWeather.route)
-                           }
-                     }*/
                 },
                 onItemRemoved = {
                     scope.launch {
