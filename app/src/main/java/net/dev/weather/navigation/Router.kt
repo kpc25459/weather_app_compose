@@ -1,7 +1,9 @@
-package net.dev.weather
+package net.dev.weather.navigation
 
+/*
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import net.dev.weather.R
 
 sealed class Screen(
     val route: String,
@@ -16,4 +18,4 @@ sealed class Screen(
     object Places : Screen("places", R.string.places_screen_title, R.drawable.outline_map_24)
 
     object Search : Screen("search", R.string.search_screen_title, R.drawable.outline_map_24)
-}
+}*/

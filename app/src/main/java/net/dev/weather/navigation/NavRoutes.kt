@@ -1,4 +1,4 @@
-package net.dev.weather
+package net.dev.weather.navigation
 
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
@@ -28,7 +28,7 @@ object WeatherForecast : WeatherDestination {
     override val route = "weather_forecast"
     const val placeIdArg = "place_id"
 
-    val routeWithArgs = "${route}/{$placeIdArg}"
+    val routeWithArgs = "$route/{$placeIdArg}"
     val arguments = listOf(
         navArgument(placeIdArg) { type = NavType.StringType }
     )
@@ -39,7 +39,7 @@ object AirQuality : WeatherDestination {
 
     const val placeIdArg = "place_id"
 
-    val routeWithArgs = "${route}/{$placeIdArg}"
+    val routeWithArgs = "$route/{$placeIdArg}"
     val arguments = listOf(
         navArgument(placeIdArg) { type = NavType.StringType }
     )

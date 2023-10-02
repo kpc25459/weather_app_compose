@@ -44,10 +44,10 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.dev.weather.CurrentWeather
-import net.dev.weather.Places
+import net.dev.weather.navigation.CurrentWeather
+import net.dev.weather.navigation.Places
 import net.dev.weather.R
-import net.dev.weather.ui.bottomNavigationBar
+import net.dev.weather.ui.WeatherBottomBar
 import net.dev.weather.data.model.Suggestion
 
 @Composable
@@ -72,7 +72,7 @@ fun SearchScreen(
                 },
             )
         },
-        bottomBar = bottomNavigationBar(navController = navController), modifier = modifier.fillMaxSize()
+        bottomBar = WeatherBottomBar(navController = navController), modifier = modifier.fillMaxSize()
     ) { paddingValues ->
 
         uiState.suggestions?.let { suggestions ->

@@ -1,4 +1,4 @@
-package net.dev.weather
+package net.dev.weather.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,14 +14,18 @@ import net.dev.weather.ui.search.SearchScreen
 import net.dev.weather.ui.weatherForecast.WeatherForecastScreen
 
 @Composable
-fun NavGraph(
+fun WeatherNavHost(
     modifier: Modifier = Modifier,
     //startDestination: String = CurrentWeather.route,
     startDestination: String = Places.route,
     navController: NavHostController = rememberNavController()
 ) {
 
-    NavHost(navController = navController, startDestination = startDestination, modifier = modifier) {
+    NavHost(
+        navController = navController,
+        startDestination = startDestination,
+        modifier = modifier
+    ) {
         composable(
             route = CurrentWeather.routeWithArgs,
             arguments = CurrentWeather.arguments,

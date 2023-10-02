@@ -14,7 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import net.dev.weather.R
-import net.dev.weather.ui.bottomNavigationBar
+import net.dev.weather.ui.WeatherBottomBar
 import net.dev.weather.components.WeatherTopAppBar
 import net.dev.weather.data.model.WeatherForecast
 
@@ -28,7 +28,7 @@ fun WeatherForecastScreen(
 
     Scaffold(
         topBar = { WeatherTopAppBar(titleRes = R.string.weather_forecast_screen_title) },
-        bottomBar = bottomNavigationBar(navController = navController),
+        bottomBar = WeatherBottomBar(navController = navController),
         modifier = modifier.fillMaxSize()
     ) { paddingValues ->
 

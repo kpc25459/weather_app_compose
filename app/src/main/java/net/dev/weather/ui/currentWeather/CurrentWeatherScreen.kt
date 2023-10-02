@@ -42,7 +42,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import net.dev.weather.R
-import net.dev.weather.ui.bottomNavigationBar
+import net.dev.weather.ui.WeatherBottomBar
 import net.dev.weather.components.WeatherIcon
 import net.dev.weather.data.model.WeatherCurrent
 import net.dev.weather.data.model.WeatherHourly
@@ -62,7 +62,7 @@ fun CurrentWeatherScreen(
 
     Scaffold(
         //TODO: tutaj tak naprawdę nie powinno być navController, tylko zdarzenia w górę
-        bottomBar = bottomNavigationBar(navController = navController),
+        bottomBar = WeatherBottomBar(navController = navController),
         modifier = modifier.fillMaxSize()
     )
     { paddingValues ->
