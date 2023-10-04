@@ -33,6 +33,7 @@ import net.dev.weather.data.model.DarkThemeConfig
 import net.dev.weather.data.model.LatandLong
 import net.dev.weather.data.model.PlaceMode
 import net.dev.weather.theme.WeatherTheme
+import net.dev.weather.ui.WeatherApp
 import net.dev.weather.ui.places.permissions
 
 @AndroidEntryPoint

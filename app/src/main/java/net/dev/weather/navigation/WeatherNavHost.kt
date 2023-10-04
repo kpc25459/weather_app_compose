@@ -6,7 +6,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import net.dev.weather.ui.WeatherAppState
 import net.dev.weather.ui.airQuality.AirQualityScreen
 import net.dev.weather.ui.currentWeather.CurrentWeatherScreen
 import net.dev.weather.ui.places.PlacesScreen
@@ -15,12 +15,11 @@ import net.dev.weather.ui.weatherForecast.WeatherForecastScreen
 
 @Composable
 fun WeatherNavHost(
+    appState: WeatherAppState,
     modifier: Modifier = Modifier,
-    //startDestination: String = CurrentWeather.route,
     startDestination: String = Places.route,
-    navController: NavHostController = rememberNavController()
 ) {
-
+    val navController = appState.navController
     NavHost(
         navController = navController,
         startDestination = startDestination,
@@ -31,25 +30,25 @@ fun WeatherNavHost(
             arguments = CurrentWeather.arguments,
             deepLinks = CurrentWeather.deepLinks
         ) {
-            CurrentWeatherScreen(navController = navController)
+            CurrentWeatherScreen()
         }
 
         composable(
             route = WeatherForecast.routeWithArgs,
             arguments = WeatherForecast.arguments
         ) {
-            WeatherForecastScreen(navController = navController)
+            WeatherForecastScreen()
         }
         composable(
             route = AirQuality.routeWithArgs,
             arguments = AirQuality.arguments
         ) {
-            AirQualityScreen(navController = navController)
+            AirQualityScreen()
         }
         composable(Places.route) {
             PlacesScreen(
-                navController = navController,
-                onPlaceClick = { placeId -> navController.navigateToCurrentWeather(placeId) })
+                //onPlaceClick = { placeId -> navController.navigateToCurrentWeather(placeId) })
+                onPlaceClick = { placeId -> navController.navigateToWeatherForecast(placeId) })
         }
         composable(Search.route) {
             SearchScreen(navController = navController)

@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -44,11 +43,10 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import net.dev.weather.R
+import net.dev.weather.data.model.Suggestion
 import net.dev.weather.navigation.CurrentWeather
 import net.dev.weather.navigation.Places
-import net.dev.weather.R
-import net.dev.weather.ui.WeatherBottomBar
-import net.dev.weather.data.model.Suggestion
 
 @Composable
 fun SearchScreen(
@@ -72,7 +70,7 @@ fun SearchScreen(
                 },
             )
         },
-        bottomBar = WeatherBottomBar(navController = navController), modifier = modifier.fillMaxSize()
+        //bottomBar = WeatherBottomBar(navController = navController), modifier = modifier.fillMaxSize()
     ) { paddingValues ->
 
         uiState.suggestions?.let { suggestions ->

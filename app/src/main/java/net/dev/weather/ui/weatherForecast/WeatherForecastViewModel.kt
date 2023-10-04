@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import net.dev.weather.navigation.CurrentWeather
 import net.dev.weather.R
 import net.dev.weather.data.model.LatandLong
 import net.dev.weather.data.model.Place
@@ -24,6 +23,7 @@ import net.dev.weather.data.repository.WeatherRepository
 import net.dev.weather.network.api.WeatherServiceApi
 import net.dev.weather.utils.Async
 import javax.inject.Inject
+import net.dev.weather.navigation.WeatherForecast as WeatherForecastNavigation
 
 data class WeatherForecastUiState(
     val weatherForecast: WeatherForecast? = null,
@@ -39,14 +39,14 @@ class WeatherForecastViewModel @Inject constructor(
     weatherServiceApi: WeatherServiceApi
 ) : ViewModel() {
 
-    private val _placeId = savedStateHandle.getStateFlow(CurrentWeather.placeIdArg, "")
+    private val _placeId = savedStateHandle.getStateFlow(WeatherForecastNavigation.placeIdArg, "")
 
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
 
     //TODO: to będzie na warstwie domain (use case) - będzie używane z innych widoków
     private val _placeFlow: Flow<Async<Place>> = _placeId.map {
-        Log.i("CurrentWeatherViewModel", "placeId: $it")
+        Log.i("WeatherForecastViewModel", "placeId: $it")
 
         val latAndLong: LatandLong = locationRepository.getLocationFromGoogle(it)
 
@@ -84,11 +84,11 @@ class WeatherForecastViewModel @Inject constructor(
 
     val uiState: StateFlow<WeatherForecastUiState> = combine(
         _weatherForecastFlow, _userMessage
-    ) { WeatherForecast, userMessage ->
-        when (WeatherForecast) {
+    ) { weatherForecast, userMessage ->
+        when (weatherForecast) {
             is Async.Loading -> WeatherForecastUiState(isLoading = true)
-            is Async.Error -> WeatherForecastUiState(userMessage = WeatherForecast.message)
-            is Async.Success -> WeatherForecastUiState(weatherForecast = WeatherForecast.data, userMessage = userMessage)
+            is Async.Error -> WeatherForecastUiState(userMessage = weatherForecast.message)
+            is Async.Success -> WeatherForecastUiState(weatherForecast = weatherForecast.data, userMessage = userMessage)
         }
     }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), WeatherForecastUiState(isLoading = true))

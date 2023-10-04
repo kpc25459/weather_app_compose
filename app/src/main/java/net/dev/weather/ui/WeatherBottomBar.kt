@@ -10,31 +10,30 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import net.dev.weather.navigation.TopLevelDestination
 
 @Composable
-fun weatherBottomBar(
+fun WeatherBottomBar(
     destinations: List<TopLevelDestination>,
     onNavigateTopLevelDestination: (TopLevelDestination) -> Unit,
     currentDestination: NavDestination?,
     modifier: Modifier = Modifier
-): @Composable () -> Unit {
-    return {
-        NavigationBar {
+) {
+    NavigationBar {
 
-            destinations.forEach { destination ->
+        destinations.forEach { destination ->
 
-                val selected = currentDestination?.isTopLevelDestination(destination)
+            val selected = currentDestination?.isTopLevelDestination(destination)
 
-                //TODO: custom navigationbaritem
-                NavigationBarItem(
-                    icon = {
-                        Icon(imageVector = destination.selectedIcon, contentDescription = null)
-                    },
-                    selected = selected ?: false,
-                    onClick = { onNavigateTopLevelDestination(destination) },
-                    modifier = modifier
-                )
-            }
+            //TODO: custom navigationbaritem
+            NavigationBarItem(
+                icon = {
+                    Icon(imageVector = destination.selectedIcon, contentDescription = null)
+                },
+                selected = selected ?: false,
+                onClick = { onNavigateTopLevelDestination(destination) },
+                modifier = modifier
+            )
         }
     }
+
 }
 
 private fun NavDestination?.isTopLevelDestination(destination: TopLevelDestination): Boolean =

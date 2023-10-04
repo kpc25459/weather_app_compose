@@ -22,7 +22,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,12 +36,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import net.dev.weather.R
-import net.dev.weather.ui.WeatherBottomBar
 import net.dev.weather.components.WeatherIcon
 import net.dev.weather.data.model.WeatherCurrent
 import net.dev.weather.data.model.WeatherHourly
@@ -55,24 +52,14 @@ import kotlin.math.roundToInt
 
 @Composable
 fun CurrentWeatherScreen(
-    navController: NavController,
     modifier: Modifier = Modifier,
     viewModel: CurrentWeatherViewModel = hiltViewModel(),
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Scaffold(
-        //TODO: tutaj tak naprawdę nie powinno być navController, tylko zdarzenia w górę
-        bottomBar = WeatherBottomBar(navController = navController),
-        modifier = modifier.fillMaxSize()
-    )
-    { paddingValues ->
-
-        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-        //TODO: tutaj obsłużyć loading
-        uiState.placeWithCurrentWeather?.let { weather ->
-            Content(weather, Modifier.padding(paddingValues))
-        }
+    //TODO: tutaj obsłużyć loading
+    uiState.placeWithCurrentWeather?.let { weather ->
+        Content(weather)
     }
 }
 
@@ -127,7 +114,11 @@ fun CardBox(location: String, data: WeatherCurrent, airQuality: Int) {
                 Spacer(modifier = Modifier.height(20.dp))
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(painter = painterResource(R.drawable.outline_location_on_24), contentDescription = stringResource(R.string.place), colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary))
+                        Image(
+                            painter = painterResource(R.drawable.outline_location_on_24),
+                            contentDescription = stringResource(R.string.place),
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
+                        )
                         Text(text = location, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onPrimary)
                     }
                     Text(text = stringResource(R.string.temperatureC, data.temp), style = MaterialTheme.typography.displayLarge, color = MaterialTheme.colorScheme.onPrimary)
