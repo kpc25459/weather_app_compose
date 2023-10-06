@@ -17,7 +17,7 @@ import net.dev.weather.ui.weatherForecast.WeatherForecastScreen
 fun WeatherNavHost(
     appState: WeatherAppState,
     modifier: Modifier = Modifier,
-    startDestination: String = Places.route,
+    startDestination: String = CurrentWeather.route,
 ) {
     val navController = appState.navController
     NavHost(
@@ -26,29 +26,26 @@ fun WeatherNavHost(
         modifier = modifier
     ) {
         composable(
-            route = CurrentWeather.routeWithArgs,
-            arguments = CurrentWeather.arguments,
+            route = CurrentWeather.route,
             deepLinks = CurrentWeather.deepLinks
         ) {
             CurrentWeatherScreen()
         }
 
         composable(
-            route = WeatherForecast.routeWithArgs,
-            arguments = WeatherForecast.arguments
+            route = WeatherForecast.route,
         ) {
             WeatherForecastScreen()
         }
         composable(
-            route = AirQuality.routeWithArgs,
-            arguments = AirQuality.arguments
+            route = AirQuality.route,
         ) {
             AirQualityScreen()
         }
         composable(Places.route) {
-            PlacesScreen(
-                //onPlaceClick = { placeId -> navController.navigateToCurrentWeather(placeId) })
-                onPlaceClick = { placeId -> navController.navigateToWeatherForecast(placeId) })
+            PlacesScreen(onPlaceClick = { _ ->
+                navController.navigateToCurrentWeather()
+            })
         }
         composable(Search.route) {
             SearchScreen(navController = navController)
@@ -64,14 +61,14 @@ fun NavHostController.navigateSingleTopTo(route: String) = this.navigate(route) 
     restoreState = true
 }
 
-private fun NavHostController.navigateToCurrentWeather(placeId: String) {
-    this.navigateSingleTopTo("${CurrentWeather.route}/$placeId")
+private fun NavHostController.navigateToCurrentWeather() {
+    this.navigateSingleTopTo(CurrentWeather.route)
 }
 
-private fun NavHostController.navigateToWeatherForecast(placeId: String) {
-    this.navigateSingleTopTo("${WeatherForecast.route}/$placeId")
+private fun NavHostController.navigateToWeatherForecast() {
+    this.navigateSingleTopTo(WeatherForecast.route)
 }
 
-private fun NavHostController.navigateToAirQuality(placeId: String) {
-    this.navigateSingleTopTo("${AirQuality.route}/$placeId")
+private fun NavHostController.navigateToAirQuality() {
+    this.navigateSingleTopTo(AirQuality.route)
 }

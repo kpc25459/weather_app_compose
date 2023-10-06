@@ -2,7 +2,6 @@ package net.dev.weather.ui.airQuality
 
 import android.util.Log
 import androidx.annotation.StringRes
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.stateIn
 import net.dev.weather.R
 import net.dev.weather.data.repository.PlaceRepository
 import net.dev.weather.data.repository.WeatherRepository
-import net.dev.weather.navigation.CurrentWeather
 import net.dev.weather.ui.model.PlaceWithAirPollutionForecast
 import net.dev.weather.utils.Async
 import javax.inject.Inject
@@ -30,12 +28,9 @@ data class AirQualityUiState(
 
 @HiltViewModel
 class AirQualityViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
     weatherRepository: WeatherRepository,
     placeRepository: PlaceRepository
 ) : ViewModel() {
-
-    private val _placeId = savedStateHandle.getStateFlow(CurrentWeather.placeIdArg, "")
 
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
