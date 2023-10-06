@@ -30,7 +30,6 @@ object Places : WeatherDestination {
     override val route = "places"
 }
 
-//TODO: to nie powinno być jako top-level destination
 object Search : WeatherDestination {
     override val route = "search"
 }

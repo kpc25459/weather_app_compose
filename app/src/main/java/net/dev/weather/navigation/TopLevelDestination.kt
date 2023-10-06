@@ -5,12 +5,10 @@ import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LocationOn
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.LocationOn
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.ui.graphics.vector.ImageVector
 import net.dev.weather.R
 
@@ -47,12 +45,5 @@ enum class TopLevelDestination(
         unselectedIcon = Icons.Outlined.LocationOn,
         iconTextId = R.string.places_screen_title,
         titleTextId = R.string.places_screen_title
-    ),
-
-    SEARCH(
-        selectedIcon = Icons.Rounded.Search,
-        unselectedIcon = Icons.Outlined.Search,
-        iconTextId = R.string.search_screen_title,
-        titleTextId = R.string.search_screen_title
     )
 }

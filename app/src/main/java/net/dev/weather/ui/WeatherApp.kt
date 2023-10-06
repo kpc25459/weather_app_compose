@@ -10,7 +10,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import net.dev.weather.components.WeatherTopAppBar
-import net.dev.weather.navigation.TopLevelDestination
 import net.dev.weather.navigation.WeatherNavHost
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -21,10 +20,6 @@ fun WeatherApp(
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
 
         Scaffold(
-            topBar = {
-                WeatherTopAppBar(
-                    currentDestination = appState.currentTopLevelDestination ?: TopLevelDestination.CURRENT_WEATHER)
-            },
             bottomBar = {
                 WeatherBottomBar(
                     destinations = appState.topLevelDestinations,
@@ -38,10 +33,18 @@ fun WeatherApp(
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
+
+                val destination = appState.currentTopLevelDestination
+                if (destination != null) {
+                    WeatherTopAppBar(
+                        currentDestination = destination,
+                        onSearchClick = {
+                            appState.navigateToSearch()
+                        })
+                }
+
                 WeatherNavHost(appState = appState)
             }
-
         }
-
     }
 }

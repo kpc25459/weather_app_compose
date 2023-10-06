@@ -4,7 +4,15 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import net.dev.weather.R
 import net.dev.weather.data.model.Place
 import net.dev.weather.data.model.PlaceMode
@@ -33,6 +41,8 @@ class SearchViewModel @Inject constructor(
     private val _favorites = settingsRepository.userData.map { it.favorites }
 
     private val _matchedCities: Flow<Async<List<Suggestion>>> = combine(_searchText) { searchText ->
+        if (searchText.isEmpty()) return@combine emptyList()
+
         locationRepository.getSuggestions(searchText.last()).last()
     }.combine(_favorites) { suggestions, favorites ->
         suggestions.map { suggestion ->

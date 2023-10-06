@@ -48,7 +48,14 @@ fun WeatherNavHost(
             })
         }
         composable(Search.route) {
-            SearchScreen(navController = navController)
+            SearchScreen(
+                onPlaceClick = { _ ->
+                    navController.navigateToCurrentWeather()
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

@@ -15,23 +15,24 @@ import net.dev.weather.R
 import net.dev.weather.data.model.Place
 import net.dev.weather.data.model.PlaceMode
 import net.dev.weather.data.model.deviceCurrentLocationPlace
+import net.dev.weather.data.repository.LocationRepository
 import net.dev.weather.data.repository.SettingsRepository
 import net.dev.weather.utils.Async
 import javax.inject.Inject
 
 data class PlacesUiState(
     val favorites: List<Place>? = null,
+
     val currentPlaceId: String? = null,
     val isLoading: Boolean = false,
     @StringRes val userMessage: Int? = null
 )
 
 @HiltViewModel
-class PlacesViewModel @Inject constructor(private val settingsRepository: SettingsRepository) : ViewModel() {
+class PlacesViewModel @Inject constructor(private val settingsRepository: SettingsRepository, private val locationRepository: LocationRepository) : ViewModel() {
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
     private val _userData = settingsRepository.userData
-
     private val _favorites = settingsRepository.userData.map { Async.Success(it.favorites) }
         .catch<Async<List<Place>>> { emit(Async.Error(R.string.loading_error, it)) }
 
@@ -49,7 +50,6 @@ class PlacesViewModel @Inject constructor(private val settingsRepository: Settin
         }
     }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PlacesUiState(isLoading = true))
-
 
     suspend fun removeFromFavorites(place: Place) {
         settingsRepository.toggleFavorite(place, false)

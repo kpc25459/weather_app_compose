@@ -2,18 +2,15 @@ package net.dev.weather.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import kotlinx.coroutines.CoroutineScope
 import net.dev.weather.navigation.AirQuality
 import net.dev.weather.navigation.CurrentWeather
 import net.dev.weather.navigation.Places
-import net.dev.weather.navigation.Search
 import net.dev.weather.navigation.TopLevelDestination
 import net.dev.weather.navigation.WeatherForecast
 import net.dev.weather.navigation.navigateToAirQuality
@@ -24,23 +21,15 @@ import net.dev.weather.navigation.navigateToWeatherForecast
 
 @Composable
 fun rememberWeatherAppState(
-    coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
 ): WeatherAppState {
-    return remember(
-        navController,
-        coroutineScope,
-    ) {
-        WeatherAppState(
-            navController,
-            coroutineScope,
-        )
+    return remember(navController) {
+        WeatherAppState(navController)
     }
 }
 
 class WeatherAppState(
     val navController: NavHostController,
-    val coroutineScope: CoroutineScope,
 ) {
 
     val currentDestination: NavDestination?
@@ -52,7 +41,6 @@ class WeatherAppState(
             WeatherForecast.route -> TopLevelDestination.WEATHER_FORECAST
             AirQuality.route -> TopLevelDestination.AIR_QUALITY
             Places.route -> TopLevelDestination.PLACES
-            Search.route -> TopLevelDestination.SEARCH
             else -> null
         }
 
@@ -77,7 +65,10 @@ class WeatherAppState(
             TopLevelDestination.WEATHER_FORECAST -> navController.navigateToWeatherForecast(navOptions = topLevelNavOptions)
             TopLevelDestination.AIR_QUALITY -> navController.navigateToAirQuality(navOptions = topLevelNavOptions)
             TopLevelDestination.PLACES -> navController.navigateToPlaces(navOptions = topLevelNavOptions)
-            TopLevelDestination.SEARCH -> navController.navigateToSearch(navOptions = topLevelNavOptions)
         }
+    }
+
+    fun navigateToSearch(){
+        navController.navigateToSearch()
     }
 }

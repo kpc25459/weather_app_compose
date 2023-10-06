@@ -31,9 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import net.dev.weather.MainActivityUiState
 import net.dev.weather.R
 import net.dev.weather.components.SwipeDismissItem
@@ -47,9 +45,10 @@ val permissions = listOf(
     Manifest.permission.ACCESS_FINE_LOCATION,
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
+//TODO: currentPlaceId się nie zaznacza
 @Composable
 fun PlacesScreen(
+    modifier: Modifier = Modifier,
     viewModel: PlacesViewModel = hiltViewModel(),
     onPlaceClick: (placeId: String) -> Unit
 ) {
@@ -62,13 +61,7 @@ fun PlacesScreen(
             places,
             uiState.currentPlaceId,
             onItemClick = {
-                scope.launch {
-                    viewModel.setCurrentPlace(it)
-
-                    withContext(Dispatchers.Main) {
-                        onPlaceClick(it.id)
-                    }
-                }
+                onPlaceClick(it.id)
             },
             onItemRemoved = {
                 scope.launch {
@@ -77,28 +70,6 @@ fun PlacesScreen(
             }
         )
     }
-
-    /*
-        Scaffold(
-            topBar = {
-                WeatherTopAppBarWithAction(
-                    titleRes = R.string.places_screen_title,
-                    actionIcon = Icons.Default.Search, // lub: R.drawable.outline_search_24
-                    actionIconContentDescription = stringResource(id = R.string.search),
-                    onActionClick = {
-                        navController.navigate(Search.route)
-                    },
-                )
-            },
-            bottomBar = WeatherBottomBar(
-                navController = navController
-            ),
-
-            modifier = modifier.fillMaxSize()
-        ) { paddingValues ->
-
-
-        }*/
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
