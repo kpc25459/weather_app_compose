@@ -121,7 +121,7 @@ fun CardBox(location: String, data: WeatherCurrent, airQuality: Int) {
                         )
                         Text(text = location, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onPrimary)
                     }
-                    Text(text = stringResource(R.string.temperatureC, data.temp), style = MaterialTheme.typography.displayLarge, color = MaterialTheme.colorScheme.onPrimary)
+                    Text(text = stringResource(R.string.temperatureC, data.temp.roundToInt()), style = MaterialTheme.typography.displayLarge, color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(text = stringResource(R.string.air_quality), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSecondary)
