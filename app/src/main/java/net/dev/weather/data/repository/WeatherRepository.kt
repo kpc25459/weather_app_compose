@@ -5,7 +5,9 @@ import net.dev.weather.data.model.AirPollutionForecast
 import net.dev.weather.data.model.Weather
 
 interface WeatherRepository {
-    val weather: Flow<Weather>
+    //val weather: Flow<WeatherDays>
+
+    suspend fun weatherFor(latitude: Double, longitude: Double): Weather
 
     val airPollutionForecast: Flow<List<AirPollutionForecast>>
 

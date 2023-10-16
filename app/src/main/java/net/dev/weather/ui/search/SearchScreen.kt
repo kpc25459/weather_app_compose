@@ -1,58 +1,52 @@
 package net.dev.weather.ui.search
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.dev.weather.NavRoutes
 import net.dev.weather.R
-import net.dev.weather.bottomNavigationBar
 import net.dev.weather.data.model.Suggestion
 
 @Composable
 fun SearchScreen(
-    navController: NavController,
     modifier: Modifier = Modifier,
+    onBackClick: () -> Unit = {},
+    onSuggestionClick: (placeId: String) -> Unit = {},
     viewModel: SearchViewModel = hiltViewModel()
 ) {
 
@@ -60,130 +54,102 @@ fun SearchScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
-    Scaffold(
-        topBar = {
-            SearchBar(
-                searchText = uiState.query ?: "",
-                onSearchTextChanged = { viewModel.onSearchTextChanged(it) },
-                onClearClick = { viewModel.onClearClick() },
-                onNavigateBack = {
-                    navController.navigate(NavRoutes.Places.route)
-                },
-            )
-        },
-        bottomBar = bottomNavigationBar(navController = navController), modifier = modifier.fillMaxSize()
-    ) { paddingValues ->
+    if (uiState.isLoading) {
+        /* Text(text = "Loading")*/
+    } else {
+        WeatherSearchBar(
+            suggestions = uiState.suggestions ?: emptyList(),
+            query = uiState.query ?: "",
+            onQueryChange = { viewModel.onSearchTextChanged(it) },
+            onSuggestionClick = { suggestion ->
+                coroutineScope.launch {
+                    viewModel.setCurrentPlace(suggestion)
 
-        uiState.suggestions?.let { suggestions ->
-            Content(
-                suggestions = suggestions,
-                onItemClick = { suggestion ->
-                    coroutineScope.launch {
-                        viewModel.setCurrentPlace(suggestion)
-
-                        withContext(Dispatchers.Main) {
-                            navController.navigate(NavRoutes.CurrentWeather.route)
-                        }
+                    withContext(Dispatchers.Main) {
+                        onSuggestionClick(suggestion.id)
                     }
-                },
-                onFavoriteClick = { suggestion -> coroutineScope.launch { viewModel.toggleFavorite(suggestion) } },
-                modifier = Modifier.padding(paddingValues)
-            )
-        }
+                }
+            },
+            onFavoriteClick = { suggestion ->
+                coroutineScope.launch {
+                    coroutineScope.launch { viewModel.toggleFavorite(suggestion) }
+                }
+            },
+            onBackClick = onBackClick
+        )
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar(
-    searchText: String,
-    placeholderText: String = stringResource(id = R.string.search),
-    onSearchTextChanged: (String) -> Unit = {},
-    onClearClick: () -> Unit = {},
-    onNavigateBack: () -> Unit = {}
+fun WeatherSearchBar(
+    suggestions: List<Suggestion>,
+    query: String,
+    onQueryChange: (String) -> Unit = {},
+    onFavoriteClick: (Suggestion) -> Unit = {},
+    onSuggestionClick: (Suggestion) -> Unit = {},
+    onBackClick: () -> Unit
 ) {
+    var active by rememberSaveable { mutableStateOf(false) }
 
-    var showClearButton by remember { mutableStateOf(false) }
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val focusRequester = remember { FocusRequester() }
-
-    TopAppBar(
-        title = { Text(text = "") },
-        navigationIcon = {
-            IconButton(onClick = onNavigateBack) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack, contentDescription = "back"
-                )
-            }
-        },
-        actions = {
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .padding(vertical = 2.dp, horizontal = 10.dp)
-                    .onFocusChanged { focusState ->
-                        showClearButton = (focusState.isFocused)
-                    }
-                    .focusRequester(focusRequester),
-                value = searchText,
-                onValueChange = onSearchTextChanged,
-                placeholder = {
-                    Text(text = placeholderText)
-                },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Transparent,
-                ),
-                trailingIcon = {
-                    AnimatedVisibility(
-                        visible = showClearButton,
-                        enter = fadeIn(),
-                        exit = fadeOut()
-                    ) {
-                        IconButton(onClick = { onClearClick() }) {
-                            Icon(
-                                imageVector = Icons.Filled.Close, contentDescription = "clear content"
-                            )
-                        }
-                    }
-                },
-                maxLines = 1,
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = {
-                    keyboardController?.hide()
+    Box(
+        Modifier
+            .fillMaxSize()
+            .semantics { isTraversalGroup = true }) {
+        SearchBar(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .semantics { traversalIndex = -1f },
+            query = query,
+            onQueryChange = { onQueryChange(it) },
+            onSearch = { active = false },
+            active = active,
+            onActiveChange = {
+                active = it
+            },
+            placeholder = { Text("Wyszukaj miejsca") },
+            leadingIcon = {
+                Icon(Icons.Default.ArrowBack, contentDescription = null, modifier = Modifier.clickable {
+                    onQueryChange("")
+                    active = false
+                    onBackClick()
                 })
-            )
-        },
-        modifier = Modifier.background(Color.Transparent)
-    )
+            },
+            trailingIcon = {
+                Icon(Icons.Default.Clear, contentDescription = null, modifier = Modifier.clickable {
+                    onQueryChange("")
+                })
+            },
 
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
-    }
-}
 
-@Composable
-private fun Content(suggestions: List<Suggestion>, onItemClick: (Suggestion) -> Unit, onFavoriteClick: (Suggestion) -> Unit, modifier: Modifier = Modifier) {
-    LazyColumn(modifier = modifier) {
-        items(suggestions.size) { index ->
-            ListItem(
-                headlineContent = { Text(text = suggestions[index].name) },
-                supportingContent = { suggestions[index].description?.let { Text(text = it) } },
-                trailingContent = {
-                    IconButton(onClick = { onFavoriteClick(suggestions[index]) }) {
-                        Image(
-                            painter = painterResource(if (suggestions[index].isFavorite) R.drawable.outline_check_24 else R.drawable.round_add_24),
-                            contentDescription = stringResource(R.string.place),
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
-                        )
-                    }
-                },
-                modifier = Modifier.clickable { onItemClick(suggestions[index]) }
-            )
+            ) {
+            LazyColumn(
+                contentPadding = PaddingValues(all = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(count = suggestions.size) { index ->
+                    ListItem(
+                        headlineContent = { Text(text = suggestions[index].name) },
+                        supportingContent = { suggestions[index].description?.let { Text(text = it) } },
+                        trailingContent = {
+                            IconButton(onClick = { onFavoriteClick(suggestions[index]) }) {
+                                Image(
+                                    painter = painterResource(if (suggestions[index].isFavorite) R.drawable.outline_check_24 else R.drawable.round_add_24),
+                                    contentDescription = stringResource(R.string.place),
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                                )
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onSuggestionClick(suggestions[index]) }
+                    )
+                }
+            }
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

@@ -1,6 +1,5 @@
 package net.dev.weather.ui.currentWeather
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,37 +26,29 @@ data class CurrentWeatherUiState(
 )
 
 @HiltViewModel
-class CurrentWeatherViewModel @Inject constructor(placeRepository: PlaceRepository, weatherRepository: WeatherRepository) : ViewModel() {
+class CurrentWeatherViewModel @Inject constructor(
+    placeRepository: PlaceRepository,
+    weatherRepository: WeatherRepository
+) :
+    ViewModel() {
+
+    private val _weatherFlow: Flow<Async<PlaceWithCurrentWeather>> = placeRepository.currentPlace.map {
+        PlaceWithCurrentWeather(it.name, weatherRepository.weatherFor(it.latitude, it.longitude))
+    }
+        .map { Async.Success(it) }
+        .catch<Async<PlaceWithCurrentWeather>> { emit(Async.Error(R.string.loading_error, it)) }
 
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
-    private val _currentWeather: Flow<Async<PlaceWithCurrentWeather>> =
-        combine(
-            placeRepository.currentPlace,
-            weatherRepository.weather,
-            weatherRepository.airPollutionCurrent
-        ) { currentPlace, weather, airPollutionCurrent ->
-
-            Log.i("CurrentWeatherViewModel", "currentPlace: $currentPlace")
-
-            return@combine PlaceWithCurrentWeather(
-                place = currentPlace.name,
-                weather = weather,
-                airPollutionCurrent = airPollutionCurrent
-            )
-        }
-            .map { Async.Success(it) }
-            .catch<Async<PlaceWithCurrentWeather>> { emit(Async.Error(R.string.loading_error, it)) }
-
     val uiState: StateFlow<CurrentWeatherUiState> = combine(
-        _currentWeather, _userMessage
-    ) { data, userMessage ->
-        when (data) {
+        _weatherFlow, _userMessage
+    ) { weatherFlow, userMessage ->
+
+        when (weatherFlow) {
             is Async.Loading -> CurrentWeatherUiState(isLoading = true)
-            is Async.Error -> CurrentWeatherUiState(userMessage = data.message)
-            is Async.Success -> CurrentWeatherUiState(placeWithCurrentWeather = data.data, userMessage = userMessage)
+            is Async.Error -> CurrentWeatherUiState(userMessage = weatherFlow.message)
+            is Async.Success -> CurrentWeatherUiState(placeWithCurrentWeather = weatherFlow.data, userMessage = userMessage)
         }
     }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), CurrentWeatherUiState(isLoading = true))
 }
-

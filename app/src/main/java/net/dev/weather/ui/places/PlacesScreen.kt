@@ -12,12 +12,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,16 +31,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.dev.weather.MainActivityUiState
-import net.dev.weather.NavRoutes
 import net.dev.weather.R
-import net.dev.weather.bottomNavigationBar
 import net.dev.weather.components.SwipeDismissItem
-import net.dev.weather.components.WeatherTopAppBarWithAction
 import net.dev.weather.data.model.Place
 import net.dev.weather.data.model.PlaceMode
 import net.dev.weather.data.model.deviceCurrentLocationPlace
@@ -53,54 +47,35 @@ val permissions = listOf(
     Manifest.permission.ACCESS_FINE_LOCATION,
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlacesScreen(
-    navController: NavController,
     modifier: Modifier = Modifier,
-    viewModel: PlacesViewModel = hiltViewModel()
+    viewModel: PlacesViewModel = hiltViewModel(),
+    onPlaceClick: (placeId: String) -> Unit
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
 
-    Scaffold(
-        topBar = {
-            WeatherTopAppBarWithAction(
-                titleRes = R.string.places_screen_title,
-                actionIcon = Icons.Default.Search, // lub: R.drawable.outline_search_24
-                actionIconContentDescription = stringResource(id = R.string.search),
-                onActionClick = {
-                    navController.navigate(NavRoutes.Search.route)
-                },
-            )
-        },
-        bottomBar = bottomNavigationBar(
-            navController = navController
-        ),
+    uiState.favorites?.let { places ->
+        Content(
+            places,
+            uiState.currentPlaceId,
+            onItemClick = {
+                scope.launch {
+                    viewModel.setCurrentPlace(it)
 
-        modifier = modifier.fillMaxSize()
-    ) { paddingValues ->
-
-        uiState.favorites?.let { places ->
-            Content(
-                places,
-                uiState.currentPlaceId,
-                onItemClick = {
-                    scope.launch {
-                        viewModel.setCurrentPlace(it)
-                          withContext(Dispatchers.Main) {
-                              navController.navigate(NavRoutes.CurrentWeather.route)
-                          }
+                    withContext(Dispatchers.Main) {
+                        onPlaceClick(it.id)
                     }
-                },
-                onItemRemoved = {
-                    scope.launch {
-                        viewModel.removeFromFavorites(it)
-                    }
-                }, modifier = Modifier.padding(paddingValues)
-            )
-        }
+                }
+            },
+            onItemRemoved = {
+                scope.launch {
+                    viewModel.removeFromFavorites(it)
+                }
+            }
+        )
     }
 }
 

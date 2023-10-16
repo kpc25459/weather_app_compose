@@ -27,7 +27,10 @@ data class AirQualityUiState(
 )
 
 @HiltViewModel
-class AirQualityViewModel @Inject constructor(weatherRepository: WeatherRepository, placeRepository: PlaceRepository) : ViewModel() {
+class AirQualityViewModel @Inject constructor(
+    weatherRepository: WeatherRepository,
+    placeRepository: PlaceRepository
+) : ViewModel() {
 
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
 
