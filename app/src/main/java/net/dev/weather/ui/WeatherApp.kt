@@ -9,6 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import net.dev.weather.components.WeatherBottomBar
 import net.dev.weather.components.WeatherTopAppBar
 import net.dev.weather.navigation.WeatherNavHost
 

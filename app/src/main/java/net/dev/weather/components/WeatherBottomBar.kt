@@ -1,4 +1,4 @@
-package net.dev.weather.ui
+package net.dev.weather.components
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
