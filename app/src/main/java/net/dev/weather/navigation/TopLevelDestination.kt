@@ -1,49 +1,30 @@
 package net.dev.weather.navigation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowForward
-import androidx.compose.material.icons.outlined.Done
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.LocationOn
-import androidx.compose.material.icons.rounded.ArrowForward
-import androidx.compose.material.icons.rounded.Done
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.LocationOn
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.annotation.DrawableRes
 import net.dev.weather.R
 
 enum class TopLevelDestination(
-    val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector,
-    val iconTextId: Int,
+    @DrawableRes val icon: Int,
     val titleTextId: Int
 ) {
 
     CURRENT_WEATHER(
-        selectedIcon = Icons.Rounded.Home,
-        unselectedIcon = Icons.Outlined.Home,
-        iconTextId = R.string.current_weather_screen_title,
+        icon = R.drawable.outline_home_24,
         titleTextId = R.string.current_weather_screen_title
     ),
 
     WEATHER_FORECAST(
-        selectedIcon = Icons.Rounded.ArrowForward,
-        unselectedIcon = Icons.Outlined.ArrowForward,
-        iconTextId = R.string.weather_forecast_screen_title,
+        icon = R.drawable.baseline_format_list_bulleted_24,
         titleTextId = R.string.weather_forecast_screen_title
     ),
 
     AIR_QUALITY(
-        selectedIcon = Icons.Rounded.Done,
-        unselectedIcon = Icons.Outlined.Done,
-        iconTextId = R.string.air_quality_screen_title,
+        icon = R.drawable.outline_air_24,
         titleTextId = R.string.air_quality_screen_title
     ),
 
     PLACES(
-        selectedIcon = Icons.Rounded.LocationOn,
-        unselectedIcon = Icons.Outlined.LocationOn,
-        iconTextId = R.string.places_screen_title,
+        icon = R.drawable.outline_map_24,
         titleTextId = R.string.places_screen_title
     )
 }
