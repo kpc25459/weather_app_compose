@@ -53,6 +53,10 @@ fun WeatherTopAppBar(
     colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
 ) {
     when (currentDestination) {
+        TopLevelDestination.CURRENT_WEATHER -> {
+
+        }
+
         TopLevelDestination.PLACES -> {
             WeatherTopAppBarWithAction(titleRes = R.string.places_screen_title, actionIcon = Icons.Default.Search, actionIconContentDescription = "search", onActionClick = onSearchClick)
         }
