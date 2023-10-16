@@ -31,7 +31,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.dev.weather.MainActivityUiState
 import net.dev.weather.R
 import net.dev.weather.components.SwipeDismissItem
@@ -45,7 +47,6 @@ val permissions = listOf(
     Manifest.permission.ACCESS_FINE_LOCATION,
 )
 
-//TODO: currentPlaceId się nie zaznacza
 @Composable
 fun PlacesScreen(
     modifier: Modifier = Modifier,
@@ -61,7 +62,13 @@ fun PlacesScreen(
             places,
             uiState.currentPlaceId,
             onItemClick = {
-                onPlaceClick(it.id)
+                scope.launch {
+                    viewModel.setCurrentPlace(it)
+
+                    withContext(Dispatchers.Main) {
+                        onPlaceClick(it.id)
+                    }
+                }
             },
             onItemRemoved = {
                 scope.launch {

@@ -47,7 +47,7 @@ import net.dev.weather.data.model.Suggestion
 fun SearchScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
-    onPlaceClick: (placeId: String) -> Unit = {},
+    onSuggestionClick: (placeId: String) -> Unit = {},
     viewModel: SearchViewModel = hiltViewModel()
 ) {
 
@@ -67,7 +67,7 @@ fun SearchScreen(
                     viewModel.setCurrentPlace(suggestion)
 
                     withContext(Dispatchers.Main) {
-                        onPlaceClick(suggestion.id)
+                        onSuggestionClick(suggestion.id)
                     }
                 }
             },
