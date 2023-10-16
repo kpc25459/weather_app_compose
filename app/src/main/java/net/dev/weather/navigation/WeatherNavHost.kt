@@ -50,6 +50,7 @@ fun WeatherNavHost(
         composable(Search.route) {
             SearchScreen(
                 onSuggestionClick = { _ ->
+                    navController.popBackStack()
                     navController.navigateToCurrentWeather()
                 },
                 onBackClick = {

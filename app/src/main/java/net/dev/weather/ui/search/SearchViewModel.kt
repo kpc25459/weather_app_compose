@@ -77,6 +77,7 @@ class SearchViewModel @Inject constructor(
     }
 
     suspend fun setCurrentPlace(suggestion: Suggestion) {
+
         settingsRepository.setCurrentMode(PlaceMode.FAVORITES)
         settingsRepository.setCurrentPlace(suggestion.toPlace())
     }
