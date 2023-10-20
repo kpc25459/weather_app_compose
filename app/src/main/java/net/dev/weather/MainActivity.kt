@@ -1,6 +1,7 @@
 package net.dev.weather
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -8,6 +9,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -36,6 +39,7 @@ import net.dev.weather.theme.WeatherTheme
 import net.dev.weather.ui.WeatherApp
 import net.dev.weather.ui.places.permissions
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -68,13 +72,13 @@ class MainActivity : ComponentActivity() {
                 onDispose { }
             }
 
-            Content(coroutineScope, darkTheme, uiState)
+            Content(this, coroutineScope, darkTheme, uiState)
         }
     }
 
     @SuppressLint("MissingPermission")
     @Composable
-    private fun Content(coroutineScope: CoroutineScope, darkTheme: Boolean, uiState: MainActivityUiState) {
+    private fun Content(activity: Activity, coroutineScope: CoroutineScope, darkTheme: Boolean, uiState: MainActivityUiState) {
         var locationRequest by remember {
             mutableStateOf<LocationRequest?>(null)
         }
@@ -108,13 +112,15 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
 
-                                WeatherApp()
+                                WeatherApp(
+                                    windowSizeClass = calculateWindowSizeClass(activity),
+                                )
                             }
                         }
                     } else {
                         locationRequest = null
 
-                        WeatherApp()
+                        WeatherApp(windowSizeClass = calculateWindowSizeClass(activity))
                     }
                 }
             }

@@ -7,6 +7,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import net.dev.weather.components.WeatherBottomBar
@@ -16,7 +17,10 @@ import net.dev.weather.navigation.WeatherNavHost
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherApp(
-    appState: WeatherAppState = rememberWeatherAppState(),
+    windowSizeClass: WindowSizeClass,
+    appState: WeatherAppState = rememberWeatherAppState(
+        windowSizeClass = windowSizeClass
+    ),
 ) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
 
