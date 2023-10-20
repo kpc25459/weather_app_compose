@@ -161,7 +161,7 @@ fun HourForecastItem(item: WeatherHourly) {
 @Composable
 fun CurrentWeatherDetails(current: WeatherCurrent) {
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
     ) {
@@ -218,7 +218,6 @@ fun DetailsItem(name: String, value: String, @DrawableRes icon: Int) {
     Row(
         modifier = Modifier
             .padding(8.dp)
-            //TODO; tutaj pozbyć się stałej szerokości
             .width(180.dp)
             .background(color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(10.dp))
     ) {

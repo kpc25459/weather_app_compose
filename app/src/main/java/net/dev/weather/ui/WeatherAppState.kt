@@ -1,5 +1,7 @@
 package net.dev.weather.ui
 
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavDestination
@@ -21,16 +23,24 @@ import net.dev.weather.navigation.navigateToWeatherForecast
 
 @Composable
 fun rememberWeatherAppState(
+    windowSizeClass: WindowSizeClass,
     navController: NavHostController = rememberNavController(),
 ): WeatherAppState {
-    return remember(navController) {
-        WeatherAppState(navController)
+    return remember(navController, windowSizeClass) {
+        WeatherAppState(navController, windowSizeClass)
     }
 }
 
 class WeatherAppState(
     val navController: NavHostController,
+    val windowSizeClass: WindowSizeClass
 ) {
+
+    val shouldShowBottomBar: Boolean
+        get() = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
+
+    val shouldShowNavRail: Boolean
+        get() = !shouldShowBottomBar
 
     val currentDestination: NavDestination?
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination
@@ -68,7 +78,7 @@ class WeatherAppState(
         }
     }
 
-    fun navigateToSearch(){
+    fun navigateToSearch() {
         navController.navigateToSearch()
     }
 }
