@@ -1,5 +1,6 @@
 package net.dev.weather.api
 
+import net.dev.weather.BuildConfig
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -10,7 +11,7 @@ interface LocationServiceApi {
     suspend fun getSuggestions(
         @Query("input") input: String,
         @Query("types") types: String = "geocode",
-        @Query("key") apiKey: String = googlePlacesApiKey,
+        @Query("key") apiKey: String = BuildConfig.GOOGLE_API_KEY,
         @Query("sessiontoken") sessiontoken: String = sessionToken,
     ): Response<AutocompleteResult>
 
@@ -18,7 +19,7 @@ interface LocationServiceApi {
     @GET("/maps/api/geocode/json")
     suspend fun getLatLongFromGoogle(
         @Query("place_id") placeId: String,
-        @Query("key") apiKey: String = googlePlacesApiKey,
+        @Query("key") apiKey: String = BuildConfig.GOOGLE_API_KEY,
         @Query("sessiontoken") sessiontoken: String = sessionToken,
     ): Response<GetLatLongFromGoogleResult>
 
