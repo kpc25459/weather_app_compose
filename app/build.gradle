@@ -26,10 +26,20 @@ android {
         buildConfigField("String", "GOOGLE_API_KEY", "\"${System.getenv("GOOGLE_API_KEY")}\"")
     }
 
+    signingConfigs {
+        release {
+            storeFile file('keystore.jks')
+            storePassword System.getenv("SIGNING_STORE_PASSWORD")
+            keyAlias System.getenv("SIGNING_KEY_ALIAS")
+            keyPassword System.getenv("SIGNING_KEY_PASSWORD")
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -48,15 +58,6 @@ android {
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
-        }
-    }
-
-    signingConfigs {
-        release {
-            storeFile file('keystore.jks')
-            storePassword System.getenv("SIGNING_STORE_PASSWORD")
-            keyAlias System.getenv("SIGNING_KEY_ALIAS")
-            keyPassword System.getenv("SIGNING_KEY_PASSWORD")
         }
     }
 }
