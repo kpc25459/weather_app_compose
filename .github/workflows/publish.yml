@@ -1,74 +1,78 @@
-on:
-  push:
-    branches: master
-    tags:
-      - v*
+name: Publish Release APK
 
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Application version'
+        required: true
+        default: '1.0'
+
+#on:
+#  push:
+#    branches: master
+#    tags:
+#      - v*
 jobs:
   build:
-   runs-on: ubuntu-latest
-   if: startsWith(github.ref, 'refs/tags/')
- 
-   steps:
-     - uses: actions/checkout@v2.6.0
- 
-     - name: Setup JAVA 17
-       uses: actions/setup-java@v3
-       with:
-         distribution: 'temurin'
-         java-version: 17
- 
-     - name: Cache Gradle and wrapper
-       uses: actions/cache@v2
-       with:
-         path: |
-           ~/.gradle/caches
-           ~/.gradle/wrapper
-         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-      
-      #1     
-     - name: Decode Keystore
-       env:
-         ENCODED_STRING: ${{ secrets.SIGNING_KEY_STORE_BASE64 }}
-         SIGNING_KEY_STORE_PATH: ${{ secrets.SIGNING_KEY_STORE_PATH }}
- 
-       run: |
-         echo $ENCODED_STRING > keystore-b64.txt
-         echo $ENCODED_STRING
-         echo $SIGNING_KEY_STORE_PATH
-         echo $GOOGLE_API_KEY
-         base64 -d keystore-b64.txt > $SIGNING_KEY_STORE_PATH
-           
-       #2
-     - name: Build Release apk
-       env:
-         SIGNING_KEY_STORE_PATH: ${{ secrets.SIGNING_KEY_STORE_PATH }}
-         SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
-         SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-         SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-       run: ./gradlew assembleRelease
- 
-     - name: Build Release bundle
-       env:
-         SIGNING_KEY_STORE_PATH: ${{ secrets.SIGNING_KEY_STORE_PATH }}
-         SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
-         SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-         SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-       run: ./gradlew bundleRelease
-       #3
-     - name: Upload Release Build to Artifacts
-       uses: actions/upload-artifact@v3
-       with:
-         name: release-artifacts
-         paths: |
-           app/build/outputs/apk/release/
-           app/build/outputs/bundle/release/
-       #4      
-     - name: Create Github Release
-       uses: softprops/action-gh-release@v1
-       with:
-         generate_release_notes: true
-         prerelease: true
-         files: |
-           app/build/outputs/apk/release/app-release.apk
-           app/build/outputs/bundle/release/app-release.aab
+    name: Build Signed APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # Here we need to decode keystore.jks from base64 string and place it
+      # in the folder specified in the release signing configuration
+      - name: Decode Keystore
+        id: decode_keystore
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: 'android_keystore.jks'
+          fileDir: '/home/runner/work/weather_app_compsose/weather_app_compsose/app/keystore/'
+          encodedString: ${{ secrets.SIGNING_KEY_STORE_BASE64 }}
+
+      # Build and sign APK ("-x test" argument is used to skip tests)
+      - name: Build APK
+        run: ./gradlew :app:assembleRelease -x test
+        env:
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+
+      # Show information about the APK's signing certificates
+      - name: Verify Signature
+        run: $ANDROID_SDK_ROOT/build-tools/33.0.1/apksigner verify --print-certs app/build/outputs/apk/release/net.dev.weather_${{ github.event.inputs.version }}.apk
+
+      # Save the APK after the Build job is complete to publish it as a Github release in the next job
+      - name: Upload APK
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: net.dev.weather
+          path: app/build/outputs/apk/release/net.dev.weather_${{ github.event.inputs.version }}.apk
+  release:
+    name: Release APK
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download APK from build
+        uses: actions/download-artifact@v1
+        with:
+          name: net.dev.weather
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.event.inputs.version }}
+          name: Release v${{ github.event.inputs.version }}
+          draft: false
+          prerelease: false
+          files: net.dev.weather/net.dev.weather_${{ github.event.inputs.version }}.apk
