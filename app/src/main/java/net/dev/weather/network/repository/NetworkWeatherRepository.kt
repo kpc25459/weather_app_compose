@@ -4,6 +4,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.datetime.LocalDateTime
 import net.dev.weather.data.model.AirPollutionForecast
 import net.dev.weather.data.model.Weather
 import net.dev.weather.data.model.WeatherDays
@@ -63,11 +64,61 @@ class NetworkWeatherRepository @Inject constructor(
     override val airPollutionForecast: Flow<List<AirPollutionForecast>>
         get() = flow {
             placeRepository.currentPlace.collect { currentPlace ->
-                val airPollution = weatherServiceApi.getAirPollutionForecast(latitude = currentPlace.latitude, longitude = currentPlace.longitude)
+                try {
+                    val airPollution = weatherServiceApi.getAirPollutionForecast(latitude = currentPlace.latitude, longitude = currentPlace.longitude)
 
-                if (airPollution.isSuccessful) {
-                    val body = airPollution.body()!!
-                    emit(body.mapToAirPollutionForecast())
+                    if (airPollution.isSuccessful) {
+                        val body = airPollution.body()!!
+
+                        emit(
+                            listOf(
+                                AirPollutionForecast(
+                                    dt = LocalDateTime(2023, 5, 29, 12, 0),
+                                    aqi = 4,
+                                    no2 = 1.0,
+                                    o3 = 2.0,
+                                    pm2_5 = 3.0,
+                                    pm10 = 4.0
+                                ),
+                                AirPollutionForecast(
+                                    dt = LocalDateTime(2023, 5, 29, 12, 0),
+                                    aqi = 4,
+                                    no2 = 1.0,
+                                    o3 = 2.0,
+                                    pm2_5 = 3.0,
+                                    pm10 = 4.0
+                                ),
+                                AirPollutionForecast(
+                                    dt = LocalDateTime(2023, 5, 29, 12, 0),
+                                    aqi = 4,
+                                    no2 = 1.0,
+                                    o3 = 2.0,
+                                    pm2_5 = 3.0,
+                                    pm10 = 4.0
+                                ),
+                                AirPollutionForecast(
+                                    dt = LocalDateTime(2023, 5, 29, 12, 0),
+                                    aqi = 4,
+                                    no2 = 1.0,
+                                    o3 = 2.0,
+                                    pm2_5 = 3.0,
+                                    pm10 = 4.0
+                                ),
+                                AirPollutionForecast(
+                                    dt = LocalDateTime(2023, 5, 29, 12, 0),
+                                    aqi = 4,
+                                    no2 = 1.0,
+                                    o3 = 2.0,
+                                    pm2_5 = 3.0,
+                                    pm10 = 4.0
+                                ),
+                            )
+                        )
+
+                        //emit(body.mapToAirPollutionForecast())
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
         }

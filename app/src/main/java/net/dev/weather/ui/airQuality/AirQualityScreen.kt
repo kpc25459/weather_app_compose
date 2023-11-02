@@ -63,6 +63,9 @@ private fun Content(data: PlaceWithAirPollutionForecast, modifier: Modifier = Mo
             .padding(5.dp)
             .verticalScroll(rememberScrollState())
     ) {
+
+        //TODO: obsłużyć brak danych (request poprawny, ale pusta lista)
+
         CardBox(data.place.name, data.airPollutionForecast)
         Spacer(modifier = Modifier.height(20.dp))
         HourPollutionForecast(data.airPollutionForecast.take(4))
@@ -78,7 +81,7 @@ private fun Content(data: PlaceWithAirPollutionForecast, modifier: Modifier = Mo
 
 @Composable
 fun CardBox(location: String, data: List<AirPollutionForecast>) {
-    val currentWeather = data.first()
+    val currentWeather = data.firstOrNull() ?: return
 
     Card(
         modifier = Modifier

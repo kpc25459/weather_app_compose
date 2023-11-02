@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import net.dev.weather.R
 import net.dev.weather.data.model.AirPollutionForecast
@@ -43,24 +44,38 @@ import kotlin.math.roundToInt
 
 @Composable
 fun HourPollutionForecast(forecast: List<AirPollutionForecast>) {
-    LazyColumn(modifier = Modifier.height(320.dp)) {
-        items(forecast) { item ->
-            HourForecastItem(item)
+
+    val heights = remember { buildList { repeat(forecast.size) { add(70.dp) } }.toMutableList() }
+
+    val sum = remember {
+        mutableStateOf(heights.fold(20.dp) { acc, dp -> acc + dp })
+    }
+
+    LazyColumn(modifier = Modifier.height(sum.value)) {
+        itemsIndexed(forecast) { idx, item ->
+            HourForecastItem(item) { height ->
+                heights[idx] = height
+                sum.value = heights.fold(20.dp) { acc, dp -> acc + dp }
+            }
             Spacer(modifier = Modifier.height(5.dp))
         }
     }
 }
 
 @Composable
-fun HourForecastItem(item: AirPollutionForecast, modifier: Modifier = Modifier) {
+fun HourForecastItem(item: AirPollutionForecast, modifier: Modifier = Modifier, height: (Dp) -> Unit = {}) {
 
     var expanded by rememberSaveable { mutableStateOf(false) }
 
-    val onClick = { expanded = !expanded }
+    val onClick = {
+        expanded = !expanded
+        if (expanded) height(180.dp) else height(70.dp)
+    }
 
     val interactionSource = remember { MutableInteractionSource() }
 
     ListItem(
+        modifier = modifier.height(if (expanded) 180.dp else 70.dp),
         headlineContent = {
             Text(
                 text = item.dt.time.toString(),
