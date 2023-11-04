@@ -39,6 +39,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import net.dev.weather.R
@@ -58,14 +60,23 @@ fun WeatherTopAppBar(
         }
 
         TopLevelDestination.PLACES -> {
-            WeatherTopAppBarWithAction(titleRes = R.string.places_screen_title, actionIcon = Icons.Default.Search, actionIconContentDescription = "search", onActionClick = onSearchClick)
+            val description = stringResource(id = R.string.places_screen_title)
+
+            WeatherTopAppBarWithAction(titleRes = R.string.places_screen_title, actionIcon = Icons.Default.Search, actionIconContentDescription = "search", onActionClick = onSearchClick,
+                modifier = modifier.semantics {
+                    contentDescription = description
+                })
         }
 
         else -> {
+            val description = stringResource(id = currentDestination.titleTextId)
+
             CenterAlignedTopAppBar(
-                title = { Text(text = stringResource(id = currentDestination.titleTextId)) },
+                title = { Text(text = description) },
                 colors = colors,
-                modifier = modifier
+                modifier = modifier.semantics {
+                    contentDescription = description
+                }
             )
         }
     }
