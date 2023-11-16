@@ -15,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
+import net.dev.weather.components.LoadingScreen
 import net.dev.weather.data.model.WeatherDaily
 import net.dev.weather.data.model.WeatherForecast
 
@@ -25,8 +26,12 @@ fun WeatherForecastScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    uiState.weatherForecast?.let {
-        Content(it)
+    if (uiState.isLoading) {
+        LoadingScreen()
+    } else {
+        uiState.weatherForecast?.let {
+            Content(it)
+        }
     }
 }
 

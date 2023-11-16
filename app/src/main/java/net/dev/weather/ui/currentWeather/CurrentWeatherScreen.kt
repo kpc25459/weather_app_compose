@@ -40,6 +40,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import net.dev.weather.R
+import net.dev.weather.components.LoadingScreen
 import net.dev.weather.components.WeatherIcon
 import net.dev.weather.data.model.WeatherCurrent
 import net.dev.weather.data.model.WeatherHourly
@@ -57,9 +58,12 @@ fun CurrentWeatherScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    //TODO: tutaj obsłużyć loading
-    uiState.placeWithCurrentWeather?.let { weather ->
-        Content(weather)
+    if (uiState.isLoading) {
+        LoadingScreen()
+    } else {
+        uiState.placeWithCurrentWeather?.let { main ->
+            Content(main)
+        }
     }
 }
 

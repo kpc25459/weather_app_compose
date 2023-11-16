@@ -36,6 +36,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.dev.weather.MainActivityUiState
 import net.dev.weather.R
+import net.dev.weather.components.LoadingScreen
 import net.dev.weather.components.SwipeDismissItem
 import net.dev.weather.data.model.Place
 import net.dev.weather.data.model.PlaceMode
@@ -57,25 +58,29 @@ fun PlacesScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
 
-    uiState.favorites?.let { places ->
-        Content(
-            places,
-            uiState.currentPlaceId,
-            onItemClick = {
-                scope.launch {
-                    viewModel.setCurrentPlace(it)
+    if (uiState.isLoading) {
+        LoadingScreen()
+    } else {
+        uiState.favorites?.let { places ->
+            Content(
+                places,
+                uiState.currentPlaceId,
+                onItemClick = {
+                    scope.launch {
+                        viewModel.setCurrentPlace(it)
 
-                    withContext(Dispatchers.Main) {
-                        onPlaceClick(it.id)
+                        withContext(Dispatchers.Main) {
+                            onPlaceClick(it.id)
+                        }
+                    }
+                },
+                onItemRemoved = {
+                    scope.launch {
+                        viewModel.removeFromFavorites(it)
                     }
                 }
-            },
-            onItemRemoved = {
-                scope.launch {
-                    viewModel.removeFromFavorites(it)
-                }
-            }
-        )
+            )
+        }
     }
 }
 

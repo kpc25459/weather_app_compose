@@ -37,6 +37,7 @@ import com.himanshoe.charty.line.config.CurveLineConfig
 import com.himanshoe.charty.line.config.LineConfig
 import com.himanshoe.charty.line.model.LineData
 import net.dev.weather.R
+import net.dev.weather.components.LoadingScreen
 import net.dev.weather.data.model.AirPollutionForecast
 import net.dev.weather.sampleAirQuality
 import net.dev.weather.ui.model.PlaceWithAirPollutionForecast
@@ -50,10 +51,13 @@ fun AirQualityScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    uiState.airQuality?.let { main ->
-        Content(main)
+    if (uiState.isLoading) {
+        LoadingScreen()
+    } else {
+        uiState.airQuality?.let { main ->
+            Content(main)
+        }
     }
-
 }
 
 @Composable

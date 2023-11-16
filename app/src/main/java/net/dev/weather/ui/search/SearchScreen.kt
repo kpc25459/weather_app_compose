@@ -40,6 +40,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.dev.weather.R
+import net.dev.weather.components.LoadingScreen
 import net.dev.weather.data.model.Suggestion
 
 @Composable
@@ -55,7 +56,7 @@ fun SearchScreen(
     val coroutineScope = rememberCoroutineScope()
 
     if (uiState.isLoading) {
-        /* Text(text = "Loading")*/
+        LoadingScreen()
     } else {
         WeatherSearchBar(
             suggestions = uiState.suggestions ?: emptyList(),
