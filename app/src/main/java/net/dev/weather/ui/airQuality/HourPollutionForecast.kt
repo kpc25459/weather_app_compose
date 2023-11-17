@@ -1,5 +1,6 @@
 package net.dev.weather.ui.airQuality
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -89,13 +90,15 @@ fun HourForecastItem(item: AirPollutionForecast, modifier: Modifier = Modifier, 
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() })
 
-                if (expanded) {
-                    Spacer(modifier = Modifier.height(5.dp))
+                AnimatedVisibility(visible = expanded) {
+                    Column {
+                        Spacer(modifier = Modifier.height(5.dp))
 
-                    ListItemRow(description = stringResource(R.string.pm25), value = "${item.pm2_5.roundToInt()} μg/m3")
-                    ListItemRow(description = stringResource(R.string.pm10), value = "${item.pm10.roundToInt()} μg/m3")
-                    ListItemRow(description = stringResource(R.string.no2), value = item.no2.roundToInt().toString())
-                    ListItemRow(description = stringResource(R.string.o3), value = item.o3.roundToInt().toString())
+                        ListItemRow(description = stringResource(R.string.pm25), value = "${item.pm2_5.roundToInt()} μg/m3")
+                        ListItemRow(description = stringResource(R.string.pm10), value = "${item.pm10.roundToInt()} μg/m3")
+                        ListItemRow(description = stringResource(R.string.no2), value = item.no2.roundToInt().toString())
+                        ListItemRow(description = stringResource(R.string.o3), value = item.o3.roundToInt().toString())
+                    }
                 }
             }
         },

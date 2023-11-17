@@ -1,5 +1,6 @@
 package net.dev.weather.ui.weatherForecast
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +32,7 @@ import net.dev.weather.R
 import net.dev.weather.components.WeatherIcon
 import net.dev.weather.data.model.WeatherDaily
 import net.dev.weather.sampleData
+import net.dev.weather.ui.airQuality.ListItemRow
 import net.dev.weather.utils.localDate
 import kotlin.math.roundToInt
 
@@ -50,18 +52,19 @@ fun DayForecastItem(weatherDaily: WeatherDaily, modifier: Modifier = Modifier, i
         supportingContent = {
             Column {
                 Text(text = weatherDaily.description, modifier = Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() })
+                AnimatedVisibility(visible = expanded) {
+                    Column {
+                        Spacer(modifier = Modifier.height(5.dp))
 
-                if (expanded) {
-                    Spacer(modifier = Modifier.height(5.dp))
-
-                    ListItemRow(description = stringResource(R.string.temperature), value = "${weatherDaily.tempDay.roundToInt()}°C / ${weatherDaily.tempNight.roundToInt()}°C")
-                    ListItemRow(description = stringResource(R.string.sunrise), value = weatherDaily.sunrise.toString().substringBeforeLast(":"))
-                    ListItemRow(description = stringResource(R.string.sunset), value = weatherDaily.sunset.toString().substringBeforeLast(":"))
-                    ListItemRow(description = stringResource(R.string.pressure), value = "${weatherDaily.pressure} hPa")
-                    ListItemRow(description = stringResource(R.string.humidity), value = "${weatherDaily.humidity} %")
-                    ListItemRow(description = stringResource(R.string.wind), value = "${weatherDaily.wind.roundToInt()} km/h ${weatherDaily.windDirection}")
-                    ListItemRow(description = stringResource(R.string.rain), value = "${weatherDaily.rain.roundToInt()} mm/24h")
-                    ListItemRow(description = stringResource(R.string.uv_Index), value = weatherDaily.uvi.roundToInt().toString())
+                        ListItemRow(description = stringResource(R.string.temperature), value = "${weatherDaily.tempDay.roundToInt()}°C / ${weatherDaily.tempNight.roundToInt()}°C")
+                        ListItemRow(description = stringResource(R.string.sunrise), value = weatherDaily.sunrise.toString().substringBeforeLast(":"))
+                        ListItemRow(description = stringResource(R.string.sunset), value = weatherDaily.sunset.toString().substringBeforeLast(":"))
+                        ListItemRow(description = stringResource(R.string.pressure), value = "${weatherDaily.pressure} hPa")
+                        ListItemRow(description = stringResource(R.string.humidity), value = "${weatherDaily.humidity} %")
+                        ListItemRow(description = stringResource(R.string.wind), value = "${weatherDaily.wind.roundToInt()} km/h ${weatherDaily.windDirection}")
+                        ListItemRow(description = stringResource(R.string.rain), value = "${weatherDaily.rain.roundToInt()} mm/24h")
+                        ListItemRow(description = stringResource(R.string.uv_Index), value = weatherDaily.uvi.roundToInt().toString())
+                    }
                 }
             }
         },
