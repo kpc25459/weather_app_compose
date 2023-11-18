@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -24,59 +22,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import net.dev.weather.R
 import net.dev.weather.data.model.AirPollutionForecast
-import net.dev.weather.data.model.airPollutionForecastPreviewItems
+import net.dev.weather.ui.weatherForecast.ListItemRow
 import net.dev.weather.utils.fromAqiIndex
 import kotlin.math.roundToInt
 
 @Composable
-fun HourPollutionForecast(forecast: List<AirPollutionForecast>) {
-
-    val heights = remember { buildList { repeat(forecast.size) { add(70.dp) } }.toMutableList() }
-
-    val sum = remember {
-        mutableStateOf(heights.fold(20.dp) { acc, dp -> acc + dp })
-    }
-
-    LazyColumn(modifier = Modifier.height(sum.value)) {
-        itemsIndexed(forecast) { idx, item ->
-            HourForecastItem(item) { height ->
-                heights[idx] = height
-                sum.value = heights.fold(20.dp) { acc, dp -> acc + dp }
-            }
-            Spacer(modifier = Modifier.height(5.dp))
-        }
-    }
-}
-
-@Composable
-fun HourForecastItem(item: AirPollutionForecast, modifier: Modifier = Modifier, height: (Dp) -> Unit = {}) {
-
-    var expanded by rememberSaveable { mutableStateOf(false) }
-
-    val onClick = {
-        expanded = !expanded
-        if (expanded) height(180.dp) else height(70.dp)
-    }
-
+fun HourPollutionForecastItem(item: AirPollutionForecast, expanded: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     val interactionSource = remember { MutableInteractionSource() }
 
     ListItem(
-        modifier = modifier.height(if (expanded) 180.dp else 70.dp),
+        modifier = modifier,
         headlineContent = {
             Text(
                 text = item.dt.time.toString(),
@@ -92,12 +56,14 @@ fun HourForecastItem(item: AirPollutionForecast, modifier: Modifier = Modifier, 
 
                 AnimatedVisibility(visible = expanded) {
                     Column {
+
                         Spacer(modifier = Modifier.height(5.dp))
 
                         ListItemRow(description = stringResource(R.string.pm25), value = "${item.pm2_5.roundToInt()} μg/m3")
                         ListItemRow(description = stringResource(R.string.pm10), value = "${item.pm10.roundToInt()} μg/m3")
                         ListItemRow(description = stringResource(R.string.no2), value = item.no2.roundToInt().toString())
                         ListItemRow(description = stringResource(R.string.o3), value = item.o3.roundToInt().toString())
+
                     }
                 }
             }
@@ -154,15 +120,15 @@ fun ListItemRow(description: String, value: String) {
     }
 }
 
-@Composable
+/*@Composable
 @Preview
 fun HourPollutionForecastPreview() {
     HourPollutionForecast(airPollutionForecastPreviewItems)
-}
+}*/
 
-@Composable
+/*@Composable
 @Preview
 fun HourForecastItemPreview() {
     HourForecastItem(airPollutionForecastPreviewItems.first())
-}
+}*/
 

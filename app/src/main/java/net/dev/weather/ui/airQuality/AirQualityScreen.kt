@@ -10,13 +10,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
@@ -54,32 +57,48 @@ fun AirQualityScreen(
     if (uiState.isLoading) {
         LoadingScreen()
     } else {
+
+        //TODO: obsłużyć brak danych (request poprawny, ale pusta lista)
+
         uiState.airQuality?.let { main ->
-            Content(main)
+            Content(main, modifier = modifier)
         }
     }
 }
 
 @Composable
 private fun Content(data: PlaceWithAirPollutionForecast, modifier: Modifier = Modifier) {
-    Column(
+    val hourForecastItems: List<AirPollutionForecast> = data.airPollutionForecast.take(4)
+    var expandedCardsIdxs by rememberSaveable { mutableStateOf<List<String>>(mutableListOf()) }
+
+    val forecast5days = data.airPollutionForecast.take(24 * 5)
+
+    LazyColumn(
         modifier = modifier
             .padding(5.dp)
-            .verticalScroll(rememberScrollState())
     ) {
 
-        //TODO: obsłużyć brak danych (request poprawny, ale pusta lista)
+        item { CardBox(data.place.name, data.airPollutionForecast) }
+        item { Spacer(modifier = Modifier.height(20.dp)) }
 
-        CardBox(data.place.name, data.airPollutionForecast)
-        Spacer(modifier = Modifier.height(20.dp))
-        HourPollutionForecast(data.airPollutionForecast.take(4))
+        itemsIndexed(hourForecastItems) { idx, item ->
+            HourPollutionForecastItem(item, expanded = expandedCardsIdxs.contains(idx.toString()), onClick = {
+                val i = idx.toString()
 
-        val forecast5days = data.airPollutionForecast.take(24 * 5)
-        Spacer(modifier = Modifier.height(20.dp))
-        Chart(title = "Prognoza dla PM 2.5", data = forecast5days, transform = AirPollutionForecast::pm2_5)
+                expandedCardsIdxs = if (expandedCardsIdxs.contains(i)) {
+                    expandedCardsIdxs.filter { it != i }
+                } else {
+                    expandedCardsIdxs + i
+                }
+            })
+            Spacer(modifier = Modifier.height(5.dp))
+        }
 
-        Spacer(modifier = Modifier.height(20.dp))
-        Chart(title = "Prognoza dla PM 10", data = forecast5days, transform = AirPollutionForecast::pm10)
+        item { Spacer(modifier = Modifier.height(20.dp)) }
+        item { Chart(title = "Prognoza dla PM 2.5", data = forecast5days, transform = AirPollutionForecast::pm2_5) }
+
+        item { Spacer(modifier = Modifier.height(20.dp)) }
+        item { Chart(title = "Prognoza dla PM 10", data = forecast5days, transform = AirPollutionForecast::pm10) }
     }
 }
 
@@ -100,8 +119,7 @@ fun CardBox(location: String, data: List<AirPollutionForecast>) {
                 contentDescription = stringResource(R.string.weather_condition),
                 contentScale = ContentScale.Crop,
                 colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.5f), blendMode = BlendMode.SrcOver),
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             )
 
             Column(
@@ -124,8 +142,7 @@ fun CardBox(location: String, data: List<AirPollutionForecast>) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                        .padding(top = 10.dp), horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Text(text = stringResource(R.string.pm25_extended, currentWeather.pm2_5), color = Color.White)
                     Text(text = stringResource(R.string.pm10_extended, currentWeather.pm10), color = Color.White)
@@ -159,17 +176,12 @@ private fun LineChart(data: List<AirPollutionForecast>, transform: (AirPollution
         modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp)
-            .height(100.dp),
-        color = /*iconColor*/Color.Black,
-        lineConfig = LineConfig(
+            .height(100.dp), color = /*iconColor*/Color.Black, lineConfig = LineConfig(
             hasSmoothCurve = true,
             hasDotMarker = false,
-        ),
-        lineData = data.map {
+        ), lineData = data.map {
             LineData(it.dt, transform(it).toFloat())
-        },
-        chartDimens = ChartDimens(4.dp),
-        axisConfig = AxisConfig(
+        }, chartDimens = ChartDimens(4.dp), axisConfig = AxisConfig(
             xAxisColor = Color.LightGray,
             showAxis = true,
             isAxisDashed = true,
