@@ -1,23 +1,33 @@
 package net.dev.weather.ui.weatherForecast
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
+import net.dev.weather.R
 import net.dev.weather.components.LoadingScreen
+import net.dev.weather.components.WeatherIcon
 import net.dev.weather.data.model.WeatherDaily
 import net.dev.weather.data.model.WeatherForecast
+import net.dev.weather.utils.localDate
+import kotlin.math.roundToInt
 
 @Composable
 fun WeatherForecastScreen(
@@ -37,11 +47,41 @@ fun WeatherForecastScreen(
 
 @Composable
 private fun Content(data: WeatherForecast, modifier: Modifier = Modifier) {
+
+    var expandedCardsIdxs by rememberSaveable { mutableStateOf<List<String>>(mutableListOf()) }
+
     LazyColumn(
         contentPadding = PaddingValues(bottom = 50.dp),
     ) {
         itemsIndexed(data.daily.drop(1)) { idx, weatherDaily ->
-            DayForecastItem(weatherDaily, initiallyExpanded = idx == 0, modifier = modifier)
+            ExpandableListItem(
+                expanded = expandedCardsIdxs.contains(idx.toString()),
+                modifier = modifier,
+                headlineContent = {
+                    Text(text = localDate(weatherDaily.dt), Modifier.clickable(/*indication = null, interactionSource = interactionSource*/) {
+                        val i = idx.toString()
+
+                        expandedCardsIdxs = if (expandedCardsIdxs.contains(i)) {
+                            expandedCardsIdxs.filter { it != i }
+                        } else {
+                            expandedCardsIdxs + i
+                        }
+                    })
+                },
+                content = {
+                    Text(text = weatherDaily.description/*, modifier = Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() }*/)
+                },
+                leadingContent = { WeatherIcon(weatherDaily.icon/*, onClick = onClick*/) }
+            ) {
+                ListItemRow(label = stringResource(R.string.temperature), value = "${weatherDaily.tempDay.roundToInt()}°C / ${weatherDaily.tempNight.roundToInt()}°C")
+                ListItemRow(label = stringResource(R.string.sunrise), value = weatherDaily.sunrise.toString().substringBeforeLast(":"))
+                ListItemRow(label = stringResource(R.string.sunset), value = weatherDaily.sunset.toString().substringBeforeLast(":"))
+                ListItemRow(label = stringResource(R.string.pressure), value = "${weatherDaily.pressure} hPa")
+                ListItemRow(label = stringResource(R.string.humidity), value = "${weatherDaily.humidity} %")
+                ListItemRow(label = stringResource(R.string.wind), value = "${weatherDaily.wind.roundToInt()} km/h ${weatherDaily.windDirection}")
+                ListItemRow(label = stringResource(R.string.rain), value = "${weatherDaily.rain.roundToInt()} mm/24h")
+                ListItemRow(label = stringResource(R.string.uv_Index), value = weatherDaily.uvi.roundToInt().toString())
+            }
             Spacer(modifier = Modifier.height(5.dp))
             HorizontalDivider()
         }

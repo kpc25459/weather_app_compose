@@ -1,10 +1,9 @@
 package net.dev.weather.ui.weatherForecast
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,62 +17,41 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.dev.weather.R
-import net.dev.weather.components.WeatherIcon
-import net.dev.weather.data.model.WeatherDaily
-import net.dev.weather.sampleData
-import net.dev.weather.ui.airQuality.ListItemRow
-import net.dev.weather.utils.localDate
-import kotlin.math.roundToInt
 
 @Composable
-fun DayForecastItem(weatherDaily: WeatherDaily, modifier: Modifier = Modifier, initiallyExpanded: Boolean = true) {
-
-    var expanded by rememberSaveable { mutableStateOf(initiallyExpanded) }
-
-    val onClick = { expanded = !expanded }
-
-    val interactionSource = remember { MutableInteractionSource() }
-
+fun ExpandableListItem(
+    modifier: Modifier = Modifier,
+    expanded: Boolean = false,
+    headlineContent: @Composable () -> Unit = {},
+    leadingContent: @Composable () -> Unit = {},
+    trailingContent: @Composable () -> Unit = {
+        ListItemArrow(expanded = expanded, onClick = { /*onClick()*/ })
+    },
+    content: @Composable ColumnScope.() -> Unit = {},
+    expandedContent: @Composable ColumnScope.() -> Unit = {}
+) {
     ListItem(
         modifier = modifier,
-        headlineContent = { Text(text = localDate(weatherDaily.dt), Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() }) },
-
+        headlineContent = headlineContent,
         supportingContent = {
             Column {
-                Text(text = weatherDaily.description, modifier = Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() })
+                content()
                 AnimatedVisibility(visible = expanded) {
                     Column {
                         Spacer(modifier = Modifier.height(5.dp))
-
-                        ListItemRow(description = stringResource(R.string.temperature), value = "${weatherDaily.tempDay.roundToInt()}°C / ${weatherDaily.tempNight.roundToInt()}°C")
-                        ListItemRow(description = stringResource(R.string.sunrise), value = weatherDaily.sunrise.toString().substringBeforeLast(":"))
-                        ListItemRow(description = stringResource(R.string.sunset), value = weatherDaily.sunset.toString().substringBeforeLast(":"))
-                        ListItemRow(description = stringResource(R.string.pressure), value = "${weatherDaily.pressure} hPa")
-                        ListItemRow(description = stringResource(R.string.humidity), value = "${weatherDaily.humidity} %")
-                        ListItemRow(description = stringResource(R.string.wind), value = "${weatherDaily.wind.roundToInt()} km/h ${weatherDaily.windDirection}")
-                        ListItemRow(description = stringResource(R.string.rain), value = "${weatherDaily.rain.roundToInt()} mm/24h")
-                        ListItemRow(description = stringResource(R.string.uv_Index), value = weatherDaily.uvi.roundToInt().toString())
+                        expandedContent()
                     }
                 }
             }
         },
-        leadingContent = {
-            WeatherIcon(weatherDaily.icon, onClick = onClick)
-        },
-        trailingContent = {
-            ListItemArrow(expanded = expanded, onClick = { onClick() })
-        }
+        leadingContent = leadingContent,
+        trailingContent = trailingContent
     )
 }
 
@@ -91,14 +69,14 @@ private fun ListItemArrow(expanded: Boolean, onClick: () -> Unit = {}) {
 }
 
 @Composable
-fun ListItemRow(description: String, value: String) {
+fun ListItemRow(label: String, value: String) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
     ) {
-        Text(text = description)
+        Text(text = label)
         Text(text = value, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 10.dp))
     }
 }
@@ -106,5 +84,5 @@ fun ListItemRow(description: String, value: String) {
 @Composable
 @Preview
 fun DayForecastItemPreview() {
-    DayForecastItem(sampleData.weather.daily.first())
+    ExpandableListItem()
 }

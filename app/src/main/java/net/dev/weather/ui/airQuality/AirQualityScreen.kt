@@ -1,6 +1,7 @@
 package net.dev.weather.ui.airQuality
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,11 +11,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,8 +47,11 @@ import net.dev.weather.components.LoadingScreen
 import net.dev.weather.data.model.AirPollutionForecast
 import net.dev.weather.sampleAirQuality
 import net.dev.weather.ui.model.PlaceWithAirPollutionForecast
+import net.dev.weather.ui.weatherForecast.ExpandableListItem
+import net.dev.weather.ui.weatherForecast.ListItemRow
 import net.dev.weather.utils.fromAqiIndex
 import net.dev.weather.utils.imageFromAqi
+import kotlin.math.roundToInt
 
 @Composable
 fun AirQualityScreen(
@@ -82,15 +88,47 @@ private fun Content(data: PlaceWithAirPollutionForecast, modifier: Modifier = Mo
         item { Spacer(modifier = Modifier.height(20.dp)) }
 
         itemsIndexed(hourForecastItems) { idx, item ->
-            HourPollutionForecastItem(item, expanded = expandedCardsIdxs.contains(idx.toString()), onClick = {
-                val i = idx.toString()
 
-                expandedCardsIdxs = if (expandedCardsIdxs.contains(i)) {
-                    expandedCardsIdxs.filter { it != i }
-                } else {
-                    expandedCardsIdxs + i
-                }
-            })
+            ExpandableListItem(
+                expanded = expandedCardsIdxs.contains(idx.toString()),
+                modifier = modifier,
+                headlineContent = {
+                    Text(text = item.dt.time.toString(),
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.clickable(/*indication = null, interactionSource = interactionSource*/) {
+                            val i = idx.toString()
+
+                            expandedCardsIdxs = if (expandedCardsIdxs.contains(i)) {
+                                expandedCardsIdxs.filter { it != i }
+                            } else {
+                                expandedCardsIdxs + i
+                            }
+                        })
+                },
+                content = {
+                    Text(
+                        text = stringResource(R.string.air_quality_with_value, fromAqiIndex(item.aqi)),
+                        style = MaterialTheme.typography.bodyMedium,
+                        /*modifier = Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() }*/
+                    )
+                },
+                leadingContent = {
+                    Image(painter = painterResource(R.drawable.circle_24px),
+                        contentDescription = stringResource(R.string.air_quality_icon),
+                        colorFilter = ColorFilter.tint(visualIndex(item.aqi) /*.copy(alpha = 0.5f)*/),
+                                modifier = Modifier
+                            .minimumInteractiveComponentSize()
+                            .size(16.dp)
+                            /*.clickable(indication = null, interactionSource = interactionSource) { onClick() }*/)
+
+                }) {
+                ListItemRow(label = stringResource(R.string.pm25), value = "${item.pm2_5.roundToInt()} μg/m3")
+                ListItemRow(label = stringResource(R.string.pm10), value = "${item.pm10.roundToInt()} μg/m3")
+                ListItemRow(label = stringResource(R.string.no2), value = item.no2.roundToInt().toString())
+                ListItemRow(label = stringResource(R.string.o3), value = item.o3.roundToInt().toString())
+
+            }
+
             Spacer(modifier = Modifier.height(5.dp))
         }
 
@@ -101,6 +139,18 @@ private fun Content(data: PlaceWithAirPollutionForecast, modifier: Modifier = Mo
         item { Chart(title = "Prognoza dla PM 10", data = forecast5days, transform = AirPollutionForecast::pm10) }
     }
 }
+
+fun visualIndex(aqi: Int): Color {
+    return when (aqi) {
+        1 -> Color(0xFF2E7D32)  // Green800
+        2 -> Color(0xFF4CAF50)  // MaterialGreen500
+        3 -> Color(0xFFFF9800)  // MaterialOrange500
+        4 -> Color(0xFFF44336)  // MaterialRed500
+        5 -> Color.Black
+        else -> Color(0xFF9E9E9E) // MaterialGrey500
+    }
+}
+
 
 @Composable
 fun CardBox(location: String, data: List<AirPollutionForecast>) {
