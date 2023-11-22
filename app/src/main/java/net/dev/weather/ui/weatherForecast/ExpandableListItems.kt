@@ -126,6 +126,37 @@ private fun ListItemArrow(expanded: Boolean, onClick: () -> Unit = {}) {
 
 @Composable
 @Preview
-fun DayForecastItemPreview() {
-    ExpandableListItem()
+fun ExpandableListItemsPreview() {
+    ExpandableListItems(
+        items = listOf("1", "2", "3"),
+    ) {
+        ListItemRow(label = "label", value = "value")
+    }
+}
+
+@Composable
+@Preview
+fun ListItemRowPreview() {
+    ListItemRow(label = "label", value = "value")
+}
+
+@Composable
+@Preview
+fun ListItemArrowPreview() {
+    ListItemArrow(expanded = false)
+}
+
+@Composable
+@Preview
+fun ExpandableListItemPreview() {
+    ExpandableListItem(
+        headlineContent = { Text(text = "headline") },
+        leadingContent = { Text(text = "leading") },
+        content = {
+            Text(text = "content")
+        },
+        expandedContent = {
+            Text(text = "expandedContent")
+        }
+    )
 }
