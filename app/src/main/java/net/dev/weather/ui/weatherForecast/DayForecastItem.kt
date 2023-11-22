@@ -12,11 +12,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,16 +30,52 @@ import androidx.compose.ui.unit.dp
 import net.dev.weather.R
 
 @Composable
-fun ExpandableListItem(
+fun <T> ExpandableListItems(
+    modifier: Modifier = Modifier,
+    items: List<T>,
+    headlineContent: @Composable (T) -> Unit = {},
+    leadingContent: @Composable (T) -> Unit = {},
+    trailingContent: @Composable (T) -> Unit = {},
+    content: @Composable ColumnScope.(T) -> Unit = {},
+    expandedContent: @Composable ColumnScope.(T) -> Unit = {}
+) {
+    var expandedCardsIdxs by rememberSaveable { mutableStateOf<List<String>>(mutableListOf()) }
+
+    items.forEachIndexed { index, item ->
+        ExpandableListItem(
+            modifier = modifier,
+            expanded = expandedCardsIdxs.contains(index.toString()),
+            headlineContent = { headlineContent(item) },
+            leadingContent = { leadingContent(item) },
+            trailingContent = { trailingContent(item) },
+            content = { content(item) },
+            expandedContent = { expandedContent(item) },
+            onClick = {
+                if (expandedCardsIdxs.contains(index.toString())) {
+                    expandedCardsIdxs = expandedCardsIdxs.filter { it != index.toString() }
+                } else {
+                    expandedCardsIdxs = expandedCardsIdxs + index.toString()
+                }
+            }
+        )
+        Spacer(modifier = Modifier.height(5.dp))
+        HorizontalDivider()
+    }
+}
+
+
+@Composable
+private fun ExpandableListItem(
     modifier: Modifier = Modifier,
     expanded: Boolean = false,
     headlineContent: @Composable () -> Unit = {},
     leadingContent: @Composable () -> Unit = {},
     trailingContent: @Composable () -> Unit = {
-        ListItemArrow(expanded = expanded, onClick = { /*onClick()*/ })
+        ListItemArrow(expanded = expanded, onClick = {  })
     },
     content: @Composable ColumnScope.() -> Unit = {},
-    expandedContent: @Composable ColumnScope.() -> Unit = {}
+    expandedContent: @Composable ColumnScope.() -> Unit = {},
+    onClick: () -> Unit = {}
 ) {
     ListItem(
         modifier = modifier,
@@ -56,7 +97,7 @@ fun ExpandableListItem(
 }
 
 @Composable
-private fun ListItemArrow(expanded: Boolean, onClick: () -> Unit = {}) {
+fun ListItemArrow(expanded: Boolean = false, onClick: () -> Unit = {}) {
     if (expanded) {
         IconButton(onClick = { onClick() }) {
             Icon(Icons.Filled.KeyboardArrowUp, contentDescription = stringResource(R.string.arrow_up))

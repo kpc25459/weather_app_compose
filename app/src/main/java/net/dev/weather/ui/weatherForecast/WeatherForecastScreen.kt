@@ -1,18 +1,10 @@
 package net.dev.weather.ui.weatherForecast
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,32 +39,27 @@ fun WeatherForecastScreen(
 
 @Composable
 private fun Content(data: WeatherForecast, modifier: Modifier = Modifier) {
-
-    var expandedCardsIdxs by rememberSaveable { mutableStateOf<List<String>>(mutableListOf()) }
-
     LazyColumn(
         contentPadding = PaddingValues(bottom = 50.dp),
     ) {
-        itemsIndexed(data.daily.drop(1)) { idx, weatherDaily ->
-            ExpandableListItem(
-                expanded = expandedCardsIdxs.contains(idx.toString()),
-                modifier = modifier,
-                headlineContent = {
-                    Text(text = localDate(weatherDaily.dt), Modifier.clickable(/*indication = null, interactionSource = interactionSource*/) {
-                        val i = idx.toString()
 
-                        expandedCardsIdxs = if (expandedCardsIdxs.contains(i)) {
-                            expandedCardsIdxs.filter { it != i }
-                        } else {
-                            expandedCardsIdxs + i
-                        }
-                    })
+        item {
+            ExpandableListItems(
+                items = data.daily.drop(1),
+                headlineContent = { weatherDaily ->
+                    Text(text = localDate(weatherDaily.dt))
                 },
-                content = {
+                content = { weatherDaily ->
                     Text(text = weatherDaily.description/*, modifier = Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() }*/)
                 },
-                leadingContent = { WeatherIcon(weatherDaily.icon/*, onClick = onClick*/) }
-            ) {
+                leadingContent = { weatherDaily -> WeatherIcon(weatherDaily.icon/*, onClick = onClick*/) },
+                /*trailingContent = { weatherDaily ->
+                    ListItemArrow(*/
+                /*expanded = expanded, onClick = { }*/
+                /*)
+                            },*/
+                modifier = modifier,
+            ) { weatherDaily ->
                 ListItemRow(label = stringResource(R.string.temperature), value = "${weatherDaily.tempDay.roundToInt()}°C / ${weatherDaily.tempNight.roundToInt()}°C")
                 ListItemRow(label = stringResource(R.string.sunrise), value = weatherDaily.sunrise.toString().substringBeforeLast(":"))
                 ListItemRow(label = stringResource(R.string.sunset), value = weatherDaily.sunset.toString().substringBeforeLast(":"))
@@ -82,11 +69,8 @@ private fun Content(data: WeatherForecast, modifier: Modifier = Modifier) {
                 ListItemRow(label = stringResource(R.string.rain), value = "${weatherDaily.rain.roundToInt()} mm/24h")
                 ListItemRow(label = stringResource(R.string.uv_Index), value = weatherDaily.uvi.roundToInt().toString())
             }
-            Spacer(modifier = Modifier.height(5.dp))
-            HorizontalDivider()
         }
     }
-
 }
 
 @Preview(showBackground = true)

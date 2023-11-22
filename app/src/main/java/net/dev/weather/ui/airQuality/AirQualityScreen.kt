@@ -1,7 +1,6 @@
 package net.dev.weather.ui.airQuality
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,16 +12,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
@@ -47,7 +42,7 @@ import net.dev.weather.components.LoadingScreen
 import net.dev.weather.data.model.AirPollutionForecast
 import net.dev.weather.sampleAirQuality
 import net.dev.weather.ui.model.PlaceWithAirPollutionForecast
-import net.dev.weather.ui.weatherForecast.ExpandableListItem
+import net.dev.weather.ui.weatherForecast.ExpandableListItems
 import net.dev.weather.ui.weatherForecast.ListItemRow
 import net.dev.weather.utils.fromAqiIndex
 import net.dev.weather.utils.imageFromAqi
@@ -75,7 +70,6 @@ fun AirQualityScreen(
 @Composable
 private fun Content(data: PlaceWithAirPollutionForecast, modifier: Modifier = Modifier) {
     val hourForecastItems: List<AirPollutionForecast> = data.airPollutionForecast.take(4)
-    var expandedCardsIdxs by rememberSaveable { mutableStateOf<List<String>>(mutableListOf()) }
 
     val forecast5days = data.airPollutionForecast.take(24 * 5)
 
@@ -87,49 +81,39 @@ private fun Content(data: PlaceWithAirPollutionForecast, modifier: Modifier = Mo
         item { CardBox(data.place.name, data.airPollutionForecast) }
         item { Spacer(modifier = Modifier.height(20.dp)) }
 
-        itemsIndexed(hourForecastItems) { idx, item ->
-
-            ExpandableListItem(
-                expanded = expandedCardsIdxs.contains(idx.toString()),
-                modifier = modifier,
-                headlineContent = {
-                    Text(text = item.dt.time.toString(),
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.clickable(/*indication = null, interactionSource = interactionSource*/) {
-                            val i = idx.toString()
-
-                            expandedCardsIdxs = if (expandedCardsIdxs.contains(i)) {
-                                expandedCardsIdxs.filter { it != i }
-                            } else {
-                                expandedCardsIdxs + i
-                            }
-                        })
-                },
-                content = {
+        item {
+            ExpandableListItems(
+                items = hourForecastItems,
+                headlineContent = { airPollutionForecast ->
                     Text(
-                        text = stringResource(R.string.air_quality_with_value, fromAqiIndex(item.aqi)),
-                        style = MaterialTheme.typography.bodyMedium,
-                        /*modifier = Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() }*/
+                        text = airPollutionForecast.dt.time.toString(),
+                        style = MaterialTheme.typography.bodyLarge
                     )
                 },
-                leadingContent = {
-                    Image(painter = painterResource(R.drawable.circle_24px),
+                content = { airPollutionForecast ->
+                    Text(
+                        text = stringResource(R.string.air_quality_with_value, fromAqiIndex(airPollutionForecast.aqi)),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                },
+                leadingContent = { airPollutionForecast ->
+                    Image(
+                        painter = painterResource(R.drawable.circle_24px),
                         contentDescription = stringResource(R.string.air_quality_icon),
-                        colorFilter = ColorFilter.tint(visualIndex(item.aqi) /*.copy(alpha = 0.5f)*/),
-                                modifier = Modifier
+                        colorFilter = ColorFilter.tint(visualIndex(airPollutionForecast.aqi) /*.copy(alpha = 0.5f)*/),
+                        modifier = Modifier
                             .minimumInteractiveComponentSize()
                             .size(16.dp)
-                            /*.clickable(indication = null, interactionSource = interactionSource) { onClick() }*/)
+                        /*.clickable(indication = null, interactionSource = interactionSource) { onClick() }*/
+                    )
 
-                }) {
-                ListItemRow(label = stringResource(R.string.pm25), value = "${item.pm2_5.roundToInt()} μg/m3")
-                ListItemRow(label = stringResource(R.string.pm10), value = "${item.pm10.roundToInt()} μg/m3")
-                ListItemRow(label = stringResource(R.string.no2), value = item.no2.roundToInt().toString())
-                ListItemRow(label = stringResource(R.string.o3), value = item.o3.roundToInt().toString())
-
+                }
+            ) { airPollutionForecast ->
+                ListItemRow(label = stringResource(R.string.pm25), value = "${airPollutionForecast.pm2_5.roundToInt()} μg/m3")
+                ListItemRow(label = stringResource(R.string.pm10), value = "${airPollutionForecast.pm10.roundToInt()} μg/m3")
+                ListItemRow(label = stringResource(R.string.no2), value = airPollutionForecast.no2.roundToInt().toString())
+                ListItemRow(label = stringResource(R.string.o3), value = airPollutionForecast.o3.roundToInt().toString())
             }
-
-            Spacer(modifier = Modifier.height(5.dp))
         }
 
         item { Spacer(modifier = Modifier.height(20.dp)) }
