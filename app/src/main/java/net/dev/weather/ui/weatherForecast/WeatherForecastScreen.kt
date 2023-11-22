@@ -42,7 +42,6 @@ private fun Content(data: WeatherForecast, modifier: Modifier = Modifier) {
     LazyColumn(
         contentPadding = PaddingValues(bottom = 50.dp),
     ) {
-
         item {
             ExpandableListItems(
                 items = data.daily.drop(1),
@@ -50,25 +49,21 @@ private fun Content(data: WeatherForecast, modifier: Modifier = Modifier) {
                     Text(text = localDate(weatherDaily.dt))
                 },
                 content = { weatherDaily ->
-                    Text(text = weatherDaily.description/*, modifier = Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() }*/)
+                    Text(text = weatherDaily.description)
                 },
-                leadingContent = { weatherDaily -> WeatherIcon(weatherDaily.icon/*, onClick = onClick*/) },
-                /*trailingContent = { weatherDaily ->
-                    ListItemArrow(*/
-                /*expanded = expanded, onClick = { }*/
-                /*)
-                            },*/
+                leadingContent = { weatherDaily -> WeatherIcon(weatherDaily.icon) },
                 modifier = modifier,
-            ) { weatherDaily ->
-                ListItemRow(label = stringResource(R.string.temperature), value = "${weatherDaily.tempDay.roundToInt()}°C / ${weatherDaily.tempNight.roundToInt()}°C")
-                ListItemRow(label = stringResource(R.string.sunrise), value = weatherDaily.sunrise.toString().substringBeforeLast(":"))
-                ListItemRow(label = stringResource(R.string.sunset), value = weatherDaily.sunset.toString().substringBeforeLast(":"))
-                ListItemRow(label = stringResource(R.string.pressure), value = "${weatherDaily.pressure} hPa")
-                ListItemRow(label = stringResource(R.string.humidity), value = "${weatherDaily.humidity} %")
-                ListItemRow(label = stringResource(R.string.wind), value = "${weatherDaily.wind.roundToInt()} km/h ${weatherDaily.windDirection}")
-                ListItemRow(label = stringResource(R.string.rain), value = "${weatherDaily.rain.roundToInt()} mm/24h")
-                ListItemRow(label = stringResource(R.string.uv_Index), value = weatherDaily.uvi.roundToInt().toString())
-            }
+                expandedContent = { weatherDaily ->
+                    ListItemRow(label = stringResource(R.string.temperature), value = "${weatherDaily.tempDay.roundToInt()}°C / ${weatherDaily.tempNight.roundToInt()}°C")
+                    ListItemRow(label = stringResource(R.string.sunrise), value = weatherDaily.sunrise.toString().substringBeforeLast(":"))
+                    ListItemRow(label = stringResource(R.string.sunset), value = weatherDaily.sunset.toString().substringBeforeLast(":"))
+                    ListItemRow(label = stringResource(R.string.pressure), value = "${weatherDaily.pressure} hPa")
+                    ListItemRow(label = stringResource(R.string.humidity), value = "${weatherDaily.humidity} %")
+                    ListItemRow(label = stringResource(R.string.wind), value = "${weatherDaily.wind.roundToInt()} km/h ${weatherDaily.windDirection}")
+                    ListItemRow(label = stringResource(R.string.rain), value = "${weatherDaily.rain.roundToInt()} mm/24h")
+                    ListItemRow(label = stringResource(R.string.uv_Index), value = weatherDaily.uvi.roundToInt().toString())
+                }
+            )
         }
     }
 }

@@ -38,9 +38,8 @@ fun <T> ExpandableListItems(
     items: List<T>,
     headlineContent: @Composable (T) -> Unit = {},
     leadingContent: @Composable (T) -> Unit = {},
-    trailingContent: @Composable (T) -> Unit = {},
     content: @Composable ColumnScope.(T) -> Unit = {},
-    expandedContent: @Composable ColumnScope.(T) -> Unit = {}
+    expandedContent: @Composable ColumnScope.(T) -> Unit = {},
 ) {
     var expandedCardsIdxs by rememberSaveable { mutableStateOf<List<String>>(mutableListOf()) }
 
@@ -50,7 +49,6 @@ fun <T> ExpandableListItems(
             expanded = expandedCardsIdxs.contains(index.toString()),
             headlineContent = { headlineContent(item) },
             leadingContent = { leadingContent(item) },
-            trailingContent = { trailingContent(item) },
             content = { content(item) },
             expandedContent = { expandedContent(item) },
             onClick = {
@@ -72,14 +70,10 @@ private fun ExpandableListItem(
     expanded: Boolean = false,
     headlineContent: @Composable () -> Unit = {},
     leadingContent: @Composable () -> Unit = {},
-    trailingContent: @Composable () -> Unit = {
-        ListItemArrow(expanded = expanded, onClick = { })
-    },
     content: @Composable ColumnScope.() -> Unit = {},
     expandedContent: @Composable ColumnScope.() -> Unit = {},
     onClick: () -> Unit = {},
-
-    ) {
+) {
     val interactionSource = remember { MutableInteractionSource() }
 
     ListItem(
@@ -97,21 +91,10 @@ private fun ExpandableListItem(
             }
         },
         leadingContent = leadingContent,
-        trailingContent = trailingContent
+        trailingContent = {
+            ListItemArrow(expanded = expanded, onClick = onClick)
+        }
     )
-}
-
-@Composable
-fun ListItemArrow(expanded: Boolean = false, onClick: () -> Unit = {}) {
-    if (expanded) {
-        IconButton(onClick = { onClick() }) {
-            Icon(Icons.Filled.KeyboardArrowUp, contentDescription = stringResource(R.string.arrow_up))
-        }
-    } else {
-        IconButton(onClick = { onClick() }) {
-            Icon(Icons.Filled.KeyboardArrowDown, contentDescription = stringResource(R.string.arrow_down))
-        }
-    }
 }
 
 @Composable
@@ -124,6 +107,19 @@ fun ListItemRow(label: String, value: String) {
     ) {
         Text(text = label)
         Text(text = value, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 10.dp))
+    }
+}
+
+@Composable
+private fun ListItemArrow(expanded: Boolean, onClick: () -> Unit = {}) {
+    if (expanded) {
+        IconButton(onClick = onClick) {
+            Icon(Icons.Filled.KeyboardArrowUp, contentDescription = stringResource(R.string.arrow_up))
+        }
+    } else {
+        IconButton(onClick = onClick) {
+            Icon(Icons.Filled.KeyboardArrowDown, contentDescription = stringResource(R.string.arrow_down))
+        }
     }
 }
 

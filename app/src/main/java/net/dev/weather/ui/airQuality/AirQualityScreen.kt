@@ -100,11 +100,10 @@ private fun Content(data: PlaceWithAirPollutionForecast, modifier: Modifier = Mo
                     Image(
                         painter = painterResource(R.drawable.circle_24px),
                         contentDescription = stringResource(R.string.air_quality_icon),
-                        colorFilter = ColorFilter.tint(visualIndex(airPollutionForecast.aqi) /*.copy(alpha = 0.5f)*/),
+                        colorFilter = ColorFilter.tint(visualIndex(airPollutionForecast.aqi)/*.copy(alpha = 0.5f)*/),
                         modifier = Modifier
                             .minimumInteractiveComponentSize()
                             .size(16.dp)
-                        /*.clickable(indication = null, interactionSource = interactionSource) { onClick() }*/
                     )
 
                 }
