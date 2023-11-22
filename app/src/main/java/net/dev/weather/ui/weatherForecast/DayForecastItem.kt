@@ -1,6 +1,9 @@
 package net.dev.weather.ui.weatherForecast
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -20,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -64,6 +68,7 @@ fun <T> ExpandableListItems(
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ExpandableListItem(
     modifier: Modifier = Modifier,
@@ -71,14 +76,17 @@ private fun ExpandableListItem(
     headlineContent: @Composable () -> Unit = {},
     leadingContent: @Composable () -> Unit = {},
     trailingContent: @Composable () -> Unit = {
-        ListItemArrow(expanded = expanded, onClick = {  })
+        ListItemArrow(expanded = expanded, onClick = { })
     },
     content: @Composable ColumnScope.() -> Unit = {},
     expandedContent: @Composable ColumnScope.() -> Unit = {},
-    onClick: () -> Unit = {}
-) {
+    onClick: () -> Unit = {},
+
+    ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     ListItem(
-        modifier = modifier,
+        modifier = modifier.then(Modifier.clickable(indication = null, interactionSource = interactionSource) { onClick() }),
         headlineContent = headlineContent,
         supportingContent = {
             Column {
