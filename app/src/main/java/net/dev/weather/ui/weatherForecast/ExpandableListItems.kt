@@ -1,7 +1,6 @@
 package net.dev.weather.ui.weatherForecast
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -55,10 +54,10 @@ fun <T> ExpandableListItems(
             content = { content(item) },
             expandedContent = { expandedContent(item) },
             onClick = {
-                if (expandedCardsIdxs.contains(index.toString())) {
-                    expandedCardsIdxs = expandedCardsIdxs.filter { it != index.toString() }
+                expandedCardsIdxs = if (expandedCardsIdxs.contains(index.toString())) {
+                    expandedCardsIdxs.filter { it != index.toString() }
                 } else {
-                    expandedCardsIdxs = expandedCardsIdxs + index.toString()
+                    expandedCardsIdxs + index.toString()
                 }
             }
         )
@@ -67,8 +66,6 @@ fun <T> ExpandableListItems(
     }
 }
 
-
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ExpandableListItem(
     modifier: Modifier = Modifier,
