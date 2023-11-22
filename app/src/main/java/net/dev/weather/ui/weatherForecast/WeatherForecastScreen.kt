@@ -2,6 +2,7 @@ package net.dev.weather.ui.weatherForecast
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,7 +33,7 @@ fun WeatherForecastScreen(
         LoadingScreen()
     } else {
         uiState.weatherForecast?.let {
-            Content(it)
+            Content(it, modifier)
         }
     }
 }
@@ -41,6 +42,7 @@ fun WeatherForecastScreen(
 private fun Content(data: WeatherForecast, modifier: Modifier = Modifier) {
     LazyColumn(
         contentPadding = PaddingValues(bottom = 50.dp),
+        modifier = modifier
     ) {
         item {
             ExpandableListItems(
@@ -52,7 +54,6 @@ private fun Content(data: WeatherForecast, modifier: Modifier = Modifier) {
                     Text(text = weatherDaily.description)
                 },
                 leadingContent = { weatherDaily -> WeatherIcon(weatherDaily.icon) },
-                modifier = modifier,
                 expandedContent = { weatherDaily ->
                     ListItemRow(label = stringResource(R.string.temperature), value = "${weatherDaily.tempDay.roundToInt()}°C / ${weatherDaily.tempNight.roundToInt()}°C")
                     ListItemRow(label = stringResource(R.string.sunrise), value = weatherDaily.sunrise.toString().substringBeforeLast(":"))
@@ -62,6 +63,9 @@ private fun Content(data: WeatherForecast, modifier: Modifier = Modifier) {
                     ListItemRow(label = stringResource(R.string.wind), value = "${weatherDaily.wind.roundToInt()} km/h ${weatherDaily.windDirection}")
                     ListItemRow(label = stringResource(R.string.rain), value = "${weatherDaily.rain.roundToInt()} mm/24h")
                     ListItemRow(label = stringResource(R.string.uv_Index), value = weatherDaily.uvi.roundToInt().toString())
+                },
+                bottomContent = {
+                    HorizontalDivider()
                 }
             )
         }

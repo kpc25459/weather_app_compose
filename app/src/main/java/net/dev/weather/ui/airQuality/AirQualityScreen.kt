@@ -105,14 +105,17 @@ private fun Content(data: PlaceWithAirPollutionForecast, modifier: Modifier = Mo
                             .minimumInteractiveComponentSize()
                             .size(16.dp)
                     )
-
+                },
+                expandedContent = { airPollutionForecast ->
+                    ListItemRow(label = stringResource(R.string.pm25), value = "${airPollutionForecast.pm2_5.roundToInt()} μg/m3")
+                    ListItemRow(label = stringResource(R.string.pm10), value = "${airPollutionForecast.pm10.roundToInt()} μg/m3")
+                    ListItemRow(label = stringResource(R.string.no2), value = airPollutionForecast.no2.roundToInt().toString())
+                    ListItemRow(label = stringResource(R.string.o3), value = airPollutionForecast.o3.roundToInt().toString())
+                },
+                bottomContent = {
+                    Spacer(modifier = Modifier.height(5.dp))
                 }
-            ) { airPollutionForecast ->
-                ListItemRow(label = stringResource(R.string.pm25), value = "${airPollutionForecast.pm2_5.roundToInt()} μg/m3")
-                ListItemRow(label = stringResource(R.string.pm10), value = "${airPollutionForecast.pm10.roundToInt()} μg/m3")
-                ListItemRow(label = stringResource(R.string.no2), value = airPollutionForecast.no2.roundToInt().toString())
-                ListItemRow(label = stringResource(R.string.o3), value = airPollutionForecast.o3.roundToInt().toString())
-            }
+            )
         }
 
         item { Spacer(modifier = Modifier.height(20.dp)) }

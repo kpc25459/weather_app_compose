@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -40,6 +39,7 @@ fun <T> ExpandableListItems(
     leadingContent: @Composable (T) -> Unit = {},
     content: @Composable ColumnScope.(T) -> Unit = {},
     expandedContent: @Composable ColumnScope.(T) -> Unit = {},
+    bottomContent: @Composable () -> Unit = {}
 ) {
     var expandedCardsIdxs by rememberSaveable { mutableStateOf<List<String>>(mutableListOf()) }
 
@@ -59,9 +59,10 @@ fun <T> ExpandableListItems(
                 }
             }
         )
-        Spacer(modifier = Modifier.height(5.dp))
-        HorizontalDivider()
+
+        bottomContent()
     }
+
 }
 
 @Composable
