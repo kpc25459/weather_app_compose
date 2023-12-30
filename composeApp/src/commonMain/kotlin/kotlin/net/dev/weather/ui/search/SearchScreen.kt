@@ -1,4 +1,4 @@
-package net.dev.weather.ui.search
+package kotlin.net.dev.weather.ui.search
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -39,9 +39,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.dev.weather.R
-import net.dev.weather.components.LoadingScreen
-import net.dev.weather.data.model.Suggestion
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import kotlin.net.dev.weather.components.LoadingScreen
+import kotlin.net.dev.weather.data.model.Suggestion
 
 @Composable
 fun SearchScreen(
@@ -82,7 +83,7 @@ fun SearchScreen(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun WeatherSearchBar(
     suggestions: List<Suggestion>,

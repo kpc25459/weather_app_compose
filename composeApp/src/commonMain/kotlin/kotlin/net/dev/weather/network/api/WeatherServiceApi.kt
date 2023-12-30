@@ -1,11 +1,9 @@
-package net.dev.weather.network.api
+package kotlin.net.dev.weather.network.api
 
-import net.dev.weather.network.model.AirPollutionResponse
-import net.dev.weather.network.model.CurrentLocation
-import net.dev.weather.network.model.OneCallResponse
-import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Query
+import kotlin.net.dev.weather.network.model.AirPollutionResponse
+import kotlin.net.dev.weather.network.model.CurrentLocation
+import kotlin.net.dev.weather.network.model.OneCallResponse
+import okhttp3.Response
 
 interface WeatherServiceApi {
 

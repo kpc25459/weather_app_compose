@@ -1,6 +1,6 @@
-package net.dev.weather.ui.model
+package kotlin.net.dev.weather.ui.model
 
-import net.dev.weather.data.model.Weather
+import kotlin.net.dev.weather.data.model.Weather
 
 data class PlaceWithCurrentWeather(
     val place: String,

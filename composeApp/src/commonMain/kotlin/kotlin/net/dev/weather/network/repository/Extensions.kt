@@ -1,17 +1,17 @@
-package net.dev.weather.network.repository
+package kotlin.net.dev.weather.network.repository
 
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toLocalDateTime
-import net.dev.weather.data.model.AirPollutionForecast
-import net.dev.weather.data.model.WeatherCurrent
-import net.dev.weather.data.model.WeatherDaily
-import net.dev.weather.data.model.WeatherDays
-import net.dev.weather.data.model.WeatherHourly
-import net.dev.weather.network.model.AirPollutionResponse
-import net.dev.weather.network.model.OneCallResponse
-import net.dev.weather.network.model.WeatherHourlyResponse
 import net.dev.weather.utils.defaultTimeZone
 import net.dev.weather.utils.toHumanFromDegrees
+import kotlin.net.dev.weather.data.model.AirPollutionForecast
+import kotlin.net.dev.weather.data.model.WeatherCurrent
+import kotlin.net.dev.weather.data.model.WeatherDaily
+import kotlin.net.dev.weather.data.model.WeatherDays
+import kotlin.net.dev.weather.data.model.WeatherHourly
+import kotlin.net.dev.weather.network.model.AirPollutionResponse
+import kotlin.net.dev.weather.network.model.OneCallResponse
+import kotlin.net.dev.weather.network.model.WeatherHourlyResponse
 
 fun AirPollutionResponse.mapToAirPollutionForecast(): List<AirPollutionForecast> {
     return this.list.map {

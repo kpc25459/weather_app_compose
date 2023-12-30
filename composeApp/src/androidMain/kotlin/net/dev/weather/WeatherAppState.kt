@@ -10,16 +10,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import net.dev.weather.navigation.AirQuality
-import net.dev.weather.navigation.CurrentWeather
-import net.dev.weather.navigation.Places
+import kotlin.net.dev.weather.navigation.AirQuality
+import kotlin.net.dev.weather.navigation.CurrentWeather
+import kotlin.net.dev.weather.navigation.Places
 import net.dev.weather.navigation.TopLevelDestination
-import net.dev.weather.navigation.WeatherForecast
-import net.dev.weather.navigation.navigateToAirQuality
-import net.dev.weather.navigation.navigateToCurrentWeather
-import net.dev.weather.navigation.navigateToPlaces
-import net.dev.weather.navigation.navigateToSearch
-import net.dev.weather.navigation.navigateToWeatherForecast
+import kotlin.net.dev.weather.navigation.WeatherForecast
+import kotlin.net.dev.weather.navigation.navigateToAirQuality
+import kotlin.net.dev.weather.navigation.navigateToCurrentWeather
+import kotlin.net.dev.weather.navigation.navigateToPlaces
+import kotlin.net.dev.weather.navigation.navigateToSearch
+import kotlin.net.dev.weather.navigation.navigateToWeatherForecast
 
 @Composable
 fun rememberWeatherAppState(

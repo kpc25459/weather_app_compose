@@ -1,16 +1,16 @@
-package net.dev.weather.network.repository
+package kotlin.net.dev.weather.network.repository
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.LocalDateTime
-import net.dev.weather.data.model.AirPollutionForecast
-import net.dev.weather.data.model.Weather
-import net.dev.weather.data.model.WeatherDays
-import net.dev.weather.data.repository.PlaceRepository
-import net.dev.weather.data.repository.WeatherRepository
-import net.dev.weather.network.api.WeatherServiceApi
+import kotlin.net.dev.weather.data.model.AirPollutionForecast
+import kotlin.net.dev.weather.data.model.Weather
+import kotlin.net.dev.weather.data.model.WeatherDays
+import kotlin.net.dev.weather.data.repository.PlaceRepository
+import kotlin.net.dev.weather.data.repository.WeatherRepository
+import kotlin.net.dev.weather.network.api.WeatherServiceApi
 import javax.inject.Inject
 import javax.inject.Singleton
 

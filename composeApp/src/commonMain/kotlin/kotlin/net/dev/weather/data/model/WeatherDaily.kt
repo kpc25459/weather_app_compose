@@ -1,4 +1,4 @@
-package net.dev.weather.data.model
+package kotlin.net.dev.weather.data.model
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime

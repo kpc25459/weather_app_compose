@@ -10,11 +10,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import net.dev.weather.MainActivityUiState.Loading
 import net.dev.weather.MainActivityUiState.Success
-import net.dev.weather.data.model.LatandLong
-import net.dev.weather.data.model.UserData
-import net.dev.weather.data.repository.SettingsRepository
+import kotlin.net.dev.weather.data.model.LatandLong
+import kotlin.net.dev.weather.data.model.UserData
+import kotlin.net.dev.weather.data.repository.SettingsRepository
 import javax.inject.Inject
-import kotlin.text.Typography.dagger
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(

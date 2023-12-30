@@ -1,4 +1,4 @@
-package net.dev.weather.data.model
+package kotlin.net.dev.weather.data.model
 
 data class LatandLong(
     val latitude: Double = 0.0,

@@ -17,8 +17,8 @@ import kotlinx.datetime.LocalTime
 import net.dev.weather.R
 import net.dev.weather.components.LoadingScreen
 import net.dev.weather.components.WeatherIcon
-import net.dev.weather.data.model.WeatherDaily
-import net.dev.weather.data.model.WeatherForecast
+import kotlin.net.dev.weather.data.model.WeatherDaily
+import kotlin.net.dev.weather.data.model.WeatherForecast
 import net.dev.weather.utils.localDate
 import kotlin.math.roundToInt
 

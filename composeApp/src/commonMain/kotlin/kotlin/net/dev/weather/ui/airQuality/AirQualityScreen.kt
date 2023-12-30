@@ -1,4 +1,4 @@
-package net.dev.weather.ui.airQuality
+package kotlin.net.dev.weather.ui.airQuality
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -32,21 +32,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.himanshoe.charty.common.axis.AxisConfig
 import com.himanshoe.charty.common.dimens.ChartDimens
-import com.himanshoe.charty.line.CurveLineChart
-import com.himanshoe.charty.line.LineChart
 import com.himanshoe.charty.line.config.CurveLineConfig
 import com.himanshoe.charty.line.config.LineConfig
 import com.himanshoe.charty.line.model.LineData
 import net.dev.weather.R
-import net.dev.weather.components.LoadingScreen
-import net.dev.weather.data.model.AirPollutionForecast
+import kotlin.net.dev.weather.data.model.AirPollutionForecast
 import net.dev.weather.sampleAirQuality
-import net.dev.weather.ui.model.PlaceWithAirPollutionForecast
+import kotlin.net.dev.weather.ui.model.PlaceWithAirPollutionForecast
 import net.dev.weather.ui.weatherForecast.ExpandableListItems
 import net.dev.weather.ui.weatherForecast.ListItemRow
 import net.dev.weather.utils.fromAqiIndex
 import net.dev.weather.utils.imageFromAqi
 import kotlin.math.roundToInt
+import kotlin.net.dev.weather.components.LoadingScreen
 
 @Composable
 fun AirQualityScreen(

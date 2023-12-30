@@ -1,7 +1,7 @@
-package net.dev.weather.ui.model
+package kotlin.net.dev.weather.ui.model
 
-import net.dev.weather.data.model.AirPollutionForecast
-import net.dev.weather.data.model.Place
+import kotlin.net.dev.weather.data.model.AirPollutionForecast
+import kotlin.net.dev.weather.data.model.Place
 
 data class PlaceWithAirPollutionForecast(
     val place: Place,

@@ -1,4 +1,4 @@
-package net.dev.weather.domain
+package kotlin.net.dev.weather.domain
 
 class ConvertDegreesUseCase {
     operator fun invoke(deg: Double): String {

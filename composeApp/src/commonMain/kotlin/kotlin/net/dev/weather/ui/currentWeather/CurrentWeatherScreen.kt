@@ -1,4 +1,4 @@
-package net.dev.weather.ui.currentWeather
+package kotlin.net.dev.weather.ui.currentWeather
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -42,10 +42,10 @@ import kotlinx.datetime.todayIn
 import net.dev.weather.R
 import net.dev.weather.components.LoadingScreen
 import net.dev.weather.components.WeatherIcon
-import net.dev.weather.data.model.WeatherCurrent
-import net.dev.weather.data.model.WeatherHourly
+import kotlin.net.dev.weather.data.model.WeatherCurrent
+import kotlin.net.dev.weather.data.model.WeatherHourly
 import net.dev.weather.sampleData
-import net.dev.weather.ui.model.PlaceWithCurrentWeather
+import kotlin.net.dev.weather.ui.model.PlaceWithCurrentWeather
 import net.dev.weather.utils.backgroundImageFromWeather
 import net.dev.weather.utils.dayOfWeek
 import net.dev.weather.utils.fromAqiIndex

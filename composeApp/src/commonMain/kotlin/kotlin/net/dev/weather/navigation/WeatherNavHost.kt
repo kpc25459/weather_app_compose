@@ -7,11 +7,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import net.dev.weather.ui.WeatherAppState
-import net.dev.weather.ui.airQuality.AirQualityScreen
-import net.dev.weather.ui.currentWeather.CurrentWeatherScreen
-import net.dev.weather.ui.places.PlacesScreen
-import net.dev.weather.ui.search.SearchScreen
+import kotlin.net.dev.weather.ui.currentWeather.CurrentWeatherScreen
+import kotlin.net.dev.weather.ui.places.PlacesScreen
+import kotlin.net.dev.weather.ui.search.SearchScreen
 import net.dev.weather.ui.weatherForecast.WeatherForecastScreen
+import kotlin.net.dev.weather.navigation.AirQuality
+import kotlin.net.dev.weather.navigation.CurrentWeather
+import kotlin.net.dev.weather.navigation.Places
+import kotlin.net.dev.weather.navigation.Search
+import kotlin.net.dev.weather.navigation.WeatherForecast
+import kotlin.net.dev.weather.ui.airQuality.AirQualityScreen
 
 @Composable
 fun WeatherNavHost(
@@ -70,13 +75,13 @@ fun NavHostController.navigateSingleTopTo(route: String) = this.navigate(route) 
 }
 
 private fun NavHostController.navigateToCurrentWeather() {
-    this.navigateSingleTopTo(CurrentWeather.route)
+    this.navigateSingleTopTo(kotlin.net.dev.weather.navigation.CurrentWeather.route)
 }
 
 private fun NavHostController.navigateToWeatherForecast() {
-    this.navigateSingleTopTo(WeatherForecast.route)
+    this.navigateSingleTopTo(kotlin.net.dev.weather.navigation.WeatherForecast.route)
 }
 
 private fun NavHostController.navigateToAirQuality() {
-    this.navigateSingleTopTo(AirQuality.route)
+    this.navigateSingleTopTo(kotlin.net.dev.weather.navigation.AirQuality.route)
 }

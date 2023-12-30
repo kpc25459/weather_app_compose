@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.dev.weather.components
+package kotlin.net.dev.weather.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement

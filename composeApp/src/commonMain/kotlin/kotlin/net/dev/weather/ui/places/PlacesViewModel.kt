@@ -1,4 +1,4 @@
-package net.dev.weather.ui.places
+package kotlin.net.dev.weather.ui.places
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
@@ -12,11 +12,11 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import net.dev.weather.R
-import net.dev.weather.data.model.Place
-import net.dev.weather.data.model.PlaceMode
-import net.dev.weather.data.model.deviceCurrentLocationPlace
-import net.dev.weather.data.repository.LocationRepository
-import net.dev.weather.data.repository.SettingsRepository
+import kotlin.net.dev.weather.data.model.Place
+import kotlin.net.dev.weather.data.model.PlaceMode
+import kotlin.net.dev.weather.data.model.deviceCurrentLocationPlace
+import kotlin.net.dev.weather.data.repository.LocationRepository
+import kotlin.net.dev.weather.data.repository.SettingsRepository
 import net.dev.weather.utils.Async
 import javax.inject.Inject
 

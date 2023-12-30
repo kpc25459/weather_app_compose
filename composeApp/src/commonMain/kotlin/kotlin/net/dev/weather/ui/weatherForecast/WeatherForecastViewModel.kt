@@ -13,9 +13,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import net.dev.weather.R
-import net.dev.weather.data.model.WeatherForecast
-import net.dev.weather.data.repository.PlaceRepository
-import net.dev.weather.data.repository.WeatherRepository
+import kotlin.net.dev.weather.data.model.WeatherForecast
+import kotlin.net.dev.weather.data.repository.PlaceRepository
+import kotlin.net.dev.weather.data.repository.WeatherRepository
 import net.dev.weather.utils.Async
 import javax.inject.Inject
 

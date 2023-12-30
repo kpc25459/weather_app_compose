@@ -1,15 +1,8 @@
 package kotlin.net.dev.weather
 
 import androidx.compose.runtime.Composable
-import kotlinx.coroutines.launch
-import net.dev.weather.MainActivityUiState
-import net.dev.weather.components.LocationUpdatesEffect
-import net.dev.weather.components.PermissionBox
-import net.dev.weather.data.model.LatandLong
-import net.dev.weather.data.model.PlaceMode
 import net.dev.weather.theme.WeatherTheme
 import net.dev.weather.ui.WeatherApp
-import net.dev.weather.ui.places.permissions
 
 @Composable
 fun App() {

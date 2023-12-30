@@ -1,13 +1,13 @@
-package net.dev.weather.data.repository
+package kotlin.net.dev.weather.data.repository
 
 import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import net.dev.weather.data.model.Place
-import net.dev.weather.data.model.PlaceMode
-import net.dev.weather.data.model.deviceCurrentLocationPlace
-import net.dev.weather.network.api.WeatherServiceApi
+import kotlin.net.dev.weather.data.model.Place
+import kotlin.net.dev.weather.data.model.PlaceMode
+import kotlin.net.dev.weather.data.model.deviceCurrentLocationPlace
+import kotlin.net.dev.weather.network.api.WeatherServiceApi
 import javax.inject.Inject
 import javax.inject.Singleton
 

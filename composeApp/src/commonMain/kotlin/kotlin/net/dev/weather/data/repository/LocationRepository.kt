@@ -1,11 +1,11 @@
-package net.dev.weather.data.repository
+package kotlin.net.dev.weather.data.repository
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import net.dev.weather.api.LocationServiceApi
-import net.dev.weather.data.model.LatandLong
-import net.dev.weather.data.model.Suggestion
-import net.dev.weather.data.model.deviceCurrentLocationPlace
+import kotlin.net.dev.weather.data.model.LatandLong
+import kotlin.net.dev.weather.data.model.Suggestion
+import kotlin.net.dev.weather.data.model.deviceCurrentLocationPlace
 import javax.inject.Inject
 import javax.inject.Singleton
 

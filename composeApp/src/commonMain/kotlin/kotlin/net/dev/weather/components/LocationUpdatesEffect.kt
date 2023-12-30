@@ -1,4 +1,4 @@
-package net.dev.weather.components
+package kotlin.net.dev.weather.components
 
 import android.Manifest
 import android.os.Looper

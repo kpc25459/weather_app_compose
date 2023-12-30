@@ -5,6 +5,9 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.hiltAndroid)
+    alias(libs.plugins.protobuf)
+    alias(libs.plugins.kotlinxSerialization)
 }
 
 kotlin {
@@ -40,20 +43,10 @@ kotlin {
             implementation(libs.androidx.navigation.compose)
 
             implementation(libs.hilt.android)
+            implementation(libs.hilt.android.compiler)
             implementation(libs.hilt.navigation.compose)
 
-            implementation(libs.kotlinx.datetime)
-            implementation(libs.kotlinx.serialization)
-
             implementation(libs.accompanist.system.ui.controller)
-            implementation(libs.accompanist.permissions)
-            implementation(libs.coil.compose)
-
-            implementation(libs.retrofit)
-            implementation(libs.retrofit.converter.gson)
-            implementation(libs.gson)
-            implementation(libs.okhttp)
-            implementation(libs.okhttp.logging.interceptor)
 
             implementation(libs.androidx.datastore)
             implementation(libs.protobuf.javalite)
@@ -62,6 +55,7 @@ kotlin {
             implementation(libs.location)
             implementation(libs.charty)
         }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -70,6 +64,19 @@ kotlin {
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+
+            implementation(libs.kotlinx.serialization)
+
+            implementation(libs.kotlinx.datetime)
+
+            implementation(libs.accompanist.permissions)
+            implementation(libs.coil.compose)
+
+            implementation(libs.retrofit)
+            implementation(libs.retrofit.converter.gson)
+            implementation(libs.gson)
+            implementation(libs.okhttp)
+            implementation(libs.okhttp.logging.interceptor)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

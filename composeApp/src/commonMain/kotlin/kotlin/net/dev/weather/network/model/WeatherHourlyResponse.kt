@@ -1,4 +1,4 @@
-package net.dev.weather.network.model
+package kotlin.net.dev.weather.network.model
 
 data class WeatherHourlyResponse(
     val dt: Int,

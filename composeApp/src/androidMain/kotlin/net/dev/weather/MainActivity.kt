@@ -2,7 +2,6 @@ package net.dev.weather
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.location.LocationRequest
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -23,23 +22,22 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.Priority
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import net.dev.weather.MainActivityUiState.Loading
-import net.dev.weather.components.LocationUpdatesEffect
-import net.dev.weather.components.PermissionBox
-import net.dev.weather.data.model.DarkThemeConfig
-import net.dev.weather.data.model.LatandLong
-import net.dev.weather.data.model.PlaceMode
+import kotlin.net.dev.weather.components.LocationUpdatesEffect
+import kotlin.net.dev.weather.components.PermissionBox
+import kotlin.net.dev.weather.data.model.DarkThemeConfig
+import kotlin.net.dev.weather.data.model.LatandLong
+import kotlin.net.dev.weather.data.model.PlaceMode
 import net.dev.weather.theme.WeatherTheme
 import net.dev.weather.ui.WeatherApp
-import net.dev.weather.ui.places.permissions
-import kotlin.text.Typography.dagger
+import kotlin.net.dev.weather.ui.places.permissions
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.Priority
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @AndroidEntryPoint
@@ -54,11 +52,9 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState
-                    .onEach {
+                viewModel.uiState.onEach {
                         uiState = it
-                    }
-                    .collect()
+                    }.collect()
             }
         }
 
@@ -100,8 +96,7 @@ class MainActivity : ComponentActivity() {
                             locationRequest = it
 
                             PermissionBox(
-                                permissions = permissions,
-                                requiredPermissions = listOf(permissions.first())
+                                permissions = permissions, requiredPermissions = listOf(permissions.first())
                             ) {
 
                                 LocationUpdatesEffect(locationRequest!!) { result ->

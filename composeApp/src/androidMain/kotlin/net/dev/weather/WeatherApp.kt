@@ -19,8 +19,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
-import net.dev.weather.components.WeatherNavigationRail
-import net.dev.weather.components.WeatherTopAppBar
+import kotlin.net.dev.weather.components.WeatherNavigationRail
+import kotlin.net.dev.weather.components.WeatherTopAppBar
 import net.dev.weather.navigation.TopLevelDestination
 import net.dev.weather.navigation.WeatherNavHost
 

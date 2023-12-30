@@ -3,11 +3,11 @@ package net.dev.weather.datastore
 import android.util.Log
 import androidx.datastore.core.DataStore
 import kotlinx.coroutines.flow.map
-import net.dev.weather.data.model.DarkThemeConfig
-import net.dev.weather.data.model.LatandLong
-import net.dev.weather.data.model.Place
-import net.dev.weather.data.model.PlaceMode
-import net.dev.weather.data.model.UserData
+import kotlin.net.dev.weather.data.model.DarkThemeConfig
+import kotlin.net.dev.weather.data.model.LatandLong
+import kotlin.net.dev.weather.data.model.Place
+import kotlin.net.dev.weather.data.model.PlaceMode
+import kotlin.net.dev.weather.data.model.UserData
 import java.io.IOException
 import javax.inject.Inject
 

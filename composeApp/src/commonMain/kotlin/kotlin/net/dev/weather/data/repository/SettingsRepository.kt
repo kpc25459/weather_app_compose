@@ -1,10 +1,10 @@
-package net.dev.weather.data.repository
+package kotlin.net.dev.weather.data.repository
 
 import kotlinx.coroutines.flow.Flow
-import net.dev.weather.data.model.LatandLong
-import net.dev.weather.data.model.Place
-import net.dev.weather.data.model.PlaceMode
-import net.dev.weather.data.model.UserData
+import kotlin.net.dev.weather.data.model.LatandLong
+import kotlin.net.dev.weather.data.model.Place
+import kotlin.net.dev.weather.data.model.PlaceMode
+import kotlin.net.dev.weather.data.model.UserData
 import net.dev.weather.datastore.PreferencesDataSource
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -6,16 +6,15 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import net.dev.weather.api.LocationServiceApi
-import net.dev.weather.network.api.WeatherServiceApi
-import net.dev.weather.data.repository.LocationRepository
-import net.dev.weather.data.repository.LocationRepositoryImpl
-import net.dev.weather.data.repository.PlaceRepository
-import net.dev.weather.data.repository.PlaceRepositoryImpl
-import net.dev.weather.network.repository.NetworkWeatherRepository
-import net.dev.weather.data.repository.SettingsRepository
-import net.dev.weather.data.repository.SettingsRepositoryImpl
-import net.dev.weather.data.repository.WeatherRepository
-
+import kotlin.net.dev.weather.data.repository.LocationRepository
+import kotlin.net.dev.weather.data.repository.LocationRepositoryImpl
+import kotlin.net.dev.weather.data.repository.PlaceRepository
+import kotlin.net.dev.weather.data.repository.PlaceRepositoryImpl
+import kotlin.net.dev.weather.data.repository.SettingsRepository
+import kotlin.net.dev.weather.data.repository.SettingsRepositoryImpl
+import kotlin.net.dev.weather.data.repository.WeatherRepository
+import kotlin.net.dev.weather.network.api.WeatherServiceApi
+import kotlin.net.dev.weather.network.repository.NetworkWeatherRepository
 import javax.inject.Singleton
 
 

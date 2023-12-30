@@ -1,4 +1,4 @@
-package net.dev.weather.components
+package kotlin.net.dev.weather.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition

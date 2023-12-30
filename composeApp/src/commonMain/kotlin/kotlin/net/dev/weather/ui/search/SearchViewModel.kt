@@ -1,4 +1,4 @@
-package net.dev.weather.ui.search
+package kotlin.net.dev.weather.ui.search
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
@@ -14,14 +14,13 @@ import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import net.dev.weather.R
-import net.dev.weather.data.model.Place
-import net.dev.weather.data.model.PlaceMode
-import net.dev.weather.data.model.Suggestion
-import net.dev.weather.data.repository.LocationRepository
-import net.dev.weather.data.repository.SettingsRepository
+import kotlin.net.dev.weather.data.model.Place
+import kotlin.net.dev.weather.data.model.PlaceMode
+import kotlin.net.dev.weather.data.model.Suggestion
+import kotlin.net.dev.weather.data.repository.LocationRepository
+import kotlin.net.dev.weather.data.repository.SettingsRepository
 import net.dev.weather.utils.Async
 import javax.inject.Inject
-import kotlin.text.Typography.dagger
 
 data class SearchUiState(
     val query: String? = null,

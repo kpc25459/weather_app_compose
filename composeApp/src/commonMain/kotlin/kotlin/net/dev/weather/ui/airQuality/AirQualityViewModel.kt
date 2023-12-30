@@ -1,4 +1,4 @@
-package net.dev.weather.ui.airQuality
+package kotlin.net.dev.weather.ui.airQuality
 
 import android.util.Log
 import androidx.annotation.StringRes
@@ -14,9 +14,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import net.dev.weather.R
-import net.dev.weather.data.repository.PlaceRepository
-import net.dev.weather.data.repository.WeatherRepository
-import net.dev.weather.ui.model.PlaceWithAirPollutionForecast
+import kotlin.net.dev.weather.data.repository.PlaceRepository
+import kotlin.net.dev.weather.data.repository.WeatherRepository
+import kotlin.net.dev.weather.ui.model.PlaceWithAirPollutionForecast
 import net.dev.weather.utils.Async
 import javax.inject.Inject
 

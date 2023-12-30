@@ -1,4 +1,4 @@
-package net.dev.weather.navigation
+package kotlin.net.dev.weather.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
@@ -35,21 +35,21 @@ object Search : WeatherDestination {
 }
 
 fun NavController.navigateToCurrentWeather(navOptions: NavOptions? = null) {
-    this.navigate(CurrentWeather.route, navOptions)
+    this.navigate(kotlin.net.dev.weather.navigation.CurrentWeather.route, navOptions)
 }
 
 fun NavController.navigateToWeatherForecast(navOptions: NavOptions? = null) {
-    this.navigate(WeatherForecast.route, navOptions)
+    this.navigate(kotlin.net.dev.weather.navigation.WeatherForecast.route, navOptions)
 }
 
 fun NavController.navigateToAirQuality(navOptions: NavOptions? = null) {
-    this.navigate(AirQuality.route, navOptions)
+    this.navigate(kotlin.net.dev.weather.navigation.AirQuality.route, navOptions)
 }
 
 fun NavController.navigateToPlaces(navOptions: NavOptions? = null) {
-    this.navigate(Places.route, navOptions)
+    this.navigate(kotlin.net.dev.weather.navigation.Places.route, navOptions)
 }
 
 fun NavController.navigateToSearch(navOptions: NavOptions? = null) {
-    this.navigate(Search.route, navOptions)
+    this.navigate(kotlin.net.dev.weather.navigation.Search.route, navOptions)
 }

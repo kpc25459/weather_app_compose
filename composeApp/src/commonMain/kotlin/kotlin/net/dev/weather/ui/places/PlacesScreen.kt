@@ -1,4 +1,4 @@
-package net.dev.weather.ui.places
+package kotlin.net.dev.weather.ui.places
 
 import android.Manifest
 import androidx.compose.animation.core.animateFloatAsState
@@ -38,9 +38,9 @@ import net.dev.weather.MainActivityUiState
 import net.dev.weather.R
 import net.dev.weather.components.LoadingScreen
 import net.dev.weather.components.SwipeDismissItem
-import net.dev.weather.data.model.Place
-import net.dev.weather.data.model.PlaceMode
-import net.dev.weather.data.model.deviceCurrentLocationPlace
+import kotlin.net.dev.weather.data.model.Place
+import kotlin.net.dev.weather.data.model.PlaceMode
+import kotlin.net.dev.weather.data.model.deviceCurrentLocationPlace
 import kotlin.math.min
 
 val permissions = listOf(
