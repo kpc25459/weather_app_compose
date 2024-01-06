@@ -1,11 +1,14 @@
-## Weather : Weather Forecasting App written in Jetpack Compose
+Weather
+==================
 
-### Screenshots
+Weather forecast App build with Kotlin and Jetpack Compose
 
-<img src="docs/images/screens.png">
+# Screenshots
+
+<img src="docs/images/screens.png" alt="App screenshots">
 
 
-### Features
+# Features
 
 - Current Weather
 - Hourly Weather
@@ -16,14 +19,14 @@
 - Weather at current location
 - Support for different screen sizes
 - Light/Dark Mode
-- Animations
 
-### Used libs
+#  Tech Stack Used
 
-- Material3
 - Jetpack Compose
-- Kotlin Coroutines
-- MVVM Architecture
+- Kotlin Coroutines + Flow
+- Android Clean Architecture
+- Material3
+- Animations 
 - Hilt
 - DataStore
 - Location
