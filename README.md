@@ -1,5 +1,10 @@
 ## Weather : Weather Forecasting App written in Jetpack Compose
 
+### Screenshots
+
+<img src="docs/images/screens.png">
+
+
 ### Features
 
 - Current Weather
