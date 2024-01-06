@@ -43,6 +43,6 @@ interface WeatherServiceApi {
 
     companion object {
         const val BASE_URL = "http://api.openweathermap.org/"
-        private const val appid = "8c27af4c68a4a3cc4c9d8d009ece6201"
+        private val appid = System.getenv("OPEN_WEATHER_API_KEY")!!
     }
 }
