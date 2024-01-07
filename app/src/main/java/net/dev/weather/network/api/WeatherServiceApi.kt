@@ -18,7 +18,7 @@ interface WeatherServiceApi {
         @Query("appid") appid: String = BuildConfig.OPEN_WEATHER_API_KEY,
     ): Response<List<CurrentLocation>>
 
-    @GET("/data/2.5/onecall")
+    @GET("/data/3.0/onecall")
     suspend fun getWeather(
         @Query("lat") latitude: Double,
         @Query("lon") longitude: Double,
