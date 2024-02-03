@@ -7,9 +7,9 @@ import net.dev.weather.data.model.WeatherCurrent
 import net.dev.weather.data.model.WeatherDaily
 import net.dev.weather.data.model.WeatherDays
 import net.dev.weather.data.model.WeatherHourly
+import net.dev.weather.network.api.Current
+import net.dev.weather.network.api.OneCallResponse
 import net.dev.weather.network.model.AirPollutionResponse
-import net.dev.weather.network.model.OneCallResponse
-import net.dev.weather.network.model.WeatherHourlyResponse
 import net.dev.weather.utils.defaultTimeZone
 import net.dev.weather.utils.toHumanFromDegrees
 
@@ -27,20 +27,21 @@ fun AirPollutionResponse.mapToAirPollutionForecast(): List<AirPollutionForecast>
 }
 
 fun OneCallResponse.mapToWeatherDays(): WeatherDays {
-    val current1: WeatherHourlyResponse = this.current
+    val current1: Current = this.current
 
     val current = WeatherCurrent(
         dt = Instant.fromEpochSeconds(current1.dt.toLong()).toLocalDateTime(defaultTimeZone),
         sunrise = Instant.fromEpochSeconds(current1.sunrise.toLong()).toLocalDateTime(defaultTimeZone).time,
         sunset = Instant.fromEpochSeconds(current1.sunset.toLong()).toLocalDateTime(defaultTimeZone).time,
         temp = current1.temp,
-        feels_like = current1.feels_like,
+        feels_like = current1.feelsLike,
         pressure = current1.pressure,
         humidity = current1.humidity,
-        uvi = current1.uvi,
-        wind = (current1.wind_speed * 3.6 * 100) / 100,
-        windDirection = toHumanFromDegrees(current1.wind_deg),
-        rain = this.daily.first().rain,
+        uvi = current1.uvi.toDouble(),
+        wind = (current1.windSpeed * 3.6 * 100) / 100,
+        windDirection = toHumanFromDegrees(current1.windDeg),
+        //TODO: rain
+        rain = /*this.daily.first().rain*/ 0.0,
         weatherCondition = current1.weather.first().main,
     )
 
@@ -54,9 +55,10 @@ fun OneCallResponse.mapToWeatherDays(): WeatherDays {
             tempNight = it.temp.night,
             pressure = it.pressure,
             humidity = it.humidity,
-            wind = (it.wind_speed * 3.6 * 100) / 100,
-            windDirection = toHumanFromDegrees(it.wind_deg),
-            rain = it.rain,
+            wind = (it.windSpeed * 3.6 * 100) / 100,
+            windDirection = toHumanFromDegrees(it.windDeg),
+            //TODO: rain
+            rain = /*it.rain*/ 0.0,
             uvi = it.uvi,
             icon = it.weather[0].icon
         )

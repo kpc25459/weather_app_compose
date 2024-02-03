@@ -3,7 +3,6 @@ package net.dev.weather.network.api
 import net.dev.weather.BuildConfig
 import net.dev.weather.network.model.AirPollutionResponse
 import net.dev.weather.network.model.CurrentLocation
-import net.dev.weather.network.model.OneCallResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

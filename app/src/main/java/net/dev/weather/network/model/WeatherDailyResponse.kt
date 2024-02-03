@@ -1,5 +1,8 @@
 package net.dev.weather.network.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class WeatherDailyResponse(
     val dt: Int,
     val sunrise: Int,
